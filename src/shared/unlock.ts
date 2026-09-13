@@ -70,6 +70,21 @@ export function applyUnlockDecision(
   }
 }
 
+/** Preview gallery uses a mocked runtime id so designers can still see Accept / Denied. */
+export const PREVIEW_RUNTIME_ID = 'preview'
+
+/**
+ * Hide Accept / Denied when the requester opens the unlock page in their own
+ * extension browser. A hosted page without the extension can still show them.
+ */
+export function shouldHideUnlockDecisionButtons(
+  runtimeId: string | undefined = typeof chrome !== 'undefined'
+    ? chrome.runtime?.id
+    : undefined,
+): boolean {
+  return Boolean(runtimeId) && runtimeId !== PREVIEW_RUNTIME_ID
+}
+
 export function buildUnlockPageUrl(token: string): string {
   if (typeof chrome !== 'undefined' && chrome.runtime?.getURL) {
     const url = new URL(chrome.runtime.getURL('src/unlock/index.html'))

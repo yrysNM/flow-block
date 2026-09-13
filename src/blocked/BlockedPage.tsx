@@ -114,7 +114,7 @@ export function BlockedPage() {
       setShareNote(
         result === 'shared'
           ? 'Ask your trusted person to open the link and tap Accept or Denied.'
-          : 'Link copied. Send it to a trusted person, or open it on this computer.',
+          : 'Link copied. Send it to a trusted person — opening it here will not let you Accept it yourself.',
       )
     } catch (err) {
       setShareError(err instanceof Error ? err.message : 'Could not create a share link')

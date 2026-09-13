@@ -22,21 +22,20 @@ export function PreviewApp() {
     return () => window.removeEventListener('preview:open-options', onOpen)
   }, [])
 
-  useEffect(() => {
-    if (view === 'blocked') {
-      const url = new URL(window.location.href)
+  function openView(next: View) {
+    const url = new URL(window.location.href)
+    if (next === 'blocked') {
       url.searchParams.set('domain', 'youtube.com')
       url.searchParams.set('reason', 'limit')
       url.searchParams.set('limit', '60')
       url.searchParams.set('used', String(60 * 60))
-      window.history.replaceState({}, '', url)
     }
-    if (view === 'unlock') {
-      const url = new URL(window.location.href)
+    if (next === 'unlock') {
       url.searchParams.set('token', 'preview-unlock-token')
-      window.history.replaceState({}, '', url)
     }
-  }, [view])
+    window.history.replaceState({}, '', url)
+    setView(next)
+  }
 
   return (
     <div className="min-h-screen bg-[#d9cfc0] px-4 py-8">
@@ -58,7 +57,7 @@ export function PreviewApp() {
                 className={`rounded-full px-3 py-1.5 text-sm ${
                   view === item.id ? 'bg-accent text-white' : 'bg-card text-ink'
                 }`}
-                onClick={() => setView(item.id)}
+                onClick={() => openView(item.id)}
                 type="button"
               >
                 {item.label}

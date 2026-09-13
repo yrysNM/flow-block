@@ -11,7 +11,11 @@ import {
   setStorageAdapter,
   updateWebsite,
 } from './storage'
-import { isRuleCurrentlyBlocking, isTrustedUnlockActive } from './unlock'
+import {
+  isRuleCurrentlyBlocking,
+  isTrustedUnlockActive,
+  shouldHideUnlockDecisionButtons,
+} from './unlock'
 
 afterEach(() => {
   setStorageAdapter(null)
@@ -80,5 +84,13 @@ describe('unlock expiry', () => {
       },
     ]
     expect(getBlockDecision('https://tiktok.com', settings).blocked).toBe(true)
+  })
+})
+
+describe('unlock decision buttons', () => {
+  it('hides Accept and Denied in the requester browser, but not in preview', () => {
+    expect(shouldHideUnlockDecisionButtons('abcdefghijklmnop')).toBe(true)
+    expect(shouldHideUnlockDecisionButtons('preview')).toBe(false)
+    expect(shouldHideUnlockDecisionButtons(undefined)).toBe(false)
   })
 })

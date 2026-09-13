@@ -33,7 +33,9 @@ export function WebsiteSettingsPage({
     try {
       const created = await createUnlockRequest(rule.id)
       await navigator.clipboard.writeText(created.url)
-      setShareNote('Unlock link copied. A trusted person opens it and taps Accept or Denied.')
+      setShareNote(
+        'Unlock link copied. A trusted person must open it — you cannot Accept it in this browser.',
+      )
     } catch (err) {
       setShareError(err instanceof Error ? err.message : 'Could not create a share link')
     }
