@@ -1,0 +1,85 @@
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/fraunces";
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Outfit Variable", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", "Fraunces", ui-serif, Georgia, serif;
+
+  --color-ink: #1c1712;
+  --color-ink-soft: #4a4036;
+  --color-muted: #7c7064;
+  --color-paper: #f4efe6;
+  --color-paper-2: #ebe4d6;
+  --color-card: #fffaf2;
+  --color-line: #ddd2c2;
+  --color-accent: #c2410c;
+  --color-accent-2: #9a3412;
+  --color-accent-soft: #ffedd5;
+  --color-good: #3f6212;
+  --color-warn: #b45309;
+  --color-danger: #b91c1c;
+  --color-blocked: #7f1d1d;
+}
+
+:root {
+  color-scheme: light;
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.dark {
+  color-scheme: dark;
+  --color-ink: #f8f1e7;
+  --color-ink-soft: #d6cbbd;
+  --color-muted: #b3a394;
+  --color-paper: #171310;
+  --color-paper-2: #211c18;
+  --color-card: #241f1a;
+  --color-line: #3b332c;
+  --color-accent: #fb923c;
+  --color-accent-2: #fdba74;
+  --color-accent-soft: #431407;
+  --color-good: #a3e635;
+  --color-warn: #fbbf24;
+  --color-danger: #fb7185;
+  --color-blocked: #fecaca;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-paper);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100%;
+}
+
+body.popup-shell,
+body.popup-shell #root {
+  width: 380px;
+  height: 580px;
+  overflow: hidden;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
