@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Flow Block",
+    "slug": "flow-block-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "flowblock",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EDE6DA"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.flowblock.mobile",
+      "infoPlist": {
+        "CFBundleDisplayName": "Flow Block"
+      }
+    },
+    "android": {
+      "package": "com.flowblock.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#EDE6DA",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "INTERNET",
+        "FOREGROUND_SERVICE",
+        "POST_NOTIFICATIONS"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-dev-client"
+    ]
+  }
+}

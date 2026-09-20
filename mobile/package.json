@@ -1,0 +1,36 @@
+{
+  "name": "flow-block-mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "private": true,
+  "description": "Android phone-level domain blocker (Expo + local VPN/DNS).",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "prebuild": "expo prebuild -p android",
+    "typecheck": "tsc --noEmit",
+    "build:apk": "eas build -p android --profile preview",
+    "build:dev": "eas build -p android --profile development"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native/debugger-frontend": "^0.87.1",
+    "@react-navigation/native": "^7.3.18",
+    "@react-navigation/native-stack": "^7.18.10",
+    "expo": "~57.0.22",
+    "expo-constants": "^57.0.18",
+    "expo-dev-client": "^57.0.19",
+    "expo-linking": "^57.0.10",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  }
+}

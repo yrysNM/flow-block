@@ -13,6 +13,21 @@ dist-ssr
 *.local
 .vite
 
+# Expo / mobile
+mobile/android
+mobile/ios
+mobile/.expo
+mobile/dist
+*.apk
+*.aab
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

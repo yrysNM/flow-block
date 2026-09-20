@@ -6,6 +6,18 @@ This is browser-level protection. It cannot replace OS-level parental controls, 
 
 **GitHub:** https://github.com/yrysNM/flow-block
 
+## Phone-level Android app
+
+Desktop Chrome blocking stays in this extension. Whole-phone domain blocking lives in [`mobile/`](./mobile) (Expo + local VPN/DNS). It cannot plug into Chrome the way the extension does — see [`mobile/README.md`](./mobile/README.md).
+
+```bash
+cd mobile
+npm install
+npm start                 # UI in Expo Go
+npx expo prebuild -p android
+npx eas build -p android --profile preview   # APK after native VPN module
+```
+
 ## Features
 
 - Add a domain or URL and normalize it before saving
@@ -28,13 +40,8 @@ Share an unlock URL with a friend or trusted person. They open it and tap:
 The link is an extension page, so it must be opened in this same Chrome profile (hand them the computer, or open the copied URL in another tab).
 
 ```text
-src/
-├── background/     Service worker: tabs, focus, navigation, usage, blocking
-├── popup/          Compact React popup for daily management
-├── options/        Full dashboard (overview, websites, statistics, settings)
-├── blocked/        Dedicated blocked page
-├── shared/         Types, storage, domain matching, time helpers
-└── preview/        Browser gallery for the UI (no Chrome required)
+src/                Chrome extension (desktop)
+mobile/             Expo Android app (phone-level VPN/DNS blocker)
 ```
 
 UI pages never talk to `chrome.storage` directly. They go through `src/shared/storage.ts`. The service worker owns the live session and writes usage back through the same module.
