@@ -9,6 +9,9 @@ Android phone-level blocker (Expo). Companion to the Chrome extension in the rep
 | Active-tab time tracking | Yes | No (optional Usage Stats later) |
 | Trusted Accept / Denied | Same Chrome profile | HTTPS link (cross-phone with a backend) |
 | Ship as `.apk` | No | Yes (`eas build`) |
+| Hide words inside a page | Optional, in Chrome only | No |
+
+This app does not hide words inside Chrome or other apps. It only blocks configured domains.
 
 ## What works today
 

@@ -8,7 +8,7 @@ This is browser-level protection. It cannot replace OS-level parental controls, 
 
 ## Phone-level Android app
 
-Desktop Chrome blocking stays in this extension. Whole-phone domain blocking lives in [`mobile/`](./mobile) (Expo + local VPN/DNS). It cannot plug into Chrome the way the extension does — see [`mobile/README.md`](./mobile/README.md).
+Desktop Chrome blocking stays in this extension. Whole-phone domain blocking lives in [`mobile/`](./mobile) (Expo + local VPN/DNS). It cannot plug into Chrome the way the extension does, and it cannot hide words inside Chrome or any other app — see [`mobile/README.md`](./mobile/README.md).
 
 ```bash
 cd mobile
@@ -27,6 +27,7 @@ npx eas build -p android --profile preview   # APK after native VPN module
 - Reset usage automatically at local midnight
 - Share an unlock link with a friend or trusted person; they tap **Accept** or **Denied**
 - Popup, full dashboard, import/export, and optional 80% / 100% notifications
+- Optionally mask sexually explicit words and phrases on ordinary websites in Russian, Kazakh, and English. The rest of the page stays visible. The switch is off until you turn on **Hiding adult wording** in the dashboard Settings panel. The Android app cannot do this.
 
 ## Trusted unlock
 
@@ -57,7 +58,9 @@ UI pages never talk to `chrome.storage` directly. They go through `src/shared/st
 | `alarms` | Flush usage and schedule the next local-midnight reset while the service worker is suspended. |
 | `notifications` | Optional 80% and 100% daily-limit alerts. |
 
-No `<all_urls>` host permission is requested. Tab URLs come from the `tabs` permission. Blocking is done by redirecting the tab to an extension page, not by injecting a content script.
+No `<all_urls>` host permission is requested. Tab URLs come from the `tabs` permission. Domain blocking is done by redirecting the tab to an extension page. The service worker does not read page bodies.
+
+When **Hiding adult wording** is on, a content script runs on ordinary `http` and `https` pages (including embedded frames) and masks dictionary matches on the device. It does not run in the popup, dashboard, blocked page, or unlock page, and it does not run on browser-internal pages. Page text is not sent to a server. Turning the setting off restores the original wording.
 
 ## How URL blocking works
 
@@ -65,6 +68,13 @@ No `<all_urls>` host permission is requested. Tab URLs come from the `tabs` perm
 2. The URL is matched with `matchesDomain()` against saved rules. `youtube.com` matches `www.youtube.com`, `m.youtube.com`, and `music.youtube.com`, but not `fakeyoutube.com` or `youtube.com.example.com`.
 3. If the rule is enabled and set to block, or its daily limit is exhausted, the tab is redirected to the extension blocked page.
 4. Refreshing, changing the path, or adding query parameters still matches the same domain, so it does not bypass the block.
+
+## How adult-word hiding works
+
+1. The switch is on the dashboard Settings panel and is stored with the other settings through `src/shared/storage.ts`. It defaults to off, including for saved settings and version-1 backups that do not mention it.
+2. It is independent of the protection switch, time tracking, and domain rules. Turning protection off does not change word hiding. Turning word hiding off does not change domain blocks.
+3. Matching uses on-device dictionaries for Russian, Kazakh (Cyrillic and Latin), and English. A match is a whole dictionary word or a full phrase. Other words stay as written. A match does not hide the rest of the page and does not redirect the tab.
+4. Each match is replaced with the same neutral placeholder. Text you are typing in a field is left alone. Images, video, and audio stay as the site rendered them.
 
 ## How active time tracking works
 
@@ -166,7 +176,7 @@ npm run build
 
 ## Tests
 
-Vitest covers domain matching, URL normalization, duplicate prevention, daily reset, limit math, import/export validation, and the focused-tab tracking rules.
+Vitest covers domain matching, URL normalization, duplicate prevention, daily reset, limit math, import/export validation, the focused-tab tracking rules, and adult-word masking (dictionary fixtures, the default-off setting, and import/export).
 
 ## Known limitations
 
@@ -175,3 +185,5 @@ Vitest covers domain matching, URL normalization, duplicate prevention, daily re
 - Chrome can suspend the service worker. Tracking therefore depends on events plus timestamps, not a forever-running interval.
 - `chrome.idle` uses a 60-second detection interval, so short away-from-keyboard gaps may still count.
 - Other Chromium browsers (Edge) should load the same `dist/` folder. Firefox needs a separate manifest pass later.
+- Adult-word hiding only covers the built-in Russian, Kazakh, and English dictionaries. Other languages, obfuscated spelling, and text drawn inside images are not masked.
+- The Android app only blocks configured domains. It cannot hide words inside Chrome or other apps.
