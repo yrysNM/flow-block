@@ -31,6 +31,15 @@ export default defineManifest({
     48: 'icons/icon48.png',
     128: 'icons/icon128.png',
   },
+  content_scripts: [
+    {
+      matches: ['http://*/*', 'https://*/*'],
+      js: ['src/content/content-script.ts'],
+      run_at: 'document_end',
+      all_frames: true,
+      match_about_blank: true,
+    },
+  ],
   permissions: [
     'storage',
     'tabs',

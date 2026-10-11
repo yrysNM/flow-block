@@ -1,0 +1,31 @@
+import type { DictionaryEntry } from '../match'
+
+/** Clear English sexual slang, including plurals and verb forms. Medical and news wording is omitted. */
+export const enEntries: readonly DictionaryEntry[] = [
+  { id: 'en-01', forms: ['porn', 'porno', 'porns'] },
+  { id: 'en-02', forms: ['blowjob', 'blowjobs', 'blow job', 'blow jobs'] },
+  { id: 'en-03', forms: ['handjob', 'handjobs', 'hand job', 'hand jobs'] },
+  { id: 'en-04', forms: ['cumshot', 'cumshots', 'cum shot', 'cum shots'] },
+  { id: 'en-05', forms: ['creampie', 'creampies'] },
+  { id: 'en-06', forms: ['deepthroat', 'deepthroats', 'deepthroating', 'deepthroated', 'deep throat'] },
+  { id: 'en-07', forms: ['gangbang', 'gangbangs', 'gangbanged', 'gangbanging'] },
+  { id: 'en-08', forms: ['hentai', 'hentais'] },
+  { id: 'en-09', forms: ['milf', 'milfs'] },
+  { id: 'en-10', forms: ['dickpic', 'dickpics', 'dick pic', 'dick pics'] },
+  { id: 'en-11', forms: ['dildo', 'dildos', 'dildoes'] },
+  { id: 'en-12', forms: ['horny', 'hornier', 'horniest'] },
+  { id: 'en-13', forms: ['slut', 'sluts'] },
+  { id: 'en-14', forms: ['whore', 'whores'] },
+  { id: 'en-15', forms: ['boob', 'boobs', 'boob job', 'boob jobs'] },
+  { id: 'en-16', forms: ['tits', 'titties'] },
+  { id: 'en-17', forms: ['jizz', 'jizzed', 'jizzing'] },
+  { id: 'en-18', forms: ['boner', 'boners'] },
+  { id: 'en-19', forms: ['bukkake'] },
+  { id: 'en-20', forms: ['ahegao'] },
+  { id: 'en-21', forms: ['rimjob', 'rimjobs', 'rim job', 'rim jobs'] },
+  { id: 'en-22', forms: ['sex tape', 'sex tapes'] },
+  { id: 'en-23', forms: ['nudes'] },
+  { id: 'en-24', forms: ['cocksucker', 'cocksuckers'] },
+  { id: 'en-25', forms: ['titjob', 'titjobs', 'tit job', 'tit jobs'] },
+  { id: 'en-26', forms: ['footjob', 'footjobs', 'foot job', 'foot jobs'] },
+]

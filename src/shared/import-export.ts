@@ -11,6 +11,7 @@ export function createExportPayload(settings: ExtensionSettings): ExportPayload 
     settings: {
       globalEnabled: settings.globalEnabled,
       trackingEnabled: settings.trackingEnabled,
+      hideAdultWording: settings.hideAdultWording,
       notifications: settings.notifications,
       theme: settings.theme,
     },
@@ -35,6 +36,7 @@ export function parseImportPayload(raw: unknown): ExportPayload {
     websites: value.websites,
     globalEnabled: nested?.globalEnabled,
     trackingEnabled: nested?.trackingEnabled,
+    hideAdultWording: nested?.hideAdultWording,
     notifications: nested?.notifications,
     theme: nested?.theme,
   })
@@ -50,6 +52,7 @@ export function parseImportPayload(raw: unknown): ExportPayload {
     settings: {
       globalEnabled: sanitized.globalEnabled,
       trackingEnabled: sanitized.trackingEnabled,
+      hideAdultWording: sanitized.hideAdultWording,
       notifications: sanitized.notifications,
       theme: sanitized.theme,
     },
@@ -65,6 +68,7 @@ export function applyImport(
     websites: payload.websites,
     globalEnabled: payload.settings.globalEnabled,
     trackingEnabled: payload.settings.trackingEnabled,
+    hideAdultWording: payload.settings.hideAdultWording,
     notifications: payload.settings.notifications,
     theme: payload.settings.theme,
   }

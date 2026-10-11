@@ -111,6 +111,7 @@ export function createDefaultSettings(now = new Date()): ExtensionSettings {
     websites: [],
     globalEnabled: true,
     trackingEnabled: true,
+    hideAdultWording: false,
     lastResetDate: localDateKey(now),
     notifications: { ...DEFAULT_NOTIFICATIONS },
     theme: 'system',
@@ -173,6 +174,7 @@ export function sanitizeSettings(raw: unknown): ExtensionSettings {
     websites,
     globalEnabled: value.globalEnabled !== false,
     trackingEnabled: value.trackingEnabled !== false,
+    hideAdultWording: value.hideAdultWording === true,
     lastResetDate:
       typeof value.lastResetDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.lastResetDate)
         ? value.lastResetDate

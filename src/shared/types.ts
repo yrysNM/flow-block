@@ -50,6 +50,8 @@ export interface ExtensionSettings {
   websites: WebsiteRule[]
   globalEnabled: boolean
   trackingEnabled: boolean
+  /** Mask sexually explicit wording on ordinary websites. Independent of domain blocks. */
+  hideAdultWording: boolean
   lastResetDate: string
   notifications: NotificationSettings
   theme: ThemePreference
@@ -63,6 +65,7 @@ export interface ExportPayload {
   settings: {
     globalEnabled: boolean
     trackingEnabled: boolean
+    hideAdultWording: boolean
     notifications: NotificationSettings
     theme: ThemePreference
   }

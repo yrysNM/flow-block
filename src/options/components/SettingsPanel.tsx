@@ -64,8 +64,8 @@ export function SettingsPanel({
       <div>
         <h2 className="font-display text-3xl tracking-tight">Settings</h2>
         <p className="mt-1 text-sm text-muted">
-          Control tracking, notifications, and backups. This extension only limits browsing inside
-          the browser — it is not system-level parental control.
+          Control tracking, word hiding, notifications, and backups. This extension only limits
+          browsing inside the browser — it is not system-level parental control.
         </p>
       </div>
 
@@ -81,6 +81,12 @@ export function SettingsPanel({
           description="Count active time only when a matching tab is focused"
           checked={settings.trackingEnabled}
           onCheckedChange={(trackingEnabled) => onChange({ trackingEnabled })}
+        />
+        <SettingRow
+          title="Hiding adult wording"
+          description="It masks sexually explicit words and phrases on websites in Russian, Kazakh, and English."
+          checked={settings.hideAdultWording}
+          onCheckedChange={(hideAdultWording) => onChange({ hideAdultWording })}
         />
       </div>
 
