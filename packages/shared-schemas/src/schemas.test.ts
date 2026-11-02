@@ -4,6 +4,7 @@ import {
   createTaskSchema,
   listTasksQuerySchema,
   registerSchema,
+  startFocusSessionSchema,
   updateTaskQuadrantSchema,
   updateTaskScheduleSchema,
 } from './index'
@@ -52,5 +53,15 @@ describe('shared schemas', () => {
       scheduledStart: null,
       scheduledEnd: null,
     })
+  })
+
+  it('drops a client userId on a focus session and bounds the plan', () => {
+    expect(startFocusSessionSchema.parse({
+      plannedSeconds: 25 * 60,
+      taskId: null,
+      userId: 'someone-else',
+    })).toEqual({ plannedSeconds: 25 * 60, taskId: null })
+    expect(startFocusSessionSchema.safeParse({ plannedSeconds: 30 }).success).toBe(false)
+    expect(startFocusSessionSchema.safeParse({ plannedSeconds: 4 * 60 * 60 }).success).toBe(false)
   })
 })

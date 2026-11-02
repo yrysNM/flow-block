@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 3 is in the tree on top of auth, tasks, and Kanban: the Eisenhower matrix and a daily planner. The app is still not connected to a running Postgres. `20261102120000_task_schedule` is written and was not applied.
+Phase 4a is in the tree on top of the matrix and planner: a focus timer and session history. The app is still not connected to a running Postgres. `20261102120000_task_schedule` and `20261102130000_focus_pause` are written and were not applied.
 
 ## Completed modules
 
@@ -12,6 +12,7 @@ Phase 3 is in the tree on top of auth, tasks, and Kanban: the Eisenhower matrix 
 - Kanban for TODO, IN_PROGRESS, and COMPLETED, using the same Task rows
 - Eisenhower matrix that writes urgent and important only
 - Daily planner with one time block stored on the Task
+- Focus timer: one active session, presets and a custom duration, pause and resume, optional task, history
 - Derived Eisenhower quadrant and status rules
 - Chrome MV3 shell with no feature logic
 - Preservation of `src/` and `mobile/`
@@ -22,7 +23,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-Focus sessions, shared website blocking, habits, goals, analytics, and extension sync. All of those are unimplemented.
+Shared website blocking, habits, goals, analytics, and extension sync. Those are unimplemented. Focus sessions are in this branch.
 
 ## Architecture
 
@@ -38,12 +39,12 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The important one for the next session: 
 
 ## Database status
 
-Schema, `20261102100000_init`, and `20261102120000_task_schedule` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
+Schema, `20261102100000_init`, `20261102120000_task_schedule`, and `20261102130000_focus_pause` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, and `/api/tags`. Swagger at `/api/docs`. Focus, habits, goals, website rules, and notifications still have tables only.
+Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, and `/api/focus-sessions` (active, history, start, pause, resume, complete, stop). Swagger at `/api/docs`. Habits, goals, website rules, and notifications still have tables only.
 
 ## Next recommended tasks
 
-Focus sessions. The matrix and the planner are in this branch.
+Website-rule sync with the existing blocker. The focus timer is in this branch. Elapsed time is computed from timestamps. A second start returns the active session.

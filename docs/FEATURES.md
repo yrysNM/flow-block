@@ -15,6 +15,7 @@
 | Kanban columns TODO, IN_PROGRESS, COMPLETED with counts | API and Board page |
 | Eisenhower matrix with counts, create, edit, and drag | API and Matrix page |
 | Daily planner timeline and unscheduled list | API and Planner page |
+| Focus timer, pause and resume, and session history | API and Focus page |
 | Dashboard counts and tasks due today | API and Dashboard |
 | Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories |
 | Derived Eisenhower quadrant | API response and task UI |
@@ -22,7 +23,7 @@
 
 ## Declared in the database, no product UI
 
-Time log, focus session, habit, habit entry, goal, milestone, website rule, website usage, notification. The quadrant is still derived. The time log is not the planner.
+Time log, habit, habit entry, goal, milestone, website rule, website usage, notification. The quadrant is still derived. The time log is not the planner and is not the focus timer.
 
 ## Already shipped outside this slice
 
@@ -30,4 +31,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-Focus timer, shared website blocking, analytics, AI planning.
+Shared website blocking, analytics, AI planning.

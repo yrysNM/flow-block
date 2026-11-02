@@ -29,6 +29,7 @@ const title = computed(() => {
   if (route.path.startsWith('/board')) return 'Board'
   if (route.path.startsWith('/matrix')) return 'Matrix'
   if (route.path.startsWith('/planner')) return 'Planner'
+  if (route.path.startsWith('/focus')) return 'Focus'
   if (route.path.startsWith('/categories')) return 'Categories'
   if (route.path.startsWith('/settings')) return 'Settings'
   return 'Dashboard'

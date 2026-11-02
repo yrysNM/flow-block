@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module'
 import { CategoriesModule } from './categories/categories.module'
+import { FocusModule } from './focus/focus.module'
 import { HealthController } from './health/health.controller'
 import { PrismaModule } from './prisma/prisma.module'
 import { TagsModule } from './tags/tags.module'
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module'
     CategoriesModule,
     TagsModule,
     TasksModule,
+    FocusModule,
   ],
   controllers: [HealthController],
 })

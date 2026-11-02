@@ -1,4 +1,6 @@
 import {
+  FOCUS_MAX_PLANNED_SECONDS,
+  FOCUS_MIN_PLANNED_SECONDS,
   TASK_PRIORITIES,
   TASK_STATUSES,
   THEME_PREFERENCES,
@@ -176,6 +178,20 @@ export const taskSummaryQuerySchema = z.object({
     .optional(),
 })
 
+export const startFocusSessionSchema = z.object({
+  plannedSeconds: z.number().int().min(FOCUS_MIN_PLANNED_SECONDS).max(FOCUS_MAX_PLANNED_SECONDS),
+  taskId: z.uuid().nullable().optional(),
+})
+
+export const listFocusSessionsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+})
+
+export const focusSessionIdParamSchema = z.object({
+  id: z.uuid(),
+})
+
 export const taskIdParamSchema = z.object({
   id: z.uuid(),
 })
@@ -210,3 +226,5 @@ export type CreateSubtaskInput = z.infer<typeof createSubtaskSchema>
 export type UpdateSubtaskInput = z.infer<typeof updateSubtaskSchema>
 export type ReorderSubtasksInput = z.infer<typeof reorderSubtasksSchema>
 export type TaskSummaryQuery = z.infer<typeof taskSummaryQuerySchema>
+export type StartFocusSessionInput = z.infer<typeof startFocusSessionSchema>
+export type ListFocusSessionsQuery = z.infer<typeof listFocusSessionsQuerySchema>

@@ -13,9 +13,10 @@
 - Kanban board with counts. Drag and drop and the card menu call the existing status transition and leave urgent and important unchanged
 - Eisenhower matrix. Drag and the quadrant menu write `isUrgent` and `isImportant` only
 - Daily planner with one block per task. Scheduling updates that task. Unscheduled tasks stay off the timeline
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, and password hashing
+- Focus timer with one active session, presets, custom duration, pause and resume, optional task, and history. Elapsed time comes from timestamps. Completing a session does not change task status
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment
+- Website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment

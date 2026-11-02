@@ -10,6 +10,8 @@ Phase 2: owner-scoped categories and tags, task assignment, subtasks, search and
 
 Phase 3: Eisenhower matrix and a one-day planner. Matrix drag writes `isUrgent` and `isImportant` only. The planner stores one block on the task and does not create a second row. Unscheduled tasks stay off the timeline.
 
+Phase 4a: focus timer and session history. One active session per user. A second start returns it. Elapsed time is computed from timestamps. Completing a session does not change task status. Website blocking is not included.
+
 ## Later, not scheduled in this change
 
-Focus timer and focus sessions, connecting the existing website blocker to `website_rules`, habits, goals, analytics, extension sync, password reset, and deployment. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.
+Connecting the existing website blocker to `website_rules`, habits, goals, analytics, extension sync, password reset, and deployment. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.

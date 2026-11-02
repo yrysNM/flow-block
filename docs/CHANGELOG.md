@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 — Focus timer and session history
+
+- Added one active focus session per user. A second start returns that session and does not insert another
+- Added 15, 25, and 50 minute presets, a custom duration, pause, resume, complete, and stop
+- Elapsed and remaining time are computed from server timestamps. The stored `elapsed_seconds` column is not the source of truth
+- A session can point at an existing task. Completing or stopping it does not change that task’s status
+- Added a Focus page in the app shell and a history list for the signed-in user
+- Left website blocking, habits, goals, analytics, and extension feature logic unbuilt
+
 ## 0.3.0 — Eisenhower matrix and daily planner
 
 - Added a four-quadrant matrix. A move writes `isUrgent` and `isImportant` and does not write status

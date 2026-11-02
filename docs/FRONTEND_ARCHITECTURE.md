@@ -10,6 +10,7 @@ Nuxt 4 app in `apps/web`. Source lives under `app/` because that is Nuxt 4’s d
 | `app/pages/board.vue` | Kanban. Native drag and drop, plus a status menu |
 | `app/pages/matrix.vue` | Four quadrants. Drag writes urgent and important. A menu does the same on touch |
 | `app/pages/planner.vue` | One day, an hour timeline, and unscheduled tasks |
+| `app/pages/focus.vue` | Focus timer and session history. The ticking clock is a display |
 | `app/utils/schedule.ts` | Civil dates and time blocks in the user time zone |
 | `app/pages/categories.vue` | Category and tag CRUD |
 | `app/pages/settings.vue` | Name, time zone, week start |

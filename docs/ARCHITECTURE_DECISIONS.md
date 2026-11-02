@@ -35,3 +35,7 @@ Nest’s build consumes `require`. The Nuxt app aliases the TypeScript source so
 ## ADR-9. One time block on the Task
 
 The schema had a deadline and `task_time_logs`, and no planned start or end. A time log is a record of time already spent, and a task can have many. The planner needs one block per task. Adding `scheduled_start` and `scheduled_end` on `tasks` keeps the plan on the same row the list, board, matrix, and dashboard already use. Both columns null means unscheduled. Setting them updates that row. It does not insert a second task. A block must start and end on the same civil day in the user’s time zone, so it belongs to one planner day. Migration `20261102120000_task_schedule` adds the columns and an owner-plus-start index. `prisma migrate deploy` was not run in the environment that wrote it.
+
+## ADR-10. Focus elapsed time is computed
+
+`focus_sessions` already had `planned_seconds`, `elapsed_seconds`, `started_at`, `ended_at`, and an optional task. Phase 4a reuses that row. Pause is `paused_at` plus `paused_seconds`, not a child table and not `task_time_logs`. `elapsed_seconds` stays at 0. The API computes elapsed and remaining time from the timestamps on each read. A second start returns the active session instead of returning 409 to the client. The partial unique index still makes a racing insert fail, and that failure is turned back into the same active row. Completing the session does not write the task. Migration `20261102130000_focus_pause` was not applied here.
