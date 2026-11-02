@@ -1,0 +1,13 @@
+---
+description: FocusFlow Nuxt web rules
+globs: apps/web/**/*
+alwaysApply: false
+---
+
+Use Nuxt 4, Vue 3 script setup, TypeScript strict, Tailwind tokens, and Pinia. The app is client-rendered (`ssr: false`) so the HTTP-only session cookie stays a browser concern.
+
+Call the API through `useApi()` at `/api`. Do not send `userId`. Validate with `@focusflow/shared-schemas` and show the API `message`.
+
+Design tokens: primary `#0055FA`, background `#F5F7FA`, surface `#FFFFFF`, text `#172033` (`text-ink`), secondary `#64748B`, success `#16A36A`, warning `#E89A26`, danger `#DC4C4C`, border `#E5EAF1` (`border-line`). Keep the shell responsive. Protected routes use the auth middleware.
+
+Do not add VueDraggable or ECharts.

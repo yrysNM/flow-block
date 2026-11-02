@@ -1,0 +1,13 @@
+---
+description: FocusFlow NestJS API rules
+globs: apps/api/**/*
+alwaysApply: false
+---
+
+NestJS REST under `/api`. Validate bodies and queries with Zod pipes from `@focusflow/shared-schemas`. Return the shared error shape: `statusCode`, `error`, `message`, optional `details`.
+
+Auth is an HTTP-only `ff_session` cookie. Store only the SHA-256 of the token. Passwords use argon2. Guards are global; public routes opt out with `@Public()`.
+
+Task writes use `userId` from `CurrentUser`. `updateMany` / `deleteMany` include `userId` because Prisma `update` requires a unique selector. Status transitions go through `applyTaskFieldPatch`.
+
+Swagger documents implemented routes at `/api/docs`. Do not add Redis.

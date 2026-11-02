@@ -1,0 +1,14 @@
+{
+  "name": "@focusflow/extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FocusFlow Chrome MV3 shell. No blocking or sync logic in this milestone.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.12",
+    "typescript": "~5.9.2"
+  }
+}

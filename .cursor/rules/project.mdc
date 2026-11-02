@@ -1,0 +1,16 @@
+---
+description: FocusFlow product and repository rules
+alwaysApply: true
+---
+
+FocusFlow is one account and one Task across web, API, and the future extension. Canonical flow: Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
+
+This milestone stops at Phase 0 and task CRUD. Do not add Kanban, drag and drop, categories UI, tags, subtasks, timers, charts, or extension blocking.
+
+Import task status and priority from `@focusflow/shared-types`. Derive Eisenhower quadrant from `isUrgent` and `isImportant`. Do not store quadrant.
+
+Never trust a client userId. Scope every user-owned query by the session user.
+
+Preserve `src/` (Website Blocker) and `mobile/` (Expo). Do not commit secrets or production mock data.
+
+After a change, update `docs/CURSOR_CONTEXT.md`, `docs/IMPLEMENTATION_STATUS.md`, `docs/CHANGELOG.md`, `docs/TASKS.md`, and `docs/KNOWN_ISSUES.md` when status changed.

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FocusFlow</title>
+    <style>
+      body {
+        margin: 0;
+        width: 280px;
+        font-family: "Segoe UI", sans-serif;
+        color: #172033;
+        background: #f5f7fa;
+      }
+      main {
+        padding: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+      }
+      p {
+        margin: 8px 0 0;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #64748b;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>FocusFlow</h1>
+      <p>Extension shell only. Sign in on the web app to manage tasks. Blocking and focus sessions are not in this build.</p>
+      <p id="version"></p>
+    </main>
+    <script type="module" src="./dist/popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+# Local PostgreSQL for FocusFlow.
+# Redis is intentionally absent: sessions live in Postgres, and the auth
+# rate limit is in-memory for this single-process slice.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: focusflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: focusflow
+      POSTGRES_PASSWORD: focusflow
+      POSTGRES_DB: focusflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - focusflow_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U focusflow -d focusflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  focusflow_pg:

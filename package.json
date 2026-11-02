@@ -7,15 +7,27 @@
     "url": "https://github.com/yrysNM/flow-block.git"
   },
   "type": "module",
-  "description": "Chrome extension to block distracting websites and enforce daily time limits.",
+  "description": "FocusFlow monorepo. The original Website Blocker extension and Expo app stay at the repo root and in mobile/.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
     "dev:preview": "vite --config vite.preview.config.ts --port 43147 --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "lint": "oxlint .",
+    "lint:focusflow": "eslint apps packages",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:focusflow": "npm run test -w @focusflow/shared-types && npm run test -w @focusflow/shared-schemas && npm run test -w @focusflow/shared-utils && npm run test -w @focusflow/api",
     "typecheck": "tsc -b --pretty",
+    "build:packages": "npm run build -w @focusflow/shared-types && npm run build -w @focusflow/shared-schemas && npm run build -w @focusflow/shared-utils",
+    "db:generate": "npm exec -w @focusflow/api -- prisma generate",
+    "typecheck:focusflow": "npm run build:packages && npm run db:generate && npm run typecheck -w @focusflow/shared-types && npm run typecheck -w @focusflow/shared-schemas && npm run typecheck -w @focusflow/shared-utils && npm run typecheck -w @focusflow/api && npm run typecheck -w @focusflow/web && npm run typecheck -w @focusflow/extension",
+    "build:focusflow": "npm run build:packages && npm run db:generate && npm run build -w @focusflow/api && npm run build -w @focusflow/web && npm run build -w @focusflow/extension",
+    "dev:web": "npm run dev -w @focusflow/web",
+    "dev:api": "npm run build:packages && npm run db:generate && npm run start:dev -w @focusflow/api",
     "preview": "vite --config vite.preview.config.ts --port 43147 --host 127.0.0.1"
   },
   "dependencies": {
@@ -36,15 +48,19 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.7.1",
+    "@eslint/js": "^9.39.1",
     "@tailwindcss/vite": "^4.1.13",
     "@types/chrome": "^0.1.12",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-vue": "^10.12.0",
     "oxlint": "^1.81.0",
     "tailwindcss": "^4.1.13",
     "typescript": "~5.9.2",
+    "typescript-eslint": "^8.46.2",
     "vite": "^8.3.0",
     "vitest": "^3.2.4"
   }
