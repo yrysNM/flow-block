@@ -13,14 +13,16 @@
 | Tag create, rename, delete, attach, and detach | API, Categories page, and task editor |
 | Subtasks: add, toggle, reorder, delete | API and task editor |
 | Kanban columns TODO, IN_PROGRESS, COMPLETED with counts | API and Board page |
+| Eisenhower matrix with counts, create, edit, and drag | API and Matrix page |
+| Daily planner timeline and unscheduled list | API and Planner page |
 | Dashboard counts and tasks due today | API and Dashboard |
-| Empty states | Dashboard, Tasks, Board, Categories |
+| Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories |
 | Derived Eisenhower quadrant | API response and task UI |
 | OpenAPI | `/api/docs` |
 
 ## Declared in the database, no product UI
 
-Time log, focus session, habit, habit entry, goal, milestone, website rule, website usage, notification. The quadrant is still derived. There is no matrix board.
+Time log, focus session, habit, habit entry, goal, milestone, website rule, website usage, notification. The quadrant is still derived. The time log is not the planner.
 
 ## Already shipped outside this slice
 
@@ -28,4 +30,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-Focus timer, shared website blocking, Eisenhower matrix drag and drop, analytics, AI planning.
+Focus timer, shared website blocking, analytics, AI planning.

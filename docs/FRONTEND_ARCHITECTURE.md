@@ -8,6 +8,9 @@ Nuxt 4 app in `apps/web`. Source lives under `app/` because that is Nuxt 4’s d
 | `app/pages/index.vue` | Dashboard |
 | `app/pages/tasks/index.vue` | Task list, filters, editor, tags, and subtasks |
 | `app/pages/board.vue` | Kanban. Native drag and drop, plus a status menu |
+| `app/pages/matrix.vue` | Four quadrants. Drag writes urgent and important. A menu does the same on touch |
+| `app/pages/planner.vue` | One day, an hour timeline, and unscheduled tasks |
+| `app/utils/schedule.ts` | Civil dates and time blocks in the user time zone |
 | `app/pages/categories.vue` | Category and tag CRUD |
 | `app/pages/settings.vue` | Name, time zone, week start |
 | `app/layouts/default.vue` | Sidebar, top bar, content |
@@ -19,4 +22,4 @@ Nuxt 4 app in `apps/web`. Source lives under `app/` because that is Nuxt 4’s d
 
 Nuxt aliases the shared packages to their TypeScript source. The API consumes the compiled CommonJS build instead.
 
-Vue Query, VueDraggable, and ECharts are not dependencies. The board uses the HTML5 drag and drop events and calls the status endpoint.
+Vue Query, VueDraggable, and ECharts are not dependencies. The board, matrix, and planner use HTML5 drag and drop. Touch screens also get a quadrant menu or a start-time control.

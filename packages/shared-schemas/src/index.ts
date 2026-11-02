@@ -80,6 +80,23 @@ export const updateTaskStatusSchema = z.object({
   status: taskStatusSchema,
 })
 
+export const updateTaskQuadrantSchema = z.object({
+  isUrgent: z.boolean(),
+  isImportant: z.boolean(),
+})
+
+export const updateTaskScheduleSchema = z
+  .object({
+    scheduledStart: isoDateTime.nullable(),
+    scheduledEnd: isoDateTime.nullable(),
+  })
+  .refine(
+    (value) =>
+      (value.scheduledStart === null && value.scheduledEnd === null)
+      || (value.scheduledStart !== null && value.scheduledEnd !== null),
+    { message: 'Set both start and end, or clear both' },
+  )
+
 const hexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Expected a color like #3366FF')
 
 function blankToUndefined(value: unknown): unknown {
@@ -180,6 +197,8 @@ export type UpdatePreferencesInput = z.infer<typeof updatePreferencesSchema>
 export type CreateTaskInput = z.infer<typeof createTaskSchema>
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>
 export type UpdateTaskStatusInput = z.infer<typeof updateTaskStatusSchema>
+export type UpdateTaskQuadrantInput = z.infer<typeof updateTaskQuadrantSchema>
+export type UpdateTaskScheduleInput = z.infer<typeof updateTaskScheduleSchema>
 export type ListTasksQuery = z.infer<typeof listTasksQuerySchema>
 export type BoardTasksQuery = z.infer<typeof boardTasksQuerySchema>
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>

@@ -5,12 +5,16 @@ import type {
   ListTasksQuery,
   UpdateSubtaskInput,
   UpdateTaskInput,
+  UpdateTaskQuadrantInput,
+  UpdateTaskScheduleInput,
 } from '@focusflow/shared-schemas'
 import type {
   PageMeta,
   SubtaskView,
   TaskBoardResponse,
   TaskListResponse,
+  TaskMatrixResponse,
+  TaskPlannerResponse,
   TaskStatus,
   TaskSummary,
   TaskView,
@@ -59,6 +63,22 @@ export const useTasksStore = defineStore('tasks', {
     async fetchBoard(query: BoardTasksQuery) {
       const api = useApi()
       return api<TaskBoardResponse>('/tasks/board', { query })
+    },
+    async fetchMatrix(query: BoardTasksQuery) {
+      const api = useApi()
+      return api<TaskMatrixResponse>('/tasks/matrix', { query })
+    },
+    async fetchPlanner(date?: string) {
+      const api = useApi()
+      return api<TaskPlannerResponse>('/tasks/planner', { query: date ? { date } : {} })
+    },
+    async updateQuadrant(id: string, input: UpdateTaskQuadrantInput) {
+      const api = useApi()
+      return api<TaskView>(`/tasks/${id}/quadrant`, { method: 'PATCH', body: input })
+    },
+    async updateSchedule(id: string, input: UpdateTaskScheduleInput) {
+      const api = useApi()
+      return api<TaskView>(`/tasks/${id}/schedule`, { method: 'PATCH', body: input })
     },
     async attachTag(taskId: string, tagId: string) {
       const api = useApi()

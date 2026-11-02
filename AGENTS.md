@@ -2,7 +2,7 @@
 
 FocusFlow is an all-in-one productivity product: “Focus on what matters.” Web, Chrome extension, and API share one account and one Task. The canonical workflow is Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 0, the task slice, and Phase 2 are in the tree: auth, one Task, categories, tags, subtasks, and a Kanban board. Do not start the Eisenhower board, focus timer, habits, goals, analytics, or extension blocking unless the task says so.
+Phase 0 through Phase 3 are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, and a daily planner. Do not start the focus timer, habits, goals, analytics, or extension blocking unless the task says so.
 
 ## Stack
 
@@ -39,7 +39,9 @@ Extension-only commands remain `npm test`, `npm run typecheck`, `npm run lint`, 
 - Task status changes only through an explicit status field. `isUrgent` and `isImportant` do not change status. Quadrant is derived and is not a column.
 - Completed tasks reopen to To do. They do not jump to In progress.
 - Categories, tags, and subtasks are user-owned and shipped. Habit, goal, focus, notification, and website-rule tables exist for later work. Do not add UI for those yet.
-- Kanban drag and the status control change `status` only. They must not change `isUrgent` or `isImportant`. There is no Eisenhower board in this milestone.
+- Kanban drag and the status control change `status` only. They must not change `isUrgent` or `isImportant`.
+- Matrix drag writes `isUrgent` and `isImportant` only. It must not change status. Quadrant is still derived.
+- A task has at most one time block (`scheduledStart` and `scheduledEnd`). Moving that block must not change status or the two flags. Both null means unscheduled, and those tasks stay off the planner timeline.
 - No production mock data and no committed secrets. Local Compose credentials belong only in examples.
 
 ## Session workflow

@@ -34,6 +34,8 @@ export interface TaskRecord {
   isUrgent: boolean
   isImportant: boolean
   deadline: Date | null
+  scheduledStart: Date | null
+  scheduledEnd: Date | null
   categoryId: string | null
   category?: TaskCategoryRelation | null
   tags?: TaskTagRelation[]
@@ -81,6 +83,8 @@ export function toTaskView(task: TaskRecord): TaskView {
     isImportant: task.isImportant,
     quadrant: deriveEisenhowerQuadrant(task.isUrgent, task.isImportant),
     deadline: task.deadline ? task.deadline.toISOString() : null,
+    scheduledStart: task.scheduledStart ? task.scheduledStart.toISOString() : null,
+    scheduledEnd: task.scheduledEnd ? task.scheduledEnd.toISOString() : null,
     categoryId: task.categoryId,
     category: task.category
       ? { id: task.category.id, name: task.category.name, color: task.category.color }

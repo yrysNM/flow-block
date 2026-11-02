@@ -18,6 +18,8 @@ function taskRecord(overrides: Partial<{
   isUrgent: boolean
   isImportant: boolean
   deadline: Date | null
+  scheduledStart: Date | null
+  scheduledEnd: Date | null
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -33,6 +35,8 @@ function taskRecord(overrides: Partial<{
     isUrgent: false,
     isImportant: false,
     deadline: null,
+    scheduledStart: null,
+    scheduledEnd: null,
     completedAt: null,
     createdAt: new Date('2026-11-02T00:00:00.000Z'),
     updatedAt: new Date('2026-11-02T00:00:00.000Z'),
@@ -313,5 +317,74 @@ describe('TasksService', () => {
     expect(updated.completed).toBe(true)
     expect(prisma.task.updateMany).not.toHaveBeenCalled()
     expect(prisma.task.update).not.toHaveBeenCalled()
+  })
+
+  it('changes quadrant flags without writing status', async () => {
+    const current = taskRecord({ status: 'IN_PROGRESS', isUrgent: false, isImportant: false })
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce({ ...current, isUrgent: true, isImportant: true })
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+
+    const updated = await service.updateQuadrant(userId, current.id, { isUrgent: true, isImportant: true })
+
+    expect(prisma.task.updateMany).toHaveBeenCalledWith({
+      where: { id: current.id, userId },
+      data: { isUrgent: true, isImportant: true },
+    })
+    const data = prisma.task.updateMany.mock.calls[0]?.[0].data as Record<string, unknown>
+    expect(data).not.toHaveProperty('status')
+    expect(updated.status).toBe('IN_PROGRESS')
+    expect(updated.quadrant).toBe('DO')
+  })
+
+  it('schedules the same task instead of creating another', async () => {
+    const current = taskRecord({ status: 'TODO', isUrgent: true, isImportant: false })
+    const scheduledStart = new Date('2026-11-02T09:00:00.000Z')
+    const scheduledEnd = new Date('2026-11-02T10:00:00.000Z')
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce({ ...current, scheduledStart, scheduledEnd })
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+
+    const updated = await service.updateSchedule(userId, current.id, {
+      scheduledStart: scheduledStart.toISOString(),
+      scheduledEnd: scheduledEnd.toISOString(),
+    }, 'UTC')
+
+    expect(prisma.task.create).not.toHaveBeenCalled()
+    expect(prisma.task.updateMany).toHaveBeenCalledWith({
+      where: { id: current.id, userId },
+      data: { scheduledStart, scheduledEnd },
+    })
+    const data = prisma.task.updateMany.mock.calls[0]?.[0].data as Record<string, unknown>
+    expect(data).not.toHaveProperty('status')
+    expect(data).not.toHaveProperty('isUrgent')
+    expect(data).not.toHaveProperty('isImportant')
+    expect(updated.id).toBe(current.id)
+    expect(updated.status).toBe('TODO')
+    expect(updated.quadrant).toBe('DELEGATE')
+  })
+
+  it('keeps unscheduled tasks off the planner timeline', async () => {
+    const scheduled = taskRecord({
+      id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+      scheduledStart: new Date('2026-11-02T15:00:00.000Z'),
+      scheduledEnd: new Date('2026-11-02T16:00:00.000Z'),
+    })
+    const loose = taskRecord({ scheduledStart: null, scheduledEnd: null })
+    prisma.task.count.mockImplementation(async ({ where }: { where: { scheduledStart?: unknown } }) => (
+      where.scheduledStart === null ? 2 : 1
+    ))
+    prisma.task.findMany.mockImplementation(async ({ where }: { where: { scheduledStart?: unknown } }) => (
+      where.scheduledStart === null ? [loose] : [scheduled]
+    ))
+
+    const page = await service.planner(userId, '2026-11-02', 'UTC')
+
+    expect(page.timeline.map((task) => task.id)).toEqual([scheduled.id])
+    expect(page.unscheduled.map((task) => task.id)).toEqual([loose.id])
+    expect(page.timeline.some((task) => task.scheduledStart === null)).toBe(false)
+    expect(page.counts).toEqual({ timeline: 1, unscheduled: 2 })
   })
 })

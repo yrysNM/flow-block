@@ -27,7 +27,7 @@ The same status is allowed. COMPLETED to IN_PROGRESS is rejected and the row is 
 
 ## Ownership
 
-Create writes `userId` from the session. List, get, update, delete, summary, and the board all include that id. A missing row is 404, including when the id belongs to someone else.
+Create writes `userId` from the session. List, get, update, delete, summary, the board, the matrix, and the planner all include that id. A missing row is 404, including when the id belongs to someone else.
 
 Categories, tags, task-tag rows, and subtasks use the same rule. A category or tag id from another user cannot be stored on a task. Deleting a category nulls `categoryId` on that user’s tasks. Deleting a tag removes its `task_tags` rows. Names are unique per user, compared without case before insert.
 
@@ -37,6 +37,14 @@ A board move is `updateStatus`. The patch contains `status` and nothing else, so
 
 Toggling, renaming, reordering, or deleting a subtask updates `subtasks` only. It does not call a task update, so status and the Eisenhower flags stay put. Reorder accepts a permutation of that task’s subtask ids and writes `position` from zero.
 
+## Matrix
+
+`PATCH /tasks/:id/quadrant` writes `isUrgent` and `isImportant` and no other column. Status, the time block, and `completedAt` stay as they were. The quadrant on the response is derived again from the two flags. Dropping a card on its current quadrant does not write.
+
+## Planner
+
+A task has one block. `scheduledStart` and `scheduledEnd` are both set or both null. Null means unscheduled, and the planner timeline query requires `scheduledStart` inside that local day, so unscheduled tasks are only in the unscheduled list. Scheduling calls `updateMany` on the existing id. It does not create a row. The schedule write does not include status, urgent, or important. A block that would end on the next civil day is rejected.
+
 ## Today
 
-`localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`.
+`localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.

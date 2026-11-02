@@ -8,9 +8,7 @@ First vertical slice: task CRUD, status rules, quadrant derived from flags, dash
 
 Phase 2: owner-scoped categories and tags, task assignment, subtasks, search and status/priority/category filters, and a Kanban board. Dragging a card calls the existing status transition and does not change urgent or important. VueDraggable is still not a dependency. The board uses native drag and drop.
 
-## Not in Phase 2
-
-The Eisenhower board was left out of this milestone. A later change can drag between quadrants by writing `isUrgent` and `isImportant` only, still without a stored quadrant and without changing status as a side effect.
+Phase 3: Eisenhower matrix and a one-day planner. Matrix drag writes `isUrgent` and `isImportant` only. The planner stores one block on the task and does not create a second row. Unscheduled tasks stay off the timeline.
 
 ## Later, not scheduled in this change
 

@@ -75,6 +75,20 @@ export function deriveEisenhowerQuadrant(isUrgent: boolean, isImportant: boolean
   return 'ELIMINATE'
 }
 
+/** The two stored flags for a quadrant. Quadrant itself is never persisted. */
+export function flagsForQuadrant(quadrant: EisenhowerQuadrant): { isUrgent: boolean; isImportant: boolean } {
+  switch (quadrant) {
+    case 'DO':
+      return { isUrgent: true, isImportant: true }
+    case 'SCHEDULE':
+      return { isUrgent: false, isImportant: true }
+    case 'DELEGATE':
+      return { isUrgent: true, isImportant: false }
+    case 'ELIMINATE':
+      return { isUrgent: false, isImportant: false }
+  }
+}
+
 export interface TaskEisenhowerState {
   status: TaskStatus
   isUrgent: boolean
@@ -175,9 +189,30 @@ export interface TaskView {
   category: TaskCategoryRef | null
   tags: TaskTagRef[]
   subtasks: SubtaskView[]
+  scheduledStart: string | null
+  scheduledEnd: string | null
   completedAt: string | null
   createdAt: string
   updatedAt: string
+}
+
+export interface TaskMatrixQuadrant {
+  quadrant: EisenhowerQuadrant
+  count: number
+  tasks: TaskView[]
+}
+
+export interface TaskMatrixResponse {
+  counts: Record<EisenhowerQuadrant, number> & { total: number }
+  quadrants: TaskMatrixQuadrant[]
+}
+
+export interface TaskPlannerResponse {
+  date: string
+  timezone: string
+  timeline: TaskView[]
+  unscheduled: TaskView[]
+  counts: { timeline: number; unscheduled: number }
 }
 
 export interface TaskBoardColumn {

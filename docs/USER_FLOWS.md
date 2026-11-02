@@ -28,6 +28,21 @@
 3. After the task exists, attach a tag, add subtasks, check them off, and move them up or down
 4. Search the list, or filter by status, priority, or category
 
+## Matrix
+
+1. Open Matrix. Each quadrant shows how many tasks match those two flags
+2. Drag a card to another quadrant, or use the quadrant menu
+3. The move updates urgent and important. Status stays the same
+4. Add or edit a task from the matrix. That uses the same task record
+
+## Planner
+
+1. Open Planner. It shows one local day
+2. Scheduled tasks sit on the hour they start. Tasks with no block stay in the unscheduled list
+3. Schedule from that list, or drop a task on an hour. The same task gains a start and end
+4. Move a block to another hour. Status and quadrant do not change
+5. Unschedule clears both times. The task leaves the timeline
+
 ## Board
 
 1. Open Board. Each column shows how many tasks are in that status
@@ -46,4 +61,4 @@
 2. Change name, time zone, or week start
 3. Save. The next dashboard “today” uses the saved time zone
 
-Unfinished flows (focus session, blocking, Eisenhower drag, habits, goals, review) are not in the product yet.
+Unfinished flows (focus session, blocking, habits, goals, review) are not in the product yet.

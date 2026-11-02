@@ -11,10 +11,11 @@
 - Subtasks: add, toggle, reorder, delete
 - Task search and status, priority, and category filters
 - Kanban board with counts. Drag and drop and the card menu call the existing status transition and leave urgent and important unchanged
-- Unit tests for transitions, quadrant, ownership, tag attach, subtask toggle, kanban status moves, and password hashing
+- Eisenhower matrix. Drag and the quadrant menu write `isUrgent` and `isImportant` only
+- Daily planner with one block per task. Scheduling updates that task. Unscheduled tasks stay off the timeline
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- Eisenhower board that writes `isUrgent` and `isImportant` only, and does not change status
 - Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment

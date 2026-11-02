@@ -4,6 +4,7 @@ import {
   applyTaskFieldPatch,
   canTransitionTaskStatus,
   deriveEisenhowerQuadrant,
+  flagsForQuadrant,
 } from './index'
 
 describe('task status transitions', () => {
@@ -33,6 +34,13 @@ describe('quadrant does not change status', () => {
     expect(deriveEisenhowerQuadrant(false, true)).toBe('SCHEDULE')
     expect(deriveEisenhowerQuadrant(true, false)).toBe('DELEGATE')
     expect(deriveEisenhowerQuadrant(false, false)).toBe('ELIMINATE')
+  })
+
+  it('maps each quadrant back to the same two flags', () => {
+    for (const quadrant of ['DO', 'SCHEDULE', 'DELEGATE', 'ELIMINATE'] as const) {
+      const flags = flagsForQuadrant(quadrant)
+      expect(deriveEisenhowerQuadrant(flags.isUrgent, flags.isImportant)).toBe(quadrant)
+    }
   })
 
   it('keeps status when only urgency or importance changes', () => {

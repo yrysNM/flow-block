@@ -11,7 +11,7 @@ Returned by the API. `quadrant` is computed.
 - `priority`: `LOW | MEDIUM | HIGH | URGENT`
 - `isUrgent`, `isImportant`
 - `quadrant`: `DO | SCHEDULE | DELEGATE | ELIMINATE`
-- `deadline`, `categoryId`, `completedAt`, `createdAt`, `updatedAt` as ISO strings or null
+- `deadline`, `scheduledStart`, `scheduledEnd`, `categoryId`, `completedAt`, `createdAt`, `updatedAt` as ISO strings or null
 - `category`: `{ id, name, color }` or null
 - `tags`: `{ id, name }[]`
 - `subtasks`: `{ id, taskId, title, completed, position }[]`
@@ -33,6 +33,14 @@ Category: `{ id, name, color, createdAt, updatedAt }`. Tag: `{ id, name, created
 ## List
 
 `{ data: TaskView[], meta: { page, pageSize, total, pageCount } }`
+
+## Matrix
+
+`{ counts: { DO, SCHEDULE, DELEGATE, ELIMINATE, total }, quadrants: [{ quadrant, count, tasks }] }`. `count` is the full total. `tasks` is capped at 100.
+
+## Planner
+
+`{ date, timezone, timeline: TaskView[], unscheduled: TaskView[], counts: { timeline, unscheduled } }`. Timeline tasks have `scheduledStart` on that local day. Unscheduled tasks have a null `scheduledStart`. A task is in one of those lists, not both.
 
 ## Summary
 

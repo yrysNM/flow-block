@@ -12,6 +12,8 @@ import {
   taskSummaryQuerySchema,
   taskTagParamsSchema,
   updateSubtaskSchema,
+  updateTaskQuadrantSchema,
+  updateTaskScheduleSchema,
   updateTaskSchema,
   updateTaskStatusSchema,
   type AttachTagInput,
@@ -23,6 +25,8 @@ import {
   type TaskSummaryQuery,
   type UpdateSubtaskInput,
   type UpdateTaskInput,
+  type UpdateTaskQuadrantInput,
+  type UpdateTaskScheduleInput,
   type UpdateTaskStatusInput,
 } from '@focusflow/shared-schemas'
 import type { AuthContext } from '../auth/auth.types'
@@ -73,6 +77,28 @@ export class TasksController {
     @Query(new ZodValidationPipe(boardTasksQuerySchema)) query: BoardTasksQuery,
   ) {
     return this.tasks.board(user.id, query)
+  }
+
+  @Get('matrix')
+  @ApiOperation({ summary: 'Eisenhower quadrants derived from urgent and important' })
+  @ApiQuery({ name: 'priority', required: false, enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] })
+  @ApiQuery({ name: 'categoryId', required: false })
+  @ApiQuery({ name: 'q', required: false })
+  matrix(
+    @CurrentUser() user: AuthContext,
+    @Query(new ZodValidationPipe(boardTasksQuerySchema)) query: BoardTasksQuery,
+  ) {
+    return this.tasks.matrix(user.id, query)
+  }
+
+  @Get('planner')
+  @ApiOperation({ summary: 'Scheduled blocks on one local day, plus tasks with no block' })
+  @ApiQuery({ name: 'date', required: false, description: 'YYYY-MM-DD in the user time zone' })
+  planner(
+    @CurrentUser() user: AuthContext,
+    @Query(new ZodValidationPipe(taskSummaryQuerySchema)) query: TaskSummaryQuery,
+  ) {
+    return this.tasks.planner(user.id, query.date, user.preferences.timezone)
   }
 
   @Get(':id')
@@ -162,6 +188,26 @@ export class TasksController {
     @Body(new ZodValidationPipe(updateTaskStatusSchema)) body: UpdateTaskStatusInput,
   ) {
     return this.tasks.updateStatus(user.id, params.id, body.status)
+  }
+
+  @Patch(':id/quadrant')
+  @ApiOperation({ summary: 'Set urgent and important. Does not change status.' })
+  updateQuadrant(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
+    @Body(new ZodValidationPipe(updateTaskQuadrantSchema)) body: UpdateTaskQuadrantInput,
+  ) {
+    return this.tasks.updateQuadrant(user.id, params.id, body)
+  }
+
+  @Patch(':id/schedule')
+  @ApiOperation({ summary: 'Set or clear the single time block. Does not change status or quadrant.' })
+  updateSchedule(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
+    @Body(new ZodValidationPipe(updateTaskScheduleSchema)) body: UpdateTaskScheduleInput,
+  ) {
+    return this.tasks.updateSchedule(user.id, params.id, body, user.preferences.timezone)
   }
 
   @Patch(':id')

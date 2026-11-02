@@ -1,5 +1,6 @@
 // FocusFlow data model.
 // Eisenhower quadrant is derived from isUrgent + isImportant and is not stored.
+// scheduled_start and scheduled_end are one optional time block on the task. Both null means unscheduled.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -129,8 +130,10 @@ model Task {
   priority    TaskPriority @default(MEDIUM)
   isUrgent    Boolean      @default(false) @map("is_urgent")
   isImportant Boolean      @default(false) @map("is_important")
-  deadline    DateTime?
-  completedAt DateTime?    @map("completed_at")
+  deadline       DateTime?
+  scheduledStart DateTime?    @map("scheduled_start")
+  scheduledEnd   DateTime?    @map("scheduled_end")
+  completedAt    DateTime?    @map("completed_at")
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
@@ -141,6 +144,7 @@ model Task {
 
   @@index([userId, status])
   @@index([userId, deadline])
+  @@index([userId, scheduledStart])
   @@index([userId, priority])
   @@index([userId, createdAt])
   @@index([categoryId])

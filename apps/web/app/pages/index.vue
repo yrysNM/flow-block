@@ -5,6 +5,11 @@
       <p class="mt-1 text-sm text-secondary">
         Today is {{ summary?.date }} ({{ summary?.timezone }}). Counts cover every task you own.
       </p>
+      <p class="mt-2 flex flex-wrap gap-3 text-sm">
+        <NuxtLink to="/matrix" class="font-medium text-primary">Matrix</NuxtLink>
+        <NuxtLink :to="plannerLink" class="font-medium text-primary">Planner</NuxtLink>
+        <NuxtLink to="/board" class="font-medium text-primary">Board</NuxtLink>
+      </p>
     </div>
 
     <p v-if="error" class="rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-sm text-danger" role="alert">{{ error }}</p>
@@ -65,6 +70,7 @@ const tasks = useTasksStore()
 const error = ref('')
 
 const summary = computed(() => tasks.summary)
+const plannerLink = computed(() => (summary.value?.date ? `/planner?date=${summary.value.date}` : '/planner'))
 const cards = computed(() => {
   const counts = summary.value?.counts
   return [

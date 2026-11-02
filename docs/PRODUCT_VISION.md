@@ -16,6 +16,6 @@ The canonical workflow is:
 6. Complete Task
 7. Analyze Results
 
-Accounts, the task, categories, tags, subtasks, and a status board are in the product. Prioritization is stored as two booleans. The quadrant is calculated from them. Scheduling is a deadline, not a calendar. The matrix board, focus, blocking, and analysis are later.
+Accounts, the task, categories, tags, subtasks, a status board, the matrix, and a one-day planner are in the product. Prioritization is stored as two booleans. The quadrant is calculated from them. A deadline and a time block are different fields. Focus, blocking, and analysis are later.
 
 The Website Blocker already in this repository is the seed of “Block Distractions.” It still runs locally in Chrome and on Android. It is not the shared account yet.

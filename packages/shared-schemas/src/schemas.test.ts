@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { createCategorySchema, createTaskSchema, listTasksQuerySchema, registerSchema } from './index'
+import {
+  createCategorySchema,
+  createTaskSchema,
+  listTasksQuerySchema,
+  registerSchema,
+  updateTaskQuadrantSchema,
+  updateTaskScheduleSchema,
+} from './index'
 
 describe('shared schemas', () => {
   it('drops a client-supplied userId instead of trusting it', () => {
@@ -31,5 +38,19 @@ describe('shared schemas', () => {
       pageSize: 20,
     })
     expect(listTasksQuerySchema.parse({ q: '   ' }).q).toBeUndefined()
+  })
+
+  it('keeps a quadrant patch to the two flags and requires a whole schedule', () => {
+    expect(updateTaskQuadrantSchema.parse({
+      isUrgent: true,
+      isImportant: false,
+      status: 'COMPLETED',
+      userId: 'someone-else',
+    })).toEqual({ isUrgent: true, isImportant: false })
+    expect(updateTaskScheduleSchema.safeParse({ scheduledStart: '2026-11-02T09:00:00.000Z', scheduledEnd: null }).success).toBe(false)
+    expect(updateTaskScheduleSchema.parse({ scheduledStart: null, scheduledEnd: null })).toEqual({
+      scheduledStart: null,
+      scheduledEnd: null,
+    })
   })
 })
