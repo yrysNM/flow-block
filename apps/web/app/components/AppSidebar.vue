@@ -65,6 +65,8 @@ const route = useRoute()
 const primary = [
   { label: 'Dashboard', to: '/' },
   { label: 'Tasks', to: '/tasks' },
+  { label: 'Board', to: '/board' },
+  { label: 'Categories', to: '/categories' },
   { label: 'Settings', to: '/settings' },
 ]
 

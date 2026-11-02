@@ -21,6 +21,19 @@
 3. Save. Status stays on the value in the status field. The quadrant chip follows the two checkboxes only
 4. The dashboard shows the new counts. The task appears under Due today only when its deadline falls on that local date
 
+## Organize a task
+
+1. Open Categories and add a category or a tag. Names are unique on your account
+2. On Tasks, set the category while creating or editing
+3. After the task exists, attach a tag, add subtasks, check them off, and move them up or down
+4. Search the list, or filter by status, priority, or category
+
+## Board
+
+1. Open Board. Each column shows how many tasks are in that status
+2. Drag a card to another column, or use the status menu on the card
+3. The move updates status. Urgent and important stay as they were. An illegal move shows an error and does not write
+
 ## Update work
 
 1. Change status from the row. Illegal moves are rejected
@@ -33,4 +46,4 @@
 2. Change name, time zone, or week start
 3. Save. The next dashboard “today” uses the saved time zone
 
-Unfinished flows (focus session, blocking, matrix drag, habits, goals, review) are not in the product yet.
+Unfinished flows (focus session, blocking, Eisenhower drag, habits, goals, review) are not in the product yet.

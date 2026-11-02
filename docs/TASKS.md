@@ -6,17 +6,15 @@
 - Prisma schema and initial migration SQL
 - Session auth and user preferences
 - Task CRUD, summary, and web dashboard, list, and settings
-- Unit tests for transitions, quadrant, ownership, and password hashing
+- Category CRUD and assigning one category on a task
+- Tag CRUD, plus attach, detach, and list on a task
+- Subtasks: add, toggle, reorder, delete
+- Task search and status, priority, and category filters
+- Kanban board with counts. Drag and drop and the card menu call the existing status transition and leave urgent and important unchanged
+- Unit tests for transitions, quadrant, ownership, tag attach, subtask toggle, kanban status moves, and password hashing
 - Docs listed in the milestone
 
-## Next milestone — Phase 2
+## Next, not started
 
-- Category CRUD, owner scoped, and a way to assign one on a task in the UI
-- Tag CRUD and task-tag links
-- Subtasks on a task, ordered, still owned by the user
-- Kanban board with drag and drop that calls the existing status transition rules
-- Eisenhower board that writes `isUrgent` and `isImportant` only
-
-## Not this milestone
-
-Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment.
+- Eisenhower board that writes `isUrgent` and `isImportant` only, and does not change status
+- Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment

@@ -1,5 +1,20 @@
-import type { CreateTaskInput, ListTasksQuery, UpdateTaskInput } from '@focusflow/shared-schemas'
-import type { PageMeta, TaskListResponse, TaskStatus, TaskSummary, TaskView } from '@focusflow/shared-types'
+import type {
+  BoardTasksQuery,
+  CreateSubtaskInput,
+  CreateTaskInput,
+  ListTasksQuery,
+  UpdateSubtaskInput,
+  UpdateTaskInput,
+} from '@focusflow/shared-schemas'
+import type {
+  PageMeta,
+  SubtaskView,
+  TaskBoardResponse,
+  TaskListResponse,
+  TaskStatus,
+  TaskSummary,
+  TaskView,
+} from '@focusflow/shared-types'
 import { defineStore } from 'pinia'
 
 export const useTasksStore = defineStore('tasks', {
@@ -40,6 +55,34 @@ export const useTasksStore = defineStore('tasks', {
     async remove(id: string) {
       const api = useApi()
       await api(`/tasks/${id}`, { method: 'DELETE' })
+    },
+    async fetchBoard(query: BoardTasksQuery) {
+      const api = useApi()
+      return api<TaskBoardResponse>('/tasks/board', { query })
+    },
+    async attachTag(taskId: string, tagId: string) {
+      const api = useApi()
+      return api<TaskView>(`/tasks/${taskId}/tags`, { method: 'POST', body: { tagId } })
+    },
+    async detachTag(taskId: string, tagId: string) {
+      const api = useApi()
+      return api<TaskView>(`/tasks/${taskId}/tags/${tagId}`, { method: 'DELETE' })
+    },
+    async addSubtask(taskId: string, input: CreateSubtaskInput) {
+      const api = useApi()
+      return api<SubtaskView>(`/tasks/${taskId}/subtasks`, { method: 'POST', body: input })
+    },
+    async updateSubtask(taskId: string, subtaskId: string, input: UpdateSubtaskInput) {
+      const api = useApi()
+      return api<SubtaskView>(`/tasks/${taskId}/subtasks/${subtaskId}`, { method: 'PATCH', body: input })
+    },
+    async reorderSubtasks(taskId: string, ids: string[]) {
+      const api = useApi()
+      return api<SubtaskView[]>(`/tasks/${taskId}/subtasks/reorder`, { method: 'PATCH', body: { ids } })
+    },
+    async removeSubtask(taskId: string, subtaskId: string) {
+      const api = useApi()
+      await api(`/tasks/${taskId}/subtasks/${subtaskId}`, { method: 'DELETE' })
     },
   },
 })

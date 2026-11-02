@@ -1,15 +1,27 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import {
+  attachTagSchema,
+  boardTasksQuerySchema,
+  createSubtaskSchema,
   createTaskSchema,
   listTasksQuerySchema,
+  reorderSubtasksSchema,
   taskIdParamSchema,
+  taskSubtaskParamsSchema,
   taskSummaryQuerySchema,
+  taskTagParamsSchema,
+  updateSubtaskSchema,
   updateTaskSchema,
   updateTaskStatusSchema,
+  type AttachTagInput,
+  type BoardTasksQuery,
+  type CreateSubtaskInput,
   type CreateTaskInput,
   type ListTasksQuery,
+  type ReorderSubtasksInput,
   type TaskSummaryQuery,
+  type UpdateSubtaskInput,
   type UpdateTaskInput,
   type UpdateTaskStatusInput,
 } from '@focusflow/shared-schemas'
@@ -27,6 +39,9 @@ export class TasksController {
   @Get()
   @ApiOperation({ summary: 'List the current user’s tasks' })
   @ApiQuery({ name: 'status', required: false, enum: ['TODO', 'IN_PROGRESS', 'COMPLETED'] })
+  @ApiQuery({ name: 'priority', required: false, enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] })
+  @ApiQuery({ name: 'categoryId', required: false, description: 'Category id, or none for uncategorized' })
+  @ApiQuery({ name: 'q', required: false, description: 'Case-insensitive title or description search' })
   @ApiQuery({ name: 'sort', required: false, enum: ['createdAt', 'updatedAt', 'deadline', 'priority', 'title'] })
   @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'] })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -48,6 +63,18 @@ export class TasksController {
     return this.tasks.summary(user.id, query.date, user.preferences.timezone)
   }
 
+  @Get('board')
+  @ApiOperation({ summary: 'Kanban columns for the same tasks, with full counts per status' })
+  @ApiQuery({ name: 'priority', required: false, enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] })
+  @ApiQuery({ name: 'categoryId', required: false })
+  @ApiQuery({ name: 'q', required: false })
+  board(
+    @CurrentUser() user: AuthContext,
+    @Query(new ZodValidationPipe(boardTasksQuerySchema)) query: BoardTasksQuery,
+  ) {
+    return this.tasks.board(user.id, query)
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Read one task' })
   get(
@@ -67,8 +94,68 @@ export class TasksController {
     return this.tasks.create(user.id, body)
   }
 
+  @Post(':id/tags')
+  @ApiOperation({ summary: 'Attach one of the current user’s tags. Repeating the same tag is a no-op.' })
+  attachTag(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
+    @Body(new ZodValidationPipe(attachTagSchema)) body: AttachTagInput,
+  ) {
+    return this.tasks.attachTag(user.id, params.id, body.tagId)
+  }
+
+  @Delete(':id/tags/:tagId')
+  @ApiOperation({ summary: 'Detach a tag from a task' })
+  detachTag(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskTagParamsSchema)) params: { id: string; tagId: string },
+  ) {
+    return this.tasks.detachTag(user.id, params.id, params.tagId)
+  }
+
+  @Post(':id/subtasks')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Add a subtask at the end of the list' })
+  addSubtask(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
+    @Body(new ZodValidationPipe(createSubtaskSchema)) body: CreateSubtaskInput,
+  ) {
+    return this.tasks.addSubtask(user.id, params.id, body)
+  }
+
+  @Patch(':id/subtasks/reorder')
+  @ApiOperation({ summary: 'Reorder subtasks. The id list must be a permutation of this task’s subtasks.' })
+  reorderSubtasks(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
+    @Body(new ZodValidationPipe(reorderSubtasksSchema)) body: ReorderSubtasksInput,
+  ) {
+    return this.tasks.reorderSubtasks(user.id, params.id, body)
+  }
+
+  @Patch(':id/subtasks/:subtaskId')
+  @ApiOperation({ summary: 'Rename a subtask or toggle it. Does not change the parent task.' })
+  updateSubtask(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskSubtaskParamsSchema)) params: { id: string; subtaskId: string },
+    @Body(new ZodValidationPipe(updateSubtaskSchema)) body: UpdateSubtaskInput,
+  ) {
+    return this.tasks.updateSubtask(user.id, params.id, params.subtaskId, body)
+  }
+
+  @Delete(':id/subtasks/:subtaskId')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a subtask' })
+  async removeSubtask(
+    @CurrentUser() user: AuthContext,
+    @Param(new ZodValidationPipe(taskSubtaskParamsSchema)) params: { id: string; subtaskId: string },
+  ): Promise<void> {
+    await this.tasks.removeSubtask(user.id, params.id, params.subtaskId)
+  }
+
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Change task status' })
+  @ApiOperation({ summary: 'Change task status. Does not change urgent or important.' })
   updateStatus(
     @CurrentUser() user: AuthContext,
     @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },

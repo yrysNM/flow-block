@@ -1,6 +1,6 @@
 # Implementation status
 
-Phase 0 and the first task slice are implemented in this branch. Later modules are schema and docs only.
+Phase 2 is implemented on the Phase 0 branch: categories, tags, subtasks, task filters, and Kanban. Focus, habits, goals, analytics, the Eisenhower board, and extension blocking are still schema or docs only.
 
 ## Reused
 
@@ -13,8 +13,8 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, settings, login, register
-- `apps/api` NestJS auth, users, tasks, Swagger
+- `apps/web` Nuxt 4 dashboard, tasks, board, categories, settings, login, register
+- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, Swagger
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
 - Prisma models listed in the milestone, plus `Session`
@@ -22,7 +22,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-Kanban, drag and drop, category and tag UI, subtasks UI, focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added.
+Eisenhower board, focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added. Kanban uses native drag and drop, not VueDraggable.
 
 ## Database blocker
 
@@ -30,16 +30,16 @@ Kanban, drag and drop, category and tag UI, subtasks UI, focus timer, extension 
 
 ## Verification
 
-Commands were run from `/workspace` on Node v22.23.4. Results below are from that run. See the commit that added this file if a later edit changes the code; re-run `bash scripts/check-focusflow.sh` after further edits.
+Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9 for this Phase 2 change. `docker` and `psql` are still not installed. The integration test did not run.
 
 ### FocusFlow unit tests
 
 `npm run test:focusflow`
 
 - `@focusflow/shared-types`: 6 passed
-- `@focusflow/shared-schemas`: 2 passed
+- `@focusflow/shared-schemas`: 3 passed
 - `@focusflow/shared-utils`: 3 passed
-- `@focusflow/api`: 9 passed, 1 skipped (`test/tasks.integration.test.ts`)
+- `@focusflow/api`: 20 passed, 1 skipped (`test/tasks.integration.test.ts`, because `FOCUSFLOW_INTEGRATION` was not set and Postgres is absent)
 
 ### Typecheck
 
@@ -49,28 +49,18 @@ Commands were run from `/workspace` on Node v22.23.4. Results below are from tha
 
 ### Lint
 
-`npx eslint apps packages` — passed (exit 0) after Vue auto-imports were excluded from `no-undef`.
+`npx eslint apps packages` — passed (exit 0).
 
 ### Production builds
 
-- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 5.5s)
-- `npm run build -w @focusflow/api` — passed (`nest build`, `apps/api/dist/main.js`)
-- `npm run build -w @focusflow/extension` — passed (`dist/background.js`, `dist/popup.js`)
+- `npm run build -w @focusflow/api` — passed (`nest build`)
+- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 3.5s)
+- `npm run build -w @focusflow/extension` — passed (`tsc`)
 
 ### Existing extension (preserved)
 
-- `npm test` — 4 files, 29 tests passed
-- `npm run typecheck` — passed
-- `npm run lint` (`oxlint .`) — passed
+`npm test` — 4 files, 29 tests passed. Root `npm run typecheck` and `npm run lint` were not re-run for this change. The extension shell was not modified.
 
-### Smoke, not a full UI pass
+### Not exercised
 
-With the built API and the Nitro server running, and Postgres down:
-
-- `GET /api/health` on port 3001 and through port 3000 `/api/health` returned `{"status":"ok"}`
-- `GET /api/tasks` without a cookie returned 401 `Authentication required.`
-- `POST /api/auth/register` returned 503 `Database is unavailable.`
-- Invalid register JSON returned 400 with `details`
-- Headless Chrome rendered `http://127.0.0.1:3000/login` (FocusFlow wordmark, email, password, link to register)
-
-Task create and list were not exercised in a browser.
+Register, category create, tag attach, subtask toggle, and a Kanban drop were not clicked through in a browser. Those routes need Postgres, and this environment has no Docker daemon and no `psql`. Service tests cover ownership and the status move without a database.

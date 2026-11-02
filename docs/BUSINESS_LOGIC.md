@@ -27,7 +27,15 @@ The same status is allowed. COMPLETED to IN_PROGRESS is rejected and the row is 
 
 ## Ownership
 
-Create writes `userId` from the session. List, get, update, delete, and summary all include that id. A missing row is 404, including when the id belongs to someone else.
+Create writes `userId` from the session. List, get, update, delete, summary, and the board all include that id. A missing row is 404, including when the id belongs to someone else.
+
+Categories, tags, task-tag rows, and subtasks use the same rule. A category or tag id from another user cannot be stored on a task. Deleting a category nulls `categoryId` on that user’s tasks. Deleting a tag removes its `task_tags` rows. Names are unique per user, compared without case before insert.
+
+## Kanban and subtasks
+
+A board move is `updateStatus`. The patch contains `status` and nothing else, so `isUrgent` and `isImportant` stay on their current values and the quadrant does not change unless those flags were already different. Dropping a card on its current column does not write. An illegal transition is rejected before the update.
+
+Toggling, renaming, reordering, or deleting a subtask updates `subtasks` only. It does not call a task update, so status and the Eisenhower flags stay put. Reorder accepts a permutation of that task’s subtask ids and writes `position` from zero.
 
 ## Today
 

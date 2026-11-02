@@ -33,7 +33,14 @@
         Deadline
         <input v-model="model.deadline" type="datetime-local" class="field mt-1" />
       </label>
-      <div class="flex flex-col justify-end gap-2 text-sm">
+      <label class="block text-sm font-medium text-ink">
+        Category
+        <select v-model="model.categoryId" class="field mt-1">
+          <option value="">No category</option>
+          <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+        </select>
+      </label>
+      <div class="flex flex-col justify-end gap-2 text-sm sm:col-span-2">
         <label class="inline-flex items-center gap-2">
           <input v-model="model.isUrgent" type="checkbox" class="size-4 accent-primary" />
           Urgent
@@ -53,6 +60,69 @@
         {{ submitting ? 'Saving…' : 'Save task' }}
       </button>
     </div>
+
+    <div v-if="mode === 'create'" class="mt-5 border-t border-line pt-4 text-sm text-secondary">
+      Save the task to add subtasks and tags.
+    </div>
+
+    <div v-else class="mt-5 space-y-5 border-t border-line pt-4">
+      <section>
+        <h3 class="text-sm font-semibold text-ink">Tags</h3>
+        <ul v-if="attachedTags.length" class="mt-2 flex flex-wrap gap-2">
+          <li v-for="tag in attachedTags" :key="tag.id" class="inline-flex items-center gap-1 rounded-full bg-background px-2 py-1 text-xs">
+            {{ tag.name }}
+            <button type="button" class="text-secondary hover:text-ink" :disabled="organizing" @click="emit('detachTag', tag.id)">
+              Remove
+            </button>
+          </li>
+        </ul>
+        <p v-else class="mt-2 text-sm text-secondary">No tags on this task.</p>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <select v-model="selectedTagId" class="field max-w-xs">
+            <option value="">Choose a tag</option>
+            <option v-for="tag in unusedTags" :key="tag.id" :value="tag.id">{{ tag.name }}</option>
+          </select>
+          <button type="button" class="rounded-lg border border-line px-3 py-2 text-sm disabled:opacity-40" :disabled="!selectedTagId || organizing" @click="attach">
+            Attach
+          </button>
+          <NuxtLink to="/categories" class="text-sm text-primary">Manage tags</NuxtLink>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-sm font-semibold text-ink">Subtasks</h3>
+        <ul v-if="subtasks.length" class="mt-2 space-y-2">
+          <li v-for="(subtask, index) in subtasks" :key="subtask.id" class="flex flex-wrap items-center gap-2 text-sm">
+            <label class="inline-flex min-w-0 flex-1 items-center gap-2">
+              <input
+                type="checkbox"
+                class="size-4 accent-primary"
+                :checked="subtask.completed"
+                :disabled="organizing"
+                @change="emit('toggleSubtask', subtask.id, ($event.target as HTMLInputElement).checked)"
+              />
+              <span :class="subtask.completed ? 'text-secondary line-through' : 'text-ink'">{{ subtask.title }}</span>
+            </label>
+            <button type="button" class="rounded-lg border border-line px-2 py-1 text-xs disabled:opacity-40" :disabled="index === 0 || organizing" @click="emit('moveSubtask', subtask.id, -1)">
+              Up
+            </button>
+            <button type="button" class="rounded-lg border border-line px-2 py-1 text-xs disabled:opacity-40" :disabled="index === subtasks.length - 1 || organizing" @click="emit('moveSubtask', subtask.id, 1)">
+              Down
+            </button>
+            <button type="button" class="rounded-lg border border-danger/30 px-2 py-1 text-xs text-danger" :disabled="organizing" @click="emit('deleteSubtask', subtask.id)">
+              Delete
+            </button>
+          </li>
+        </ul>
+        <p v-else class="mt-2 text-sm text-secondary">No subtasks yet.</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <input v-model="subtaskTitle" maxlength="200" placeholder="Subtask title" class="field max-w-sm" />
+          <button type="button" class="rounded-lg border border-line px-3 py-2 text-sm disabled:opacity-40" :disabled="!subtaskTitle.trim() || organizing" @click="addSubtask">
+            Add subtask
+          </button>
+        </div>
+      </section>
+    </div>
   </form>
 </template>
 
@@ -63,8 +133,12 @@ import {
   TASK_PRIORITY_LABELS,
   TASK_STATUS_LABELS,
   deriveEisenhowerQuadrant,
+  type CategoryView,
+  type SubtaskView,
+  type TagView,
   type TaskPriority,
   type TaskStatus,
+  type TaskTagRef,
 } from '@focusflow/shared-types'
 
 export interface TaskDraft {
@@ -75,21 +149,52 @@ export interface TaskDraft {
   isUrgent: boolean
   isImportant: boolean
   deadline: string
+  categoryId: string
 }
 
 const model = defineModel<TaskDraft>({ required: true })
-defineProps<{
+const props = defineProps<{
   mode: 'create' | 'edit'
   statuses: TaskStatus[]
   submitting: boolean
+  organizing: boolean
   error: string
+  categories: CategoryView[]
+  tags: TagView[]
+  attachedTags: TaskTagRef[]
+  subtasks: SubtaskView[]
 }>()
-const emit = defineEmits<{ submit: []; cancel: [] }>()
+const emit = defineEmits<{
+  submit: []
+  cancel: []
+  attachTag: [tagId: string]
+  detachTag: [tagId: string]
+  addSubtask: [title: string]
+  toggleSubtask: [id: string, completed: boolean]
+  moveSubtask: [id: string, direction: -1 | 1]
+  deleteSubtask: [id: string]
+}>()
 
+const selectedTagId = ref('')
+const subtaskTitle = ref('')
 const quadrant = computed(() => deriveEisenhowerQuadrant(model.value.isUrgent, model.value.isImportant))
+const unusedTags = computed(() => props.tags.filter((tag) => !props.attachedTags.some((attached) => attached.id === tag.id)))
 
 function submit() {
   emit('submit')
+}
+
+function attach() {
+  if (!selectedTagId.value) return
+  emit('attachTag', selectedTagId.value)
+  selectedTagId.value = ''
+}
+
+function addSubtask() {
+  const title = subtaskTitle.value.trim()
+  if (!title) return
+  emit('addSubtask', title)
+  subtaskTitle.value = ''
 }
 </script>
 

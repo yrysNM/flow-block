@@ -2,12 +2,14 @@
 
 ## Current status
 
-Phase 0 and the first vertical slice are in the tree: auth, tasks, dashboard, settings, schema for later modules, and docs. The slice is not connected to a running Postgres in the environment that built it.
+Phase 2 is in the tree on top of auth and tasks: categories, tags, subtasks, list filters, and Kanban. The app is still not connected to a running Postgres in the environment that built it. The Eisenhower board was not part of this milestone.
 
 ## Completed modules
 
 - Monorepo tooling and design tokens
 - User, session, preferences, task API and UI
+- Categories, tags, task-tag assignment, and subtasks
+- Kanban for TODO, IN_PROGRESS, and COMPLETED, using the same Task rows
 - Derived Eisenhower quadrant and status rules
 - Chrome MV3 shell with no feature logic
 - Preservation of `src/` and `mobile/`
@@ -18,7 +20,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-Phase 2: categories, tags, subtasks, Kanban drag and drop. Then focus sessions, shared website blocking, habits, goals, analytics, and extension sync. All of those are unimplemented.
+Eisenhower quadrant drag, focus sessions, shared website blocking, habits, goals, analytics, and extension sync. All of those are unimplemented.
 
 ## Architecture
 
@@ -38,8 +40,8 @@ Schema and `20261102100000_init` migration are written. `prisma generate` succee
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, status, and delete. Swagger at `/api/docs`. Other modules have tables only.
+Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, status, tags, and subtasks, `/api/categories`, and `/api/tags`. Swagger at `/api/docs`. Focus, habits, goals, website rules, and notifications still have tables only.
 
 ## Next recommended tasks
 
-Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.
+Eisenhower board that writes only `isUrgent` and `isImportant`, then focus sessions.
