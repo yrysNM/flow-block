@@ -28,6 +28,18 @@ mobile/dist
 *.orig.*
 web-build/
 
+# FocusFlow
+*.tsbuildinfo
+.env
+**/.env
+!**/.env.example
+apps/web/.nuxt
+apps/web/.output
+apps/web/.data
+apps/api/dist
+apps/extension/dist
+packages/*/dist
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

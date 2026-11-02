@@ -1,0 +1,13 @@
+---
+description: FocusFlow Prisma and Postgres rules
+globs: apps/api/prisma/**/*
+alwaysApply: false
+---
+
+PostgreSQL, Prisma, UUID primary keys, foreign keys, and indexes. Every owned row has `userId`.
+
+Do not add an Eisenhower quadrant column. `isUrgent` and `isImportant` are the source of truth.
+
+Models declared for later phases (Subtask, Tag, TaskTag, TaskTimeLog, FocusSession, Habit, HabitEntry, Goal, Milestone, WebsiteRule, WebsiteUsage, Notification) stay in the schema even when the API does not use them yet. Session exists for server-side auth.
+
+Change the schema only with a migration. Do not commit live credentials. Local Compose defaults live in `.env.example`.

@@ -1,0 +1,337 @@
+// FocusFlow data model.
+// Eisenhower quadrant is derived from isUrgent + isImportant and is not stored.
+// Session is included so auth can use an HTTP-only server-side session.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum HabitFrequency {
+  DAILY
+  WEEKLY
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum WebsiteRuleMode {
+  BLOCK
+  LIMIT
+}
+
+enum NotificationType {
+  TASK_DUE
+  FOCUS
+  HABIT
+  SYSTEM
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  preferences   UserPreferences?
+  sessions      Session[]
+  tasks         Task[]
+  subtasks      Subtask[]
+  categories    Category[]
+  tags          Tag[]
+  taskTags      TaskTag[]
+  taskTimeLogs  TaskTimeLog[]
+  focusSessions FocusSession[]
+  habits        Habit[]
+  habitEntries  HabitEntry[]
+  goals         Goal[]
+  milestones    Milestone[]
+  websiteRules  WebsiteRule[]
+  websiteUsages WebsiteUsage[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model UserPreferences {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @unique @map("user_id") @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timezone     String   @default("UTC")
+  theme        String   @default("system")
+  weekStartsOn Int      @default(1) @map("week_starts_on")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("user_preferences")
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  color     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tasks     Task[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("categories")
+}
+
+model Task {
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?      @map("category_id") @db.Uuid
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  isUrgent    Boolean      @default(false) @map("is_urgent")
+  isImportant Boolean      @default(false) @map("is_important")
+  deadline    DateTime?
+  completedAt DateTime?    @map("completed_at")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  subtasks      Subtask[]
+  tags          TaskTag[]
+  timeLogs      TaskTimeLog[]
+  focusSessions FocusSession[]
+
+  @@index([userId, status])
+  @@index([userId, deadline])
+  @@index([userId, priority])
+  @@index([userId, createdAt])
+  @@index([categoryId])
+  @@map("tasks")
+}
+
+model Subtask {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskId    String   @map("task_id") @db.Uuid
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean  @default(false)
+  position  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([taskId])
+  @@map("subtasks")
+}
+
+model Tag {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  tasks     TaskTag[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("tags")
+}
+
+model TaskTag {
+  taskId String @map("task_id") @db.Uuid
+  tagId  String @map("tag_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+  @@index([userId])
+  @@index([tagId])
+  @@map("task_tags")
+}
+
+model TaskTimeLog {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskId    String    @map("task_id") @db.Uuid
+  task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  startedAt DateTime  @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+  note      String?
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([taskId])
+  @@map("task_time_logs")
+}
+
+model FocusSession {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskId         String?   @map("task_id") @db.Uuid
+  task           Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  plannedSeconds Int       @map("planned_seconds")
+  elapsedSeconds Int       @default(0) @map("elapsed_seconds")
+  startedAt      DateTime? @map("started_at")
+  endedAt        DateTime? @map("ended_at")
+  completed      Boolean   @default(false)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([taskId])
+  @@map("focus_sessions")
+}
+
+model Habit {
+  id        String         @id @default(uuid()) @db.Uuid
+  userId    String         @map("user_id") @db.Uuid
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  frequency HabitFrequency @default(DAILY)
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+  entries   HabitEntry[]
+
+  @@index([userId])
+  @@map("habits")
+}
+
+model HabitEntry {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habitId   String   @map("habit_id") @db.Uuid
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  entryDate DateTime @map("entry_date") @db.Date
+  completed Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([habitId, entryDate])
+  @@index([userId])
+  @@map("habit_entries")
+}
+
+model Goal {
+  id          String      @id @default(uuid()) @db.Uuid
+  userId      String      @map("user_id") @db.Uuid
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      GoalStatus  @default(ACTIVE)
+  targetDate  DateTime?   @map("target_date")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  milestones  Milestone[]
+
+  @@index([userId])
+  @@map("goals")
+}
+
+model Milestone {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalId    String    @map("goal_id") @db.Uuid
+  goal      Goal      @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean   @default(false)
+  dueDate   DateTime? @map("due_date")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([goalId])
+  @@map("milestones")
+}
+
+model WebsiteRule {
+  id                String          @id @default(uuid()) @db.Uuid
+  userId            String          @map("user_id") @db.Uuid
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain            String
+  mode              WebsiteRuleMode @default(BLOCK)
+  enabled           Boolean         @default(true)
+  dailyLimitMinutes Int?            @map("daily_limit_minutes")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+  usage             WebsiteUsage[]
+
+  @@unique([userId, domain])
+  @@index([userId])
+  @@map("website_rules")
+}
+
+model WebsiteUsage {
+  id            String      @id @default(uuid()) @db.Uuid
+  userId        String      @map("user_id") @db.Uuid
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  websiteRuleId String      @map("website_rule_id") @db.Uuid
+  websiteRule   WebsiteRule @relation(fields: [websiteRuleId], references: [id], onDelete: Cascade)
+  usageDate     DateTime    @map("usage_date") @db.Date
+  usedSeconds   Int         @default(0) @map("used_seconds")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@unique([websiteRuleId, usageDate])
+  @@index([userId])
+  @@map("website_usage")
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String?
+  readAt    DateTime?        @map("read_at")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}

@@ -1,0 +1,11 @@
+---
+description: FocusFlow documentation rules
+globs: docs/**/*
+alwaysApply: false
+---
+
+Document what is implemented. Unfinished modules must say so in `IMPLEMENTATION_STATUS.md`, `ROADMAP.md`, `KNOWN_ISSUES.md`, `TASKS.md`, and `CURSOR_CONTEXT.md`.
+
+Record architecture decisions in `ARCHITECTURE_DECISIONS.md`. Record verification commands and their real results in `IMPLEMENTATION_STATUS.md`. Do not claim a test, lint, typecheck, or build that was not run.
+
+`CURSOR_CONTEXT.md` keeps current status, completed work, in progress, pending work, architecture, decisions, known bugs, database status, API status, and the next tasks.

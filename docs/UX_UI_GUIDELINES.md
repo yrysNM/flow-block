@@ -1,0 +1,15 @@
+# UX and UI guidelines
+
+The interface is a calm productivity tool: light surfaces, one blue action color, short labels, and no decorative noise.
+
+- One primary action per view (New task, Log in, Save)
+- Empty states explain what is missing and offer the next action
+- Status, priority, and quadrant are visible without opening the editor
+- The form states that urgency and importance do not change status
+- Errors from the API are shown as text, not only a color
+- Buttons and links have visible keyboard focus
+- The sidebar labels later modules as Soon and does not navigate there
+- Desktop keeps a fixed sidebar. Smaller widths use a Menu button and an overlay drawer
+- Do not invent sample tasks. An empty account looks empty
+
+The light design system is what the UI renders. The stored theme preference is not applied yet.
