@@ -1,6 +1,6 @@
 # Product requirements
 
-## This milestone
+## Shipped
 
 A person can:
 
@@ -9,15 +9,20 @@ A person can:
 - See an empty dashboard when they have no tasks
 - See counts by status and the tasks due on their local date
 - Create, edit, delete, and change the status of their own tasks
-- Set priority, urgent, important, description, and an optional deadline
+- Set priority, urgent, important, description, deadline, and one category
+- Search tasks and filter by status, priority, and category
+- Create categories and tags, and attach or detach tags on a task
+- Add, check off, reorder, and delete subtasks
+- Move the same tasks across TODO, IN_PROGRESS, and COMPLETED on the board
 - Change urgent or important without that change rewriting status
+- Change status without that change rewriting urgent or important
 - Set their name, IANA time zone, and the day the week starts on
 
 A person cannot read or change another person’s rows.
 
-## Explicitly out of this milestone
+## Explicitly not shipped
 
-Kanban drag and drop, categories, tags, subtasks, recurring tasks, reminders, Pomodoro, website blocking in the new extension, habits, goals, analytics charts, AI planning, and sync with the existing blocker. Those remain requirements for later phases. They are not shipped.
+Eisenhower matrix drag and drop, recurring tasks, reminders, Pomodoro, website blocking in the new extension, habits, goals, analytics charts, AI planning, and sync with the existing blocker.
 
 ## Task rules
 

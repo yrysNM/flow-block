@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 0 and the first task slice.
+These files describe the product and what this repository actually contains after Phase 2: auth, tasks, categories, tags, subtasks, and Kanban.
 
 Start here:
 
@@ -10,4 +10,4 @@ Start here:
 - [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) — how to run it
 - [API_DOCUMENTATION.md](API_DOCUMENTATION.md) — implemented HTTP routes
 
-The concept note (Eisenhower, habits, focus timer, analytics) is the product direction. This milestone did not build those modules. Where a doc describes them, it says they are not implemented.
+The concept note (Eisenhower board, habits, focus timer, analytics) is the product direction. Those modules are not implemented. The quadrant shown on a task is still calculated from urgent and important.

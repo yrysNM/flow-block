@@ -4,19 +4,22 @@ Prisma schema: `apps/api/prisma/schema.prisma`. Migration: `apps/api/prisma/migr
 
 Every product row that belongs to a person has `userId` and a foreign key to `users` with `ON DELETE CASCADE`, except where a parent row uses `ON DELETE SET NULL` (task category, focus session task).
 
-## Used by this slice
+## Used by the shipped API
 
 - `users` — email unique, password hash, name
 - `sessions` — token hash unique, expiry, optional user agent. Not in the original entity list; required for server sessions
 - `user_preferences` — timezone, theme, week start. One row per user
 - `tasks` — title, description, status, priority, `is_urgent`, `is_important`, deadline, completed_at, optional category
-- `categories` — table only. The task API checks `categoryId` ownership if a client sends one. There is no category CRUD
+- `categories` — name and optional color, unique per user and name. Deleting a category sets `tasks.category_id` null
+- `tags` — name, unique per user and name
+- `task_tags` — task, tag, and the session user. Primary key is `(task_id, tag_id)`
+- `subtasks` — title, completed, position, and the owning user
 
-There is no quadrant column.
+There is no quadrant column. Phase 2 did not add a migration. These tables were already in `20261102100000_init`.
 
 ## Declared for later phases
 
-`subtasks`, `tags`, `task_tags`, `task_time_logs`, `focus_sessions`, `habits`, `habit_entries`, `goals`, `milestones`, `website_rules`, `website_usage`, `notifications`.
+`task_time_logs`, `focus_sessions`, `habits`, `habit_entries`, `goals`, `milestones`, `website_rules`, `website_usage`, `notifications`.
 
 Indexes cover owner plus status, deadline, priority, and created time on tasks, plus owner indexes on the other tables. Tags and categories are unique per user and name. Website rules are unique per user and domain.
 

@@ -1,15 +1,40 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import type { CreateTaskInput, ListTasksQuery, UpdateTaskInput } from '@focusflow/shared-schemas'
+import type {
+  BoardTasksQuery,
+  CreateSubtaskInput,
+  CreateTaskInput,
+  ListTasksQuery,
+  ReorderSubtasksInput,
+  UpdateSubtaskInput,
+  UpdateTaskInput,
+} from '@focusflow/shared-schemas'
 import {
   InvalidTaskStatusTransitionError,
+  TASK_STATUSES,
   applyTaskFieldPatch,
+  type TaskBoardResponse,
   type TaskStatus,
   type TaskSummary,
 } from '@focusflow/shared-types'
 import { formatDateInTimeZone, localDayBounds } from '@focusflow/shared-utils'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { completionTimestamp, toTaskView, type TaskRecord } from './task.mapper'
+import {
+  BOARD_COLUMN_LIMIT,
+  completionTimestamp,
+  taskInclude,
+  toSubtaskView,
+  toTaskView,
+  type SubtaskRecord,
+  type TaskRecord,
+} from './task.mapper'
+
+type TaskFilters = {
+  status?: TaskStatus
+  priority?: ListTasksQuery['priority']
+  categoryId?: ListTasksQuery['categoryId']
+  q?: string
+}
 
 @Injectable()
 export class TasksService {
@@ -31,15 +56,13 @@ export class TasksService {
         categoryId: input.categoryId ?? null,
         completedAt: status === 'COMPLETED' ? new Date() : null,
       },
+      include: taskInclude,
     })
     return toTaskView(created)
   }
 
   async list(userId: string, query: ListTasksQuery) {
-    const where: Prisma.TaskWhereInput = {
-      userId,
-      ...(query.status ? { status: query.status } : {}),
-    }
+    const where = this.taskWhere(userId, query)
     const [total, rows] = await this.prisma.$transaction([
       this.prisma.task.count({ where }),
       this.prisma.task.findMany({
@@ -47,6 +70,7 @@ export class TasksService {
         orderBy: taskOrderBy(query.sort, query.order),
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
+        include: taskInclude,
       }),
     ])
     return {
@@ -57,6 +81,38 @@ export class TasksService {
         total,
         pageCount: total === 0 ? 0 : Math.ceil(total / query.pageSize),
       },
+    }
+  }
+
+  async board(userId: string, query: BoardTasksQuery): Promise<TaskBoardResponse> {
+    const where = this.taskWhere(userId, query)
+    const [grouped, ...columns] = await this.prisma.$transaction([
+      this.prisma.task.groupBy({
+        by: ['status'],
+        where,
+        _count: { _all: true },
+      }),
+      ...TASK_STATUSES.map((status) =>
+        this.prisma.task.findMany({
+          where: { ...where, status },
+          orderBy: { updatedAt: 'desc' },
+          take: BOARD_COLUMN_LIMIT,
+          include: taskInclude,
+        }),
+      ),
+    ])
+    const counts: TaskBoardResponse['counts'] = { TODO: 0, IN_PROGRESS: 0, COMPLETED: 0, total: 0 }
+    for (const row of grouped) {
+      counts[row.status] = row._count._all
+      counts.total += row._count._all
+    }
+    return {
+      counts,
+      columns: TASK_STATUSES.map((status, index) => ({
+        status,
+        count: counts[status],
+        tasks: columns[index].map((task) => toTaskView(task)),
+      })),
     }
   }
 
@@ -81,11 +137,7 @@ export class TasksService {
     }
     const result = await this.prisma.task.updateMany({ where: { id, userId }, data })
     if (result.count !== 1) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Task not found.',
-      })
+      throw this.missingTask()
     }
     return toTaskView(await this.requireTask(userId, id))
   }
@@ -98,11 +150,109 @@ export class TasksService {
     await this.requireTask(userId, id)
     const result = await this.prisma.task.deleteMany({ where: { id, userId } })
     if (result.count !== 1) {
+      throw this.missingTask()
+    }
+  }
+
+  async attachTag(userId: string, taskId: string, tagId: string) {
+    await this.requireTask(userId, taskId)
+    const tag = await this.prisma.tag.findFirst({
+      where: { id: tagId, userId },
+      select: { id: true },
+    })
+    if (!tag) {
       throw new NotFoundException({
         statusCode: 404,
         error: 'Not Found',
-        message: 'Task not found.',
+        message: 'Tag not found.',
       })
+    }
+    const existing = await this.prisma.taskTag.findFirst({
+      where: { taskId, tagId, userId },
+      select: { taskId: true },
+    })
+    if (!existing) {
+      await this.prisma.taskTag.create({ data: { taskId, tagId, userId } })
+    }
+    return this.get(userId, taskId)
+  }
+
+  async detachTag(userId: string, taskId: string, tagId: string) {
+    await this.requireTask(userId, taskId)
+    await this.prisma.taskTag.deleteMany({ where: { taskId, tagId, userId } })
+    return this.get(userId, taskId)
+  }
+
+  async addSubtask(userId: string, taskId: string, input: CreateSubtaskInput) {
+    await this.requireTask(userId, taskId)
+    const last = await this.prisma.subtask.aggregate({
+      where: { taskId, userId },
+      _max: { position: true },
+    })
+    const created = await this.prisma.subtask.create({
+      data: {
+        userId,
+        taskId,
+        title: input.title,
+        position: (last._max.position ?? -1) + 1,
+      },
+    })
+    return toSubtaskView(created)
+  }
+
+  async updateSubtask(userId: string, taskId: string, subtaskId: string, input: UpdateSubtaskInput) {
+    const current = await this.requireSubtask(userId, taskId, subtaskId)
+    const data: Prisma.SubtaskUpdateManyMutationInput = {}
+    if (input.title !== undefined) data.title = input.title
+    if (input.completed !== undefined) data.completed = input.completed
+    const result = await this.prisma.subtask.updateMany({
+      where: { id: subtaskId, taskId, userId },
+      data,
+    })
+    if (result.count !== 1) {
+      throw this.missingSubtask()
+    }
+    return toSubtaskView({
+      ...current,
+      title: input.title ?? current.title,
+      completed: input.completed ?? current.completed,
+    })
+  }
+
+  async reorderSubtasks(userId: string, taskId: string, input: ReorderSubtasksInput) {
+    await this.requireTask(userId, taskId)
+    const rows = await this.prisma.subtask.findMany({
+      where: { taskId, userId },
+      select: { id: true },
+      orderBy: { position: 'asc' },
+    })
+    if (!sameIdSet(rows.map((row) => row.id), input.ids)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Subtask order must include each subtask on this task once.',
+      })
+    }
+    await this.prisma.$transaction(
+      input.ids.map((id, position) =>
+        this.prisma.subtask.updateMany({
+          where: { id, taskId, userId },
+          data: { position },
+        }),
+      ),
+    )
+    const ordered = await this.prisma.subtask.findMany({
+      where: { taskId, userId },
+      orderBy: { position: 'asc' },
+    })
+    return ordered.map((row) => toSubtaskView(row))
+  }
+
+  async removeSubtask(userId: string, taskId: string, subtaskId: string): Promise<void> {
+    await this.requireSubtask(userId, taskId, subtaskId)
+    const result = await this.prisma.subtask.deleteMany({ where: { id: subtaskId, taskId, userId } })
+    if (result.count !== 1) {
+      throw this.missingSubtask()
     }
   }
 
@@ -118,6 +268,7 @@ export class TasksService {
       this.prisma.task.findMany({
         where: { userId, deadline: { gte: bounds.start, lt: bounds.end } },
         orderBy: [{ priority: 'desc' }, { deadline: 'asc' }],
+        include: taskInclude,
       }),
     ])
     const counts: TaskSummary['counts'] = { TODO: 0, IN_PROGRESS: 0, COMPLETED: 0, total: 0 }
@@ -152,16 +303,37 @@ export class TasksService {
     }
   }
 
-  private async requireTask(userId: string, id: string): Promise<TaskRecord> {
-    const task = await this.prisma.task.findFirst({ where: { id, userId } })
-    if (!task) {
-      throw new NotFoundException({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Task not found.',
-      })
+  private taskWhere(userId: string, query: TaskFilters): Prisma.TaskWhereInput {
+    const where: Prisma.TaskWhereInput = { userId }
+    if (query.status) where.status = query.status
+    if (query.priority) where.priority = query.priority
+    if (query.categoryId === 'none') where.categoryId = null
+    else if (query.categoryId) where.categoryId = query.categoryId
+    const q = query.q?.trim()
+    if (q) {
+      where.OR = [
+        { title: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+      ]
     }
+    return where
+  }
+
+  private async requireTask(userId: string, id: string): Promise<TaskRecord> {
+    const task = await this.prisma.task.findFirst({
+      where: { id, userId },
+      include: taskInclude,
+    })
+    if (!task) throw this.missingTask()
     return task
+  }
+
+  private async requireSubtask(userId: string, taskId: string, subtaskId: string): Promise<SubtaskRecord> {
+    const subtask = await this.prisma.subtask.findFirst({
+      where: { id: subtaskId, taskId, userId },
+    })
+    if (!subtask) throw this.missingSubtask()
+    return subtask
   }
 
   private async assertCategory(userId: string, categoryId: string | null | undefined): Promise<void> {
@@ -179,6 +351,22 @@ export class TasksService {
     }
   }
 
+  private missingTask(): NotFoundException {
+    return new NotFoundException({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Task not found.',
+    })
+  }
+
+  private missingSubtask(): NotFoundException {
+    return new NotFoundException({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Subtask not found.',
+    })
+  }
+
   private normalizeDescription(value: string | null | undefined): string | null {
     if (value === undefined || value === null) return null
     const trimmed = value.trim()
@@ -189,6 +377,13 @@ export class TasksService {
     if (value === undefined || value === null) return null
     return new Date(value)
   }
+}
+
+function sameIdSet(current: string[], next: string[]): boolean {
+  if (current.length !== next.length) return false
+  if (new Set(next).size !== next.length) return false
+  const owned = new Set(current)
+  return next.every((id) => owned.has(id))
 }
 
 function taskOrderBy(

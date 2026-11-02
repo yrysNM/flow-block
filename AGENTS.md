@@ -2,11 +2,11 @@
 
 FocusFlow is an all-in-one productivity product: “Focus on what matters.” Web, Chrome extension, and API share one account and one Task. The canonical workflow is Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-This milestone is Phase 0 plus the first vertical slice: foundation, auth, and task CRUD. Do not start later phases unless the task says so.
+Phase 0, the task slice, and Phase 2 are in the tree: auth, one Task, categories, tags, subtasks, and a Kanban board. Do not start the Eisenhower board, focus timer, habits, goals, analytics, or extension blocking unless the task says so.
 
 ## Stack
 
-- Web: Nuxt 4, Vue 3 `<script setup>`, TypeScript strict, Tailwind, Pinia. No Vue Query, VueDraggable, or ECharts in this milestone.
+- Web: Nuxt 4, Vue 3 `<script setup>`, TypeScript strict, Tailwind, Pinia. No Vue Query, VueDraggable, or ECharts. Kanban drag uses native HTML5.
 - API: NestJS REST, Prisma, PostgreSQL. Zod from `@focusflow/shared-schemas`. No Redis.
 - Extension shell: `apps/extension`, Manifest V3, TypeScript, no feature logic yet.
 - Shared task status and priority unions live in `@focusflow/shared-types`. Do not copy them.
@@ -38,7 +38,8 @@ Extension-only commands remain `npm test`, `npm run typecheck`, `npm run lint`, 
 - Every task query filters by the authenticated user.
 - Task status changes only through an explicit status field. `isUrgent` and `isImportant` do not change status. Quadrant is derived and is not a column.
 - Completed tasks reopen to To do. They do not jump to In progress.
-- Category, tag, subtask, habit, goal, focus, notification, and website-rule tables exist so later work does not repaint ownership. Do not add UI for them in this slice.
+- Categories, tags, and subtasks are user-owned and shipped. Habit, goal, focus, notification, and website-rule tables exist for later work. Do not add UI for those yet.
+- Kanban drag and the status control change `status` only. They must not change `isUrgent` or `isImportant`. There is no Eisenhower board in this milestone.
 - No production mock data and no committed secrets. Local Compose credentials belong only in examples.
 
 ## Session workflow

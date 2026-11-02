@@ -47,12 +47,29 @@ function createPrisma() {
       findFirst: vi.fn(),
       findMany: vi.fn(),
       count: vi.fn(),
+      update: vi.fn(),
       updateMany: vi.fn(),
       deleteMany: vi.fn(),
       groupBy: vi.fn(),
     },
     category: {
       findFirst: vi.fn(),
+    },
+    tag: {
+      findFirst: vi.fn(),
+    },
+    taskTag: {
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      deleteMany: vi.fn(),
+    },
+    subtask: {
+      findFirst: vi.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      updateMany: vi.fn(),
+      deleteMany: vi.fn(),
+      aggregate: vi.fn(),
     },
     $transaction: vi.fn((operations: Promise<unknown>[]) => Promise.all(operations)),
   }
@@ -77,7 +94,7 @@ describe('TasksService', () => {
       isUrgent: true,
       isImportant: true,
     })
-    expect(prisma.task.create).toHaveBeenCalledWith({
+    expect(prisma.task.create).toHaveBeenCalledWith(expect.objectContaining({
       data: expect.objectContaining({
         userId,
         title: 'Ship the slice',
@@ -85,7 +102,7 @@ describe('TasksService', () => {
         isUrgent: true,
         isImportant: true,
       }),
-    })
+    }))
     expect(created.quadrant).toBe('DO')
     expect(created.status).toBe('TODO')
     expect(JSON.stringify(prisma.task.create.mock.calls)).not.toContain(otherUserId)
@@ -138,7 +155,9 @@ describe('TasksService', () => {
   it('hides another user’s task', async () => {
     prisma.task.findFirst.mockResolvedValue(null)
     await expect(service.get(userId, taskRecord().id)).rejects.toBeInstanceOf(NotFoundException)
-    expect(prisma.task.findFirst).toHaveBeenCalledWith({ where: { id: taskRecord().id, userId } })
+    expect(prisma.task.findFirst).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: taskRecord().id, userId },
+    }))
   })
 
   it('sets completedAt only when status becomes completed', async () => {
@@ -153,5 +172,146 @@ describe('TasksService', () => {
     const data = prisma.task.updateMany.mock.calls[0]?.[0].data as { status: string; completedAt: Date | null }
     expect(data.status).toBe('COMPLETED')
     expect(data.completedAt).toBeInstanceOf(Date)
+  })
+
+  it('rejects a category the session user does not own', async () => {
+    const categoryId = '44444444-4444-4444-8444-444444444444'
+    prisma.category.findFirst.mockResolvedValue(null)
+    await expect(service.create(userId, { title: 'Foreign', categoryId })).rejects.toBeInstanceOf(BadRequestException)
+    expect(prisma.task.create).not.toHaveBeenCalled()
+    expect(prisma.category.findFirst).toHaveBeenCalledWith({
+      where: { id: categoryId, userId },
+      select: { id: true },
+    })
+  })
+
+  it('filters by search, priority, and uncategorized tasks', async () => {
+    prisma.task.count.mockResolvedValue(0)
+    prisma.task.findMany.mockResolvedValue([])
+    await service.list(userId, {
+      priority: 'HIGH',
+      categoryId: 'none',
+      q: 'spec',
+      sort: 'createdAt',
+      order: 'desc',
+      page: 1,
+      pageSize: 20,
+    })
+    expect(prisma.task.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: {
+        userId,
+        priority: 'HIGH',
+        categoryId: null,
+        OR: [
+          { title: { contains: 'spec', mode: 'insensitive' } },
+          { description: { contains: 'spec', mode: 'insensitive' } },
+        ],
+      },
+    }))
+  })
+
+  it('ignores a blank search so the owner filter stays exact', async () => {
+    prisma.task.count.mockResolvedValue(0)
+    prisma.task.findMany.mockResolvedValue([])
+    await service.list(userId, {
+      q: '   ',
+      sort: 'createdAt',
+      order: 'desc',
+      page: 1,
+      pageSize: 20,
+    })
+    expect(prisma.task.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { userId },
+    }))
+  })
+
+  it('moves a kanban card by status only and keeps eisenhower flags', async () => {
+    const current = taskRecord({ status: 'TODO', isUrgent: true, isImportant: false })
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce({ ...current, status: 'IN_PROGRESS' })
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+
+    const updated = await service.updateStatus(userId, current.id, 'IN_PROGRESS')
+    const data = prisma.task.updateMany.mock.calls[0]?.[0].data as {
+      status: string
+      isUrgent: boolean
+      isImportant: boolean
+    }
+    expect(data.status).toBe('IN_PROGRESS')
+    expect(data.isUrgent).toBe(true)
+    expect(data.isImportant).toBe(false)
+    expect(updated.status).toBe('IN_PROGRESS')
+    expect(updated.quadrant).toBe('DELEGATE')
+  })
+
+  it('returns kanban counts separately from the cards loaded in each column', async () => {
+    prisma.task.groupBy.mockResolvedValue([
+      { status: 'TODO', _count: { _all: 4 } },
+      { status: 'COMPLETED', _count: { _all: 1 } },
+    ])
+    prisma.task.findMany.mockImplementation(async ({ where }: { where: { status?: TaskStatus } }) => {
+      if (where.status === 'TODO') return [taskRecord({ status: 'TODO', isUrgent: true, isImportant: false })]
+      return []
+    })
+    const board = await service.board(userId, {})
+    expect(prisma.task.groupBy).toHaveBeenCalledWith(expect.objectContaining({ where: { userId } }))
+    expect(board.counts).toEqual({ TODO: 4, IN_PROGRESS: 0, COMPLETED: 1, total: 5 })
+    expect(board.columns.map((column) => column.status)).toEqual(['TODO', 'IN_PROGRESS', 'COMPLETED'])
+    expect(board.columns[0]?.count).toBe(4)
+    expect(board.columns[0]?.tasks).toHaveLength(1)
+    expect(board.columns[0]?.tasks[0]?.isImportant).toBe(false)
+  })
+
+  it('does not attach a tag owned by someone else', async () => {
+    const tagId = '55555555-5555-4555-8555-555555555555'
+    prisma.task.findFirst.mockResolvedValue(taskRecord())
+    prisma.tag.findFirst.mockResolvedValue(null)
+    await expect(service.attachTag(userId, taskRecord().id, tagId)).rejects.toBeInstanceOf(NotFoundException)
+    expect(prisma.taskTag.create).not.toHaveBeenCalled()
+    expect(prisma.tag.findFirst).toHaveBeenCalledWith({
+      where: { id: tagId, userId },
+      select: { id: true },
+    })
+  })
+
+  it('attaches a tag with the session user id', async () => {
+    const tagId = '55555555-5555-4555-8555-555555555555'
+    prisma.task.findFirst.mockResolvedValue(taskRecord())
+    prisma.tag.findFirst.mockResolvedValue({ id: tagId })
+    prisma.taskTag.findFirst.mockResolvedValue(null)
+    prisma.taskTag.create.mockResolvedValue({ taskId: taskRecord().id, tagId, userId })
+
+    await service.attachTag(userId, taskRecord().id, tagId)
+
+    expect(prisma.taskTag.create).toHaveBeenCalledWith({
+      data: { taskId: taskRecord().id, tagId, userId },
+    })
+    expect(JSON.stringify(prisma.taskTag.create.mock.calls)).not.toContain(otherUserId)
+  })
+
+  it('toggles a subtask without rewriting the parent task', async () => {
+    const subtaskId = '66666666-6666-4666-8666-666666666666'
+    prisma.subtask.findFirst.mockResolvedValue({
+      id: subtaskId,
+      userId,
+      taskId: taskRecord().id,
+      title: 'Draft',
+      completed: false,
+      position: 0,
+      createdAt: new Date('2026-11-02T00:00:00.000Z'),
+      updatedAt: new Date('2026-11-02T00:00:00.000Z'),
+    })
+    prisma.subtask.updateMany.mockResolvedValue({ count: 1 })
+
+    const updated = await service.updateSubtask(userId, taskRecord().id, subtaskId, { completed: true })
+
+    expect(prisma.subtask.updateMany).toHaveBeenCalledWith({
+      where: { id: subtaskId, taskId: taskRecord().id, userId },
+      data: { completed: true },
+    })
+    expect(updated.completed).toBe(true)
+    expect(prisma.task.updateMany).not.toHaveBeenCalled()
+    expect(prisma.task.update).not.toHaveBeenCalled()
   })
 })

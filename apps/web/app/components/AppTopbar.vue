@@ -26,6 +26,8 @@ const route = useRoute()
 
 const title = computed(() => {
   if (route.path.startsWith('/tasks')) return 'Tasks'
+  if (route.path.startsWith('/board')) return 'Board'
+  if (route.path.startsWith('/categories')) return 'Categories'
   if (route.path.startsWith('/settings')) return 'Settings'
   return 'Dashboard'
 })

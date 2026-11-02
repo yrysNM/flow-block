@@ -6,20 +6,11 @@ Phase 0: monorepo, design tokens, app shell, Prisma schema (including later mode
 
 First vertical slice: task CRUD, status rules, quadrant derived from flags, dashboard counts and due-today list, settings for name and time zone.
 
-## Next milestone — Phase 2
+Phase 2: owner-scoped categories and tags, task assignment, subtasks, search and status/priority/category filters, and a Kanban board. Dragging a card calls the existing status transition and does not change urgent or important. VueDraggable is still not a dependency. The board uses native drag and drop.
 
-Categories, tags, subtasks, and Kanban drag and drop.
+## Not in Phase 2
 
-That phase should:
-
-- Add category and tag CRUD scoped to the owner
-- Add subtasks on the canonical Task
-- Add a Kanban board for TODO, IN_PROGRESS, and COMPLETED
-- Drag between columns only through the existing status transitions
-- Drag between Eisenhower quadrants by writing `isUrgent` and `isImportant`, not a stored quadrant, and without changing status as a side effect
-- Keep using `@focusflow/shared-types` for the status union
-
-VueDraggable was intentionally not added yet.
+The Eisenhower board was left out of this milestone. A later change can drag between quadrants by writing `isUrgent` and `isImportant` only, still without a stored quadrant and without changing status as a side effect.
 
 ## Later, not scheduled in this change
 

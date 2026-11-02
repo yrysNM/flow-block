@@ -127,6 +127,40 @@ export interface SessionResponse {
   preferences: PublicPreferences
 }
 
+export interface CategoryView {
+  id: string
+  name: string
+  color: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TagView {
+  id: string
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TaskCategoryRef {
+  id: string
+  name: string
+  color: string | null
+}
+
+export interface TaskTagRef {
+  id: string
+  name: string
+}
+
+export interface SubtaskView {
+  id: string
+  taskId: string
+  title: string
+  completed: boolean
+  position: number
+}
+
 export interface TaskView {
   id: string
   title: string
@@ -138,9 +172,23 @@ export interface TaskView {
   quadrant: EisenhowerQuadrant
   deadline: string | null
   categoryId: string | null
+  category: TaskCategoryRef | null
+  tags: TaskTagRef[]
+  subtasks: SubtaskView[]
   completedAt: string | null
   createdAt: string
   updatedAt: string
+}
+
+export interface TaskBoardColumn {
+  status: TaskStatus
+  count: number
+  tasks: TaskView[]
+}
+
+export interface TaskBoardResponse {
+  counts: Record<TaskStatus, number> & { total: number }
+  columns: TaskBoardColumn[]
 }
 
 export interface PageMeta {

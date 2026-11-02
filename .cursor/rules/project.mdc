@@ -5,7 +5,7 @@ alwaysApply: true
 
 FocusFlow is one account and one Task across web, API, and the future extension. Canonical flow: Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-This milestone stops at Phase 0 and task CRUD. Do not add Kanban, drag and drop, categories UI, tags, subtasks, timers, charts, or extension blocking.
+Phase 2 is shipped: category and tag CRUD, subtasks, task filters, and a three-column Kanban that changes status only. Do not add an Eisenhower board, timers, charts, habits, goals, or extension blocking unless the task says so.
 
 Import task status and priority from `@focusflow/shared-types`. Derive Eisenhower quadrant from `isUrgent` and `isImportant`. Do not store quadrant.
 

@@ -12,6 +12,17 @@ Returned by the API. `quadrant` is computed.
 - `isUrgent`, `isImportant`
 - `quadrant`: `DO | SCHEDULE | DELEGATE | ELIMINATE`
 - `deadline`, `categoryId`, `completedAt`, `createdAt`, `updatedAt` as ISO strings or null
+- `category`: `{ id, name, color }` or null
+- `tags`: `{ id, name }[]`
+- `subtasks`: `{ id, taskId, title, completed, position }[]`
+
+## Category and tag views
+
+Category: `{ id, name, color, createdAt, updatedAt }`. Tag: `{ id, name, createdAt, updatedAt }`.
+
+## Board
+
+`{ counts: { TODO, IN_PROGRESS, COMPLETED, total }, columns: [{ status, count, tasks }] }`. `count` is the full total for that status under the current filters. `tasks` is the visible page, capped at 100.
 
 ## Session response
 
