@@ -7,12 +7,19 @@ import type {
   ReorderSubtasksInput,
   UpdateSubtaskInput,
   UpdateTaskInput,
+  UpdateTaskQuadrantInput,
+  UpdateTaskScheduleInput,
 } from '@focusflow/shared-schemas'
 import {
+  EISENHOWER_QUADRANTS,
   InvalidTaskStatusTransitionError,
   TASK_STATUSES,
   applyTaskFieldPatch,
+  deriveEisenhowerQuadrant,
+  flagsForQuadrant,
   type TaskBoardResponse,
+  type TaskMatrixResponse,
+  type TaskPlannerResponse,
   type TaskStatus,
   type TaskSummary,
 } from '@focusflow/shared-types'
@@ -116,6 +123,73 @@ export class TasksService {
     }
   }
 
+  async matrix(userId: string, query: BoardTasksQuery): Promise<TaskMatrixResponse> {
+    const where = this.taskWhere(userId, query)
+    const [grouped, ...columns] = await this.prisma.$transaction([
+      this.prisma.task.groupBy({
+        by: ['isUrgent', 'isImportant'],
+        where,
+        _count: { _all: true },
+      }),
+      ...EISENHOWER_QUADRANTS.map((quadrant) => {
+        const flags = flagsForQuadrant(quadrant)
+        return this.prisma.task.findMany({
+          where: { ...where, isUrgent: flags.isUrgent, isImportant: flags.isImportant },
+          orderBy: { updatedAt: 'desc' },
+          take: BOARD_COLUMN_LIMIT,
+          include: taskInclude,
+        })
+      }),
+    ])
+    const counts: TaskMatrixResponse['counts'] = { DO: 0, SCHEDULE: 0, DELEGATE: 0, ELIMINATE: 0, total: 0 }
+    for (const row of grouped) {
+      const quadrant = deriveEisenhowerQuadrant(row.isUrgent, row.isImportant)
+      counts[quadrant] = row._count._all
+      counts.total += row._count._all
+    }
+    return {
+      counts,
+      quadrants: EISENHOWER_QUADRANTS.map((quadrant, index) => ({
+        quadrant,
+        count: counts[quadrant],
+        tasks: columns[index].map((task) => toTaskView(task)),
+      })),
+    }
+  }
+
+  async planner(userId: string, date: string | undefined, timeZone: string): Promise<TaskPlannerResponse> {
+    const day = date ?? formatDateInTimeZone(new Date(), timeZone)
+    const bounds = localDayBounds(day, timeZone)
+    const scheduledWhere: Prisma.TaskWhereInput = {
+      userId,
+      scheduledStart: { gte: bounds.start, lt: bounds.end },
+    }
+    const unscheduledWhere: Prisma.TaskWhereInput = { userId, scheduledStart: null }
+    const [timelineCount, timeline, unscheduledCount, unscheduled] = await this.prisma.$transaction([
+      this.prisma.task.count({ where: scheduledWhere }),
+      this.prisma.task.findMany({
+        where: scheduledWhere,
+        orderBy: { scheduledStart: 'asc' },
+        take: BOARD_COLUMN_LIMIT,
+        include: taskInclude,
+      }),
+      this.prisma.task.count({ where: unscheduledWhere }),
+      this.prisma.task.findMany({
+        where: unscheduledWhere,
+        orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+        take: BOARD_COLUMN_LIMIT,
+        include: taskInclude,
+      }),
+    ])
+    return {
+      date: day,
+      timezone: timeZone,
+      timeline: timeline.map((task) => toTaskView(task)),
+      unscheduled: unscheduled.map((task) => toTaskView(task)),
+      counts: { timeline: timelineCount, unscheduled: unscheduledCount },
+    }
+  }
+
   async get(userId: string, id: string) {
     return toTaskView(await this.requireTask(userId, id))
   }
@@ -144,6 +218,24 @@ export class TasksService {
 
   async updateStatus(userId: string, id: string, status: TaskStatus) {
     return this.update(userId, id, { status })
+  }
+
+  async updateQuadrant(userId: string, id: string, input: UpdateTaskQuadrantInput) {
+    await this.requireTask(userId, id)
+    const result = await this.prisma.task.updateMany({
+      where: { id, userId },
+      data: { isUrgent: input.isUrgent, isImportant: input.isImportant },
+    })
+    if (result.count !== 1) throw this.missingTask()
+    return toTaskView(await this.requireTask(userId, id))
+  }
+
+  async updateSchedule(userId: string, id: string, input: UpdateTaskScheduleInput, timeZone: string) {
+    await this.requireTask(userId, id)
+    const data = this.scheduleData(input, timeZone)
+    const result = await this.prisma.task.updateMany({ where: { id, userId }, data })
+    if (result.count !== 1) throw this.missingTask()
+    return toTaskView(await this.requireTask(userId, id))
   }
 
   async remove(userId: string, id: string): Promise<void> {
@@ -376,6 +468,34 @@ export class TasksService {
   private parseDeadline(value: string | null | undefined): Date | null {
     if (value === undefined || value === null) return null
     return new Date(value)
+  }
+
+  private scheduleData(input: UpdateTaskScheduleInput, timeZone: string): {
+    scheduledStart: Date | null
+    scheduledEnd: Date | null
+  } {
+    if (input.scheduledStart === null || input.scheduledEnd === null) {
+      return { scheduledStart: null, scheduledEnd: null }
+    }
+    const scheduledStart = new Date(input.scheduledStart)
+    const scheduledEnd = new Date(input.scheduledEnd)
+    if (!(scheduledEnd.getTime() > scheduledStart.getTime())) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'The end must be after the start.',
+      })
+    }
+    const startDay = formatDateInTimeZone(scheduledStart, timeZone)
+    const endDay = formatDateInTimeZone(scheduledEnd, timeZone)
+    if (startDay !== endDay) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'A time block must start and end on the same day.',
+      })
+    }
+    return { scheduledStart, scheduledEnd }
   }
 }
 

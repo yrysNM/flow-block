@@ -14,6 +14,9 @@ A person can:
 - Create categories and tags, and attach or detach tags on a task
 - Add, check off, reorder, and delete subtasks
 - Move the same tasks across TODO, IN_PROGRESS, and COMPLETED on the board
+- Place the same tasks on an Eisenhower matrix by urgent and important, without that move changing status
+- See one day on the planner, with scheduled blocks and the tasks that have none
+- Give a task one start and end on that day, or clear it, without changing status or quadrant
 - Change urgent or important without that change rewriting status
 - Change status without that change rewriting urgent or important
 - Set their name, IANA time zone, and the day the week starts on
@@ -22,7 +25,7 @@ A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Eisenhower matrix drag and drop, recurring tasks, reminders, Pomodoro, website blocking in the new extension, habits, goals, analytics charts, AI planning, and sync with the existing blocker.
+Recurring tasks, reminders, Pomodoro, website blocking in the new extension, habits, goals, analytics charts, AI planning, and sync with the existing blocker.
 
 ## Task rules
 

@@ -66,6 +66,8 @@ const primary = [
   { label: 'Dashboard', to: '/' },
   { label: 'Tasks', to: '/tasks' },
   { label: 'Board', to: '/board' },
+  { label: 'Matrix', to: '/matrix' },
+  { label: 'Planner', to: '/planner' },
   { label: 'Categories', to: '/categories' },
   { label: 'Settings', to: '/settings' },
 ]

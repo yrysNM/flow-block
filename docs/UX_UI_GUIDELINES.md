@@ -6,6 +6,8 @@ The interface is a calm productivity tool: light surfaces, one blue action color
 - Empty states explain what is missing and offer the next action
 - Status, priority, and quadrant are visible without opening the editor
 - The form states that urgency and importance do not change status
+- The matrix states that a quadrant move does not change status. The planner states that a time move does not change status or quadrant
+- Matrix quadrants stack on a narrow screen and sit in a two-by-two grid from the tablet width up. The planner stacks the timeline and the unscheduled list until a wide screen
 - Errors from the API are shown as text, not only a color
 - Buttons and links have visible keyboard focus
 - The sidebar labels later modules as Soon and does not navigate there

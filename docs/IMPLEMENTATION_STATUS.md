@@ -1,6 +1,6 @@
 # Implementation status
 
-Phase 2 is implemented on the Phase 0 branch: categories, tags, subtasks, task filters, and Kanban. Focus, habits, goals, analytics, the Eisenhower board, and extension blocking are still schema or docs only.
+Phase 3 adds the Eisenhower matrix and a daily planner on the Phase 2 branch. Focus, habits, goals, analytics, and extension blocking are still schema or docs only.
 
 ## Reused
 
@@ -13,8 +13,8 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, board, categories, settings, login, register
-- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, Swagger
+- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, categories, settings, login, register
+- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, Swagger
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
 - Prisma models listed in the milestone, plus `Session`
@@ -22,7 +22,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-Eisenhower board, focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added. Kanban uses native drag and drop, not VueDraggable.
+Focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable.
 
 ## Database blocker
 
@@ -30,16 +30,16 @@ Eisenhower board, focus timer, extension blocking, habits, goals, analytics, syn
 
 ## Verification
 
-Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9 for this Phase 2 change. `docker` and `psql` are still not installed. The integration test did not run.
+Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` and `psql` are not installed. The integration test did not run. `prisma migrate deploy` was not run. `prisma generate` did succeed, because it does not need a database.
 
 ### FocusFlow unit tests
 
 `npm run test:focusflow`
 
-- `@focusflow/shared-types`: 6 passed
-- `@focusflow/shared-schemas`: 3 passed
+- `@focusflow/shared-types`: 7 passed
+- `@focusflow/shared-schemas`: 4 passed
 - `@focusflow/shared-utils`: 3 passed
-- `@focusflow/api`: 20 passed, 1 skipped (`test/tasks.integration.test.ts`, because `FOCUSFLOW_INTEGRATION` was not set and Postgres is absent)
+- `@focusflow/api`: 23 passed, 1 skipped (`test/tasks.integration.test.ts`)
 
 ### Typecheck
 
@@ -54,13 +54,13 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9 for this Pha
 ### Production builds
 
 - `npm run build -w @focusflow/api` — passed (`nest build`)
-- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 3.5s)
+- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 3.6s)
 - `npm run build -w @focusflow/extension` — passed (`tsc`)
 
 ### Existing extension (preserved)
 
-`npm test` — 4 files, 29 tests passed. Root `npm run typecheck` and `npm run lint` were not re-run for this change. The extension shell was not modified.
+`npm test` — 4 files, 29 tests passed. The extension shell was not modified.
 
 ### Not exercised
 
-Register, category create, tag attach, subtask toggle, and a Kanban drop were not clicked through in a browser. Those routes need Postgres, and this environment has no Docker daemon and no `psql`. Service tests cover ownership and the status move without a database.
+Matrix drag, planner scheduling, and the other signed-in screens were not clicked through in a browser. Those routes need Postgres. Service tests cover the quadrant write, the schedule update, and the split between timeline and unscheduled tasks.

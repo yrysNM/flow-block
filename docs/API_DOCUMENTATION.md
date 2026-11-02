@@ -28,10 +28,14 @@ Error body:
 | GET | `/api/tasks` | `q`, `status`, `priority`, `categoryId` (uuid or `none`), `sort` (`createdAt`, `updatedAt`, `deadline`, `priority`, `title`), `order`, `page`, `pageSize` (max 100). A blank `q` is ignored |
 | GET | `/api/tasks/summary` | Optional `date=YYYY-MM-DD`. Defaults to today in the user time zone |
 | GET | `/api/tasks/board` | Same search, priority, and category filters. No status filter. Counts are totals. Each column returns at most 100 tasks, newest update first |
+| GET | `/api/tasks/matrix` | Same filters as the board. Four quadrants from `isUrgent` and `isImportant`. Counts are totals. Each quadrant returns at most 100 tasks |
+| GET | `/api/tasks/planner` | Optional `date=YYYY-MM-DD` in the user time zone. `timeline` is tasks whose `scheduledStart` falls on that day. `unscheduled` is tasks with a null start. Each list is capped at 100. `counts` are the full totals |
 | GET | `/api/tasks/:id` | 404 if not owned |
 | POST | `/api/tasks` | 201 |
 | PATCH | `/api/tasks/:id` | At least one field |
 | PATCH | `/api/tasks/:id/status` | `{ "status" }`. Writes status only in meaning: urgent and important stay as they are |
+| PATCH | `/api/tasks/:id/quadrant` | `{ "isUrgent", "isImportant" }`. Writes those two fields only. Status is not in the update |
+| PATCH | `/api/tasks/:id/schedule` | `{ "scheduledStart", "scheduledEnd" }`. Both ISO datetimes, or both null to clear. Writes the block only. End must be after start and on the same local day |
 | DELETE | `/api/tasks/:id` | 204 |
 | GET | `/api/categories` | Owner’s categories, name order |
 | POST | `/api/categories` | 201. `{ "name", "color"? }`. Color is `#RRGGBB` or null. Duplicate name is 409 |
@@ -48,6 +52,6 @@ Error body:
 | PATCH | `/api/tasks/:id/subtasks/:subtaskId` | `{ "title"? , "completed"? }`. Does not update the parent task |
 | DELETE | `/api/tasks/:id/subtasks/:subtaskId` | 204 |
 
-Task JSON includes `categoryId`, `category` (`{ id, name, color }` or null), `tags` (`{ id, name }[]`), and `subtasks` (`{ id, taskId, title, completed, position }[]`). `categoryId` must belong to the same user or the write is rejected. A client `userId` is stripped.
+Task JSON includes `categoryId`, `category` (`{ id, name, color }` or null), `tags`, `subtasks`, `scheduledStart`, and `scheduledEnd`. `categoryId` must belong to the same user or the write is rejected. A client `userId` is stripped. Quadrant is computed and is not a stored field.
 
-Routes for habits, goals, focus sessions, website rules, and notifications are not implemented. There is no Eisenhower-board route.
+Routes for habits, goals, focus sessions, website rules, and notifications are not implemented.

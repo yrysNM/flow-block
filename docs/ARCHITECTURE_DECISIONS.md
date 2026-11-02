@@ -31,3 +31,7 @@ Prisma `@default(uuid())` assigns ids in the application. The migration does not
 ## ADR-8. Shared packages compile to CommonJS
 
 Nest’s build consumes `require`. The Nuxt app aliases the TypeScript source so the browser does not depend on that build.
+
+## ADR-9. One time block on the Task
+
+The schema had a deadline and `task_time_logs`, and no planned start or end. A time log is a record of time already spent, and a task can have many. The planner needs one block per task. Adding `scheduled_start` and `scheduled_end` on `tasks` keeps the plan on the same row the list, board, matrix, and dashboard already use. Both columns null means unscheduled. Setting them updates that row. It does not insert a second task. A block must start and end on the same civil day in the user’s time zone, so it belongs to one planner day. Migration `20261102120000_task_schedule` adds the columns and an owner-plus-start index. `prisma migrate deploy` was not run in the environment that wrote it.

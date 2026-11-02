@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 — Eisenhower matrix and daily planner
+
+- Added a four-quadrant matrix. A move writes `isUrgent` and `isImportant` and does not write status
+- Added one optional time block on Task (`scheduled_start`, `scheduled_end`) instead of a second table
+- Added a one-day planner. Scheduling updates that task. Unscheduled tasks stay off the timeline. Moving a block does not change status or quadrant
+- Left the focus timer, habits, goals, analytics, and extension blocking unbuilt
+
 ## 0.2.0 — Categories, tags, subtasks, and Kanban
 
 - Added owner-scoped category and tag CRUD

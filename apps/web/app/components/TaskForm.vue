@@ -65,7 +65,7 @@
       Save the task to add subtasks and tags.
     </div>
 
-    <div v-else class="mt-5 space-y-5 border-t border-line pt-4">
+    <div v-else-if="showOrganizer" class="mt-5 space-y-5 border-t border-line pt-4">
       <section>
         <h3 class="text-sm font-semibold text-ink">Tags</h3>
         <ul v-if="attachedTags.length" class="mt-2 flex flex-wrap gap-2">
@@ -153,7 +153,7 @@ export interface TaskDraft {
 }
 
 const model = defineModel<TaskDraft>({ required: true })
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   mode: 'create' | 'edit'
   statuses: TaskStatus[]
   submitting: boolean
@@ -163,7 +163,10 @@ const props = defineProps<{
   tags: TagView[]
   attachedTags: TaskTagRef[]
   subtasks: SubtaskView[]
-}>()
+  showOrganizer?: boolean
+}>(), {
+  showOrganizer: true,
+})
 const emit = defineEmits<{
   submit: []
   cancel: []
