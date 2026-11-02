@@ -14,6 +14,8 @@ Phase 4a: focus timer and session history. One active session per user. A second
 
 Phase 4b: website rules and the FocusFlow extension. Focus mode turns block rules on. Otherwise each rule follows its schedule. The legacy blocker in `src/` is still separate.
 
+Phase 5a: habits and goals. Check-ins update one entry per date. Streaks and goal progress are computed on read. The analytics dashboard is still later.
+
 ## Later, not scheduled in this change
 
-Merging the legacy blocker, habits, goals, analytics, password reset, and deployment. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.
+Merging the legacy blocker, the analytics dashboard, password reset, and deployment. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.

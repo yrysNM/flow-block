@@ -62,6 +62,14 @@ Usage totals: `{ date, timezone, totals: [{ ruleId, domain, mode, usedSeconds, d
 
 A usage event result is `{ stored, clientEventId, ruleId, domain, usedSeconds }`. `stored: false` means that client event id was already saved.
 
+## Habit
+
+`{ id, name, frequency, targetCount, streak, todayCount, todayMet, createdAt, updatedAt }`. `frequency` is `DAILY` or `WEEKLY`. A detail adds `month` and `entries: [{ id, habitId, date, count, met }]`. A check-in returns `{ entry, habit }`. Streak is computed. See [HABITS.md](HABITS.md).
+
+## Goal
+
+`{ id, title, description, status, deadline, milestones, tasks, progress, createdAt, updatedAt }`. `status` is `ACTIVE | COMPLETED | ARCHIVED`. `deadline` is `YYYY-MM-DD` or null. Milestones are `{ id, goalId, title, completed, position, dueDate }`. Linked tasks are `{ id, title, status }`. `progress` is `{ completed, total }` and is not stored. See [GOALS.md](GOALS.md).
+
 ## Summary
 
 `{ date, timezone, counts: { TODO, IN_PROGRESS, COMPLETED, total }, today: TaskView[] }`

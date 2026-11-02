@@ -43,3 +43,9 @@ The schema had a deadline and `task_time_logs`, and no planned start or end. A t
 ## ADR-11. Extension blocking uses the API rules and a local cache
 
 The schema already had `website_rules` and daily `website_usage`. Phase 4b adds an allowlist value, an optional minute window, and `website_usage_events` so a client event id is unique per user. The legacy extension in `src/` stays as it is. FocusFlow blocking lives in `apps/extension` and calls the same API. The worker cannot rely on the `HttpOnly` `SameSite=Lax` cookie, so extension login returns the session token once. Enforcement reads `chrome.storage` when the network fails. `chrome.alarms` resyncs a worker that has gone to sleep. An active focus session makes matching block rules block immediately. With no active session, the schedule and optional daily limit apply. An allowlist match is never blocked. Migration `20261102140000_website_rules` was not applied here.
+
+## ADR-12. Habit streaks and goal progress are computed
+
+Habits stay a separate entity from tasks. The existing `habits` and `habit_entries` tables gained `target_count` and `count`. One entry per habit and civil date was already unique, so a second check-in updates that row. The streak is `currentHabitStreak` on read. It uses the current target and the entry counts, not the stored `completed` flag. Weekly streaks use `weekStartsOn`. The planner still ignores that preference.
+
+Goals reuse `goals.target_date` as the deadline and `milestones`, plus `position` and a `goal_tasks` join. Progress is `deriveGoalProgress`: completed milestones plus linked tasks whose status is `COMPLETED`, over the count of those rows. No percentage column exists, so it cannot drift. Linking a task does not copy it. Migration `20261102150000_habits_goals` was not applied here.

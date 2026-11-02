@@ -78,4 +78,18 @@
 5. With no focus session, a block rule applies only inside its window, and only after its daily limit when one is set
 6. Today’s totals on the Blocking page come from usage the extension reported
 
-Unfinished flows (habits, goals, review) are not in the product yet.
+## Habits
+
+1. Open Habits and add a name, daily or weekly frequency, and a target count
+2. Check in for today, or click a day on the month calendar
+3. Checking in again on that date updates the same entry
+4. The streak shown on the habit is computed from those entries
+
+## Goals
+
+1. Open Goals and add a title, optional description, deadline, and status
+2. Add milestones, mark them complete, reorder them, or delete them
+3. Link a task that already exists. Unlinking leaves the task in the task list
+4. The “n of m” line counts completed milestones and completed linked tasks
+
+The review and analytics flows are not in the product yet.

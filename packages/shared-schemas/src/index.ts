@@ -1,6 +1,8 @@
 import {
   FOCUS_MAX_PLANNED_SECONDS,
   FOCUS_MIN_PLANNED_SECONDS,
+  GOAL_STATUSES,
+  HABIT_FREQUENCIES,
   TASK_PRIORITIES,
   TASK_STATUSES,
   THEME_PREFERENCES,
@@ -245,6 +247,82 @@ export const websiteUsageQuerySchema = z.object({
     .optional(),
 })
 
+const civilDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY-MM-DD')
+
+export const createHabitSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  frequency: z.enum(HABIT_FREQUENCIES).optional(),
+  targetCount: z.number().int().min(1).max(100).optional(),
+})
+
+export const updateHabitSchema = z
+  .object({
+    name: z.string().trim().min(1).max(80).optional(),
+    frequency: z.enum(HABIT_FREQUENCIES).optional(),
+    targetCount: z.number().int().min(1).max(100).optional(),
+  })
+  .refine((value) => Object.values(value).some((item) => item !== undefined), {
+    message: 'At least one field is required',
+  })
+
+export const habitCheckInSchema = z.object({
+  date: civilDateSchema.optional(),
+  count: z.number().int().min(0).max(1000).optional(),
+})
+
+export const habitDetailQuerySchema = z.object({
+  month: z.string().regex(/^\d{4}-\d{2}$/, 'Expected YYYY-MM').optional(),
+})
+
+export const createGoalSchema = z.object({
+  title: z.string().trim().min(1).max(160),
+  description: z.string().trim().max(2000).nullable().optional(),
+  status: z.enum(GOAL_STATUSES).optional(),
+  deadline: civilDateSchema.nullable().optional(),
+})
+
+export const updateGoalSchema = z
+  .object({
+    title: z.string().trim().min(1).max(160).optional(),
+    description: z.string().trim().max(2000).nullable().optional(),
+    status: z.enum(GOAL_STATUSES).optional(),
+    deadline: civilDateSchema.nullable().optional(),
+  })
+  .refine((value) => Object.values(value).some((item) => item !== undefined), {
+    message: 'At least one field is required',
+  })
+
+export const createMilestoneSchema = z.object({
+  title: z.string().trim().min(1).max(160),
+})
+
+export const updateMilestoneSchema = z
+  .object({
+    title: z.string().trim().min(1).max(160).optional(),
+    completed: z.boolean().optional(),
+  })
+  .refine((value) => Object.values(value).some((item) => item !== undefined), {
+    message: 'At least one field is required',
+  })
+
+export const reorderMilestonesSchema = z.object({
+  ids: z.array(z.uuid()),
+})
+
+export const linkGoalTaskSchema = z.object({
+  taskId: z.uuid(),
+})
+
+export const goalMilestoneParamsSchema = z.object({
+  id: z.uuid(),
+  milestoneId: z.uuid(),
+})
+
+export const goalTaskParamsSchema = z.object({
+  id: z.uuid(),
+  taskId: z.uuid(),
+})
+
 export const taskIdParamSchema = z.object({
   id: z.uuid(),
 })
@@ -285,3 +363,13 @@ export type CreateWebsiteRuleInput = z.infer<typeof createWebsiteRuleSchema>
 export type UpdateWebsiteRuleInput = z.infer<typeof updateWebsiteRuleSchema>
 export type RecordWebsiteUsageInput = z.infer<typeof recordWebsiteUsageSchema>
 export type WebsiteUsageQuery = z.infer<typeof websiteUsageQuerySchema>
+export type CreateHabitInput = z.infer<typeof createHabitSchema>
+export type UpdateHabitInput = z.infer<typeof updateHabitSchema>
+export type HabitCheckInInput = z.infer<typeof habitCheckInSchema>
+export type HabitDetailQuery = z.infer<typeof habitDetailQuerySchema>
+export type CreateGoalInput = z.infer<typeof createGoalSchema>
+export type UpdateGoalInput = z.infer<typeof updateGoalSchema>
+export type CreateMilestoneInput = z.infer<typeof createMilestoneSchema>
+export type UpdateMilestoneInput = z.infer<typeof updateMilestoneSchema>
+export type ReorderMilestonesInput = z.infer<typeof reorderMilestonesSchema>
+export type LinkGoalTaskInput = z.infer<typeof linkGoalTaskSchema>

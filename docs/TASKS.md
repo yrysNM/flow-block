@@ -15,9 +15,11 @@
 - Daily planner with one block per task. Scheduling updates that task. Unscheduled tasks stay off the timeline
 - Focus timer with one active session, presets, custom duration, pause and resume, optional task, and history. Elapsed time comes from timestamps. Completing a session does not change task status
 - Website rules and usage events. The FocusFlow extension caches rules, enforces them, and retries usage with the same client event id
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, and password hashing
+- Habit CRUD, check-in that updates the same date, computed streaks, and a month calendar
+- Goal CRUD, milestones, links to existing tasks, and progress derived on read
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- Habits, goals, analytics, merging the legacy blocker, Redis, deployment
+- Analytics dashboard, merging the legacy blocker, Redis, deployment

@@ -9,6 +9,8 @@
         <NuxtLink to="/matrix" class="font-medium text-primary">Matrix</NuxtLink>
         <NuxtLink :to="plannerLink" class="font-medium text-primary">Planner</NuxtLink>
         <NuxtLink to="/board" class="font-medium text-primary">Board</NuxtLink>
+        <NuxtLink to="/habits" class="font-medium text-primary">Habits</NuxtLink>
+        <NuxtLink to="/goals" class="font-medium text-primary">Goals</NuxtLink>
       </p>
     </div>
 
@@ -58,16 +60,55 @@
         </ul>
       </section>
     </template>
+
+    <section class="rounded-card border border-line bg-surface shadow-card">
+      <div class="flex items-center justify-between border-b border-line px-5 py-4">
+        <h2 class="text-base font-semibold">Today’s habits</h2>
+        <NuxtLink to="/habits" class="text-sm font-medium text-primary">Open habits</NuxtLink>
+      </div>
+      <p v-if="habits.length === 0" class="px-5 py-6 text-sm text-secondary">No habits yet. Check-ins for today will show up here.</p>
+      <ul v-else class="divide-y divide-line">
+        <li v-for="habit in habits" :key="habit.id" class="flex items-center justify-between gap-3 px-5 py-4">
+          <div>
+            <p class="font-medium">{{ habit.name }}</p>
+            <p class="mt-1 text-sm text-secondary">{{ habit.todayCount }}/{{ habit.targetCount }} today · streak {{ habit.streak }}</p>
+          </div>
+          <span class="text-sm" :class="habit.todayMet ? 'text-primary' : 'text-secondary'">{{ habit.todayMet ? 'Checked in' : 'Not yet' }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="rounded-card border border-line bg-surface shadow-card">
+      <div class="flex items-center justify-between border-b border-line px-5 py-4">
+        <h2 class="text-base font-semibold">Active goals</h2>
+        <NuxtLink to="/goals" class="text-sm font-medium text-primary">Open goals</NuxtLink>
+      </div>
+      <p v-if="activeGoals.length === 0" class="px-5 py-6 text-sm text-secondary">No active goals. Progress stays on the goal, not on a chart.</p>
+      <ul v-else class="divide-y divide-line">
+        <li v-for="goal in activeGoals" :key="goal.id" class="px-5 py-4">
+          <p class="font-medium">{{ goal.title }}</p>
+          <p class="mt-1 text-sm text-secondary">
+            {{ goal.progress.total === 0 ? 'No milestones or tasks yet' : `${goal.progress.completed} of ${goal.progress.total}` }}
+            <span v-if="goal.deadline"> · due {{ goal.deadline }}</span>
+          </p>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { GoalView, HabitView } from '@focusflow/shared-types'
 import { formatWhen } from '~/utils/datetime'
 import { apiErrorMessage } from '~/utils/api-error'
 
 const auth = useAuthStore()
 const tasks = useTasksStore()
+const api = useApi()
 const error = ref('')
+const habits = ref<HabitView[]>([])
+const goals = ref<GoalView[]>([])
+const activeGoals = computed(() => goals.value.filter((goal) => goal.status === 'ACTIVE'))
 
 const summary = computed(() => tasks.summary)
 const plannerLink = computed(() => (summary.value?.date ? `/planner?date=${summary.value.date}` : '/planner'))
@@ -82,10 +123,16 @@ const cards = computed(() => {
 })
 
 onMounted(async () => {
-  try {
-    await tasks.fetchSummary()
-  } catch (caught) {
-    error.value = apiErrorMessage(caught, 'Could not load the dashboard.')
+  const [summary, habitRows, goalRows] = await Promise.allSettled([
+    tasks.fetchSummary(),
+    api<HabitView[]>('/habits'),
+    api<GoalView[]>('/goals'),
+  ])
+  if (habitRows.status === 'fulfilled') habits.value = habitRows.value
+  if (goalRows.status === 'fulfilled') goals.value = goalRows.value
+  const failed = [summary, habitRows, goalRows].find((result) => result.status === 'rejected')
+  if (failed && failed.status === 'rejected') {
+    error.value = apiErrorMessage(failed.reason, 'Could not load the dashboard.')
   }
 })
 </script>

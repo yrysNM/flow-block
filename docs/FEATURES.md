@@ -17,14 +17,16 @@
 | Daily planner timeline and unscheduled list | API and Planner page |
 | Focus timer, pause and resume, and session history | API and Focus page |
 | Website rules, usage totals, and extension blocking | API, Blocking page, and `apps/extension` |
-| Dashboard counts and tasks due today | API and Dashboard |
-| Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories |
+| Dashboard counts, tasks due today, today’s habits, and active goals | API and Dashboard |
+| Habit CRUD, check-in, streak, and a month calendar | API and Habits page |
+| Goal CRUD, milestones, task links, and derived progress | API and Goals page |
+| Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories, Habits, Goals |
 | Derived Eisenhower quadrant | API response and task UI |
 | OpenAPI | `/api/docs` |
 
 ## Declared in the database, no product UI
 
-Time log, habit, habit entry, goal, milestone, notification. The quadrant is still derived. The time log is not the planner and is not the focus timer. Website rules and website usage are used by the API.
+Time log and notification. The quadrant is still derived. The time log is not the planner and is not the focus timer. Habits, goals, milestones, and website rules are used by the API.
 
 ## Already shipped outside this slice
 
@@ -32,4 +34,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-Analytics, AI planning, and connecting the legacy `src/` blocker to these rules.
+The analytics dashboard, AI planning, and connecting the legacy `src/` blocker to these rules.

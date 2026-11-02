@@ -53,6 +53,12 @@ One row with `endedAt` null per user. Starting again returns that row. Pause and
 
 See [WEBSITE_BLOCKING_LOGIC.md](WEBSITE_BLOCKING_LOGIC.md). Ownership matches the other resources: the session user id is the only owner, and a foreign rule id is 404. A duplicate client usage event id does not increase `usedSeconds`.
 
+## Habits and goals
+
+A habit is not a task. Check-in updates the row for that habit and civil date. The streak walks met days or weeks and stops on a miss. See [HABITS.md](HABITS.md).
+
+Goal progress counts completed milestones and linked tasks with status `COMPLETED`. The service does not write a percentage. See [GOALS.md](GOALS.md).
+
 ## Today
 
 `localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.

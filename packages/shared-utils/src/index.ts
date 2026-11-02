@@ -8,6 +8,15 @@ export {
   type BlockingReason,
   type BlockingRule,
 } from './blocking'
+export {
+  addCivilDays,
+  civilWeekday,
+  civilWeekStart,
+  currentHabitStreak,
+  isCivilDate,
+  type HabitEntryCount,
+} from './habits'
+export { deriveGoalProgress, type GoalProgress } from './goals'
 
 const DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/
 
