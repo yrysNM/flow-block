@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  analyticsQuerySchema,
   createCategorySchema,
   createGoalSchema,
   createHabitSchema,
@@ -100,5 +101,15 @@ describe('shared schemas', () => {
       deadline: '2026-12-01',
       progress: 40,
     })).toEqual({ title: 'Ship', deadline: '2026-12-01' })
+  })
+
+  it('drops a client userId and totals on an analytics query', () => {
+    expect(analyticsQuerySchema.parse({
+      range: '30',
+      userId: 'someone-else',
+      tasksCompleted: 99,
+      focusSeconds: 10,
+    })).toEqual({ range: '30' })
+    expect(analyticsQuerySchema.parse({})).toEqual({ range: '7' })
   })
 })

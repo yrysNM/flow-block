@@ -20,6 +20,7 @@
 | Dashboard counts, tasks due today, today’s habits, and active goals | API and Dashboard |
 | Habit CRUD, check-in, streak, and a month calendar | API and Habits page |
 | Goal CRUD, milestones, task links, and derived progress | API and Goals page |
+| Analytics totals and a daily trend | API and Analytics page |
 | Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories, Habits, Goals |
 | Derived Eisenhower quadrant | API response and task UI |
 | OpenAPI | `/api/docs` |
@@ -34,4 +35,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-The analytics dashboard, AI planning, and connecting the legacy `src/` blocker to these rules.
+The AI assistant, notifications, and connecting the legacy `src/` blocker to these rules.

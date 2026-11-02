@@ -23,12 +23,13 @@ A person can:
 - Run a focus timer and block sites with the FocusFlow extension
 - Create habits, check in for a date, and see a streak and a month of check-ins
 - Create goals with a deadline, milestones, and links to existing tasks, and see progress derived from those rows
+- See tasks completed, focus time, website usage, habit consistency, and a daily trend for the last 7 or 30 local days
 
 A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Recurring tasks, reminders, analytics charts, AI planning, and sync with the existing blocker.
+Recurring tasks, reminders, an AI assistant, and sync with the existing blocker.
 
 ## Task rules
 

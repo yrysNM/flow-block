@@ -35,23 +35,6 @@
             </li>
           </ul>
         </div>
-        <div>
-          <p class="px-2 text-xs font-semibold uppercase tracking-wide text-secondary">Later</p>
-          <ul class="mt-2 space-y-1">
-            <li v-for="item in later" :key="item">
-              <button
-                type="button"
-                class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-secondary"
-                disabled
-                :aria-disabled="true"
-                title="Not in this release"
-              >
-                <span>{{ item }}</span>
-                <span class="text-[11px] uppercase tracking-wide">Soon</span>
-              </button>
-            </li>
-          </ul>
-        </div>
       </nav>
     </aside>
   </div>
@@ -73,10 +56,9 @@ const primary = [
   { label: 'Categories', to: '/categories' },
   { label: 'Habits', to: '/habits' },
   { label: 'Goals', to: '/goals' },
+  { label: 'Analytics', to: '/analytics' },
   { label: 'Settings', to: '/settings' },
 ]
-
-const later = ['Analytics']
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'

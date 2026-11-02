@@ -12,6 +12,7 @@ NestJS 12 application in `apps/api`. Global prefix `api`. Global `AuthGuard` wit
 | `websites` | Owner-scoped rules, usage totals, and idempotent visit events |
 | `habits` | Owner-scoped habits, check-ins, and streaks computed on read |
 | `goals` | Owner-scoped goals, milestones, task links, and derived progress |
+| `analytics` | Read-only totals and a per-day series for the session user |
 | `prisma` | Global `PrismaClient` |
 | `health` | Liveness without a database query |
 

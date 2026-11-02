@@ -87,7 +87,10 @@ Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `CO
 | DELETE | `/api/goals/:id/milestones/:milestoneId` | 204 |
 | POST | `/api/goals/:id/tasks` | `{ taskId }` links an existing task owned by the same user. A second link returns the goal |
 | DELETE | `/api/goals/:id/tasks/:taskId` | Removes the link. The task stays |
+| GET | `/api/analytics` | Optional `range=7` or `range=30` (default 7). Totals and one series point per local day. A client `userId` or client totals are stripped. See [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) |
 
 Habit JSON includes `frequency`, `targetCount`, `streak`, `todayCount`, and `todayMet`. A detail adds `month` and `entries` (`date`, `count`, `met`). Goal JSON includes `deadline`, `status`, `milestones`, `tasks`, and `progress: { completed, total }`. There is no progress percentage column.
+
+Analytics JSON includes `range`, `timezone`, `startDate`, `endDate`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitConsistency: { checkIns, expected }`, and `series`. Each series point has `date`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitCheckIns`, and `habitExpected`. A day with no rows is a zero.
 
 A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notification routes are not implemented.

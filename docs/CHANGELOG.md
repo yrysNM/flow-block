@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 — Analytics
+
+- Added `GET /api/analytics` for the last 7 or 30 local days. Every number is computed on the server for the signed-in user
+- Tasks completed, focus time with pauses removed, website usage, and habit consistency are defined in `docs/ANALYTICS_METRICS.md`
+- The per-day series includes a zero for each day with no rows
+- Added `/analytics` with an Apache ECharts trend of tasks and focus minutes, and an empty state when the range has no activity
+- Left the AI assistant, notifications, and deployment unbuilt
+
 ## 0.6.0 — Habits and goals
 
 - Added owner-scoped habit CRUD. Frequency is daily or weekly, with a target count
