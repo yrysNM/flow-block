@@ -3,6 +3,7 @@
 // scheduled_start and scheduled_end are one optional time block on the task. Both null means unscheduled.
 // Focus elapsed time is computed from started_at, paused_at, paused_seconds, and ended_at.
 // elapsed_seconds is not the source of truth. One active session per user is a partial unique index in SQL.
+// Website rules are BLOCK, LIMIT, or ALLOW. Schedule minutes are local minutes from midnight. Both null means all day.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -41,6 +42,7 @@ enum GoalStatus {
 enum WebsiteRuleMode {
   BLOCK
   LIMIT
+  ALLOW
 }
 
 enum NotificationType {
@@ -71,9 +73,10 @@ model User {
   habitEntries  HabitEntry[]
   goals         Goal[]
   milestones    Milestone[]
-  websiteRules  WebsiteRule[]
-  websiteUsages WebsiteUsage[]
-  notifications Notification[]
+  websiteRules       WebsiteRule[]
+  websiteUsages      WebsiteUsage[]
+  websiteUsageEvents WebsiteUsageEvent[]
+  notifications      Notification[]
 
   @@map("users")
 }
@@ -310,10 +313,13 @@ model WebsiteRule {
   domain            String
   mode              WebsiteRuleMode @default(BLOCK)
   enabled           Boolean         @default(true)
-  dailyLimitMinutes Int?            @map("daily_limit_minutes")
-  createdAt         DateTime        @default(now()) @map("created_at")
-  updatedAt         DateTime        @updatedAt @map("updated_at")
-  usage             WebsiteUsage[]
+  dailyLimitMinutes   Int?            @map("daily_limit_minutes")
+  scheduleStartMinute Int?          @map("schedule_start_minute")
+  scheduleEndMinute   Int?          @map("schedule_end_minute")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+  usage               WebsiteUsage[]
+  events              WebsiteUsageEvent[]
 
   @@unique([userId, domain])
   @@index([userId])
@@ -334,6 +340,23 @@ model WebsiteUsage {
   @@unique([websiteRuleId, usageDate])
   @@index([userId])
   @@map("website_usage")
+}
+
+model WebsiteUsageEvent {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientEventId String       @map("client_event_id")
+  websiteRuleId String?      @map("website_rule_id") @db.Uuid
+  websiteRule   WebsiteRule? @relation(fields: [websiteRuleId], references: [id], onDelete: SetNull)
+  domain        String
+  seconds       Int
+  occurredAt    DateTime     @map("occurred_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  @@unique([userId, clientEventId])
+  @@index([userId])
+  @@map("website_usage_events")
 }
 
 model Notification {

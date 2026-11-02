@@ -54,6 +54,14 @@ Returned by `/api/focus-sessions`. `elapsedSeconds` and `remainingSeconds` are c
 
 History uses the same page shape as tasks: `{ data, meta }`.
 
+## Website rule
+
+`{ id, domain, mode, enabled, dailyLimitMinutes, scheduleStartMinute, scheduleEndMinute, createdAt, updatedAt }`. `mode` is `BLOCK` or `ALLOW`. Schedule minutes are `0`–`1439` or both null.
+
+Usage totals: `{ date, timezone, totals: [{ ruleId, domain, mode, usedSeconds, dailyLimitMinutes }] }`.
+
+A usage event result is `{ stored, clientEventId, ruleId, domain, usedSeconds }`. `stored: false` means that client event id was already saved.
+
 ## Summary
 
 `{ date, timezone, counts: { TODO, IN_PROGRESS, COMPLETED, total }, today: TaskView[] }`

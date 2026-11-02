@@ -69,6 +69,7 @@ const primary = [
   { label: 'Matrix', to: '/matrix' },
   { label: 'Planner', to: '/planner' },
   { label: 'Focus', to: '/focus' },
+  { label: 'Blocking', to: '/blocking' },
   { label: 'Categories', to: '/categories' },
   { label: 'Settings', to: '/settings' },
 ]

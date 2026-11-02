@@ -5,7 +5,7 @@ alwaysApply: true
 
 FocusFlow is one account and one Task across web, API, and the future extension. Canonical flow: Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 4a is shipped: one focus session per user, with elapsed time computed from server timestamps. Completing a session does not change task status. Do not add charts, habits, goals, or extension blocking unless the task says so.
+Phase 4b is shipped: website rules and Chrome extension enforcement. An active focus session turns block rules on. Otherwise each rule follows its schedule. Do not add charts, habits, goals, or analytics unless the task says so. Keep the legacy blocker in `src/` intact.
 
 Import task status and priority from `@focusflow/shared-types`. Derive Eisenhower quadrant from `isUrgent` and `isImportant`. Do not store quadrant.
 

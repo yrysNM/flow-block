@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 4a: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, and the focus timer.
+These files describe the product and what this repository actually contains after Phase 4b: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, and the FocusFlow extension.
 
 Start here:
 
@@ -12,4 +12,4 @@ Start here:
 - [EISENHOWER_MATRIX.md](EISENHOWER_MATRIX.md) — quadrant board
 - [DAILY_PLANNER.md](DAILY_PLANNER.md) — one-day time blocks
 
-The concept note still includes habits, website blocking, and analytics. Those modules are not implemented. The focus timer is shipped. The matrix is shipped. The quadrant on a task is still calculated from urgent and important.
+The concept note still includes habits and analytics. Those modules are not implemented. Website rules and the FocusFlow extension are shipped. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important.

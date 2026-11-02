@@ -49,6 +49,10 @@ A task has one block. `scheduledStart` and `scheduledEnd` are both set or both n
 
 One row with `endedAt` null per user. Starting again returns that row. Pause and resume change pause timestamps only. Elapsed time is `floor` of the span from `startedAt` to `endedAt` or now, minus closed and open pauses. Completing or stopping a session writes the focus row and does not write the task. The rules live in `@focusflow/shared-utils` and `FocusService`. See [TIMER_LOGIC.md](TIMER_LOGIC.md).
 
+## Website rules
+
+See [WEBSITE_BLOCKING_LOGIC.md](WEBSITE_BLOCKING_LOGIC.md). Ownership matches the other resources: the session user id is the only owner, and a foreign rule id is 404. A duplicate client usage event id does not increase `usedSeconds`.
+
 ## Today
 
 `localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.

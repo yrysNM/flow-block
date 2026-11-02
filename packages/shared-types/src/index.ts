@@ -298,6 +298,43 @@ export interface FocusSessionListResponse {
   meta: PageMeta
 }
 
+export const WEBSITE_RULE_MODES = ['BLOCK', 'ALLOW'] as const
+export type WebsiteRuleMode = (typeof WEBSITE_RULE_MODES)[number]
+
+export interface WebsiteRuleView {
+  id: string
+  domain: string
+  mode: WebsiteRuleMode
+  enabled: boolean
+  dailyLimitMinutes: number | null
+  scheduleStartMinute: number | null
+  scheduleEndMinute: number | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface WebsiteUsageTotal {
+  ruleId: string
+  domain: string
+  mode: WebsiteRuleMode
+  usedSeconds: number
+  dailyLimitMinutes: number | null
+}
+
+export interface WebsiteUsageResponse {
+  date: string
+  timezone: string
+  totals: WebsiteUsageTotal[]
+}
+
+export interface WebsiteUsageEventResult {
+  stored: boolean
+  clientEventId: string
+  ruleId: string | null
+  domain: string
+  usedSeconds: number
+}
+
 export interface ApiErrorBody {
   statusCode: number
   error: string

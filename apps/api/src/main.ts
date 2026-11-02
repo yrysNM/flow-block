@@ -10,9 +10,18 @@ export function configureApp(app: INestApplication): void {
   app.setGlobalPrefix('api')
   app.use(cookieParser())
   app.useGlobalFilters(new AllExceptionsFilter())
-  const origin = process.env.WEB_ORIGIN ?? 'http://localhost:3000'
+  const allowedOrigins = (process.env.WEB_ORIGIN ?? 'http://localhost:3000')
+    .split(',')
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0)
   app.enableCors({
-    origin: origin.split(',').map((value) => value.trim()),
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('chrome-extension://')) {
+        callback(null, true)
+        return
+      }
+      callback(null, false)
+    },
     credentials: true,
   })
   const http = app.getHttpAdapter().getInstance() as {
@@ -24,8 +33,8 @@ export function configureApp(app: INestApplication): void {
 
   const config = new DocumentBuilder()
     .setTitle('FocusFlow API')
-    .setDescription('FocusFlow API. Quadrant is derived. Focus elapsed time is computed from timestamps.')
-    .setVersion('0.4.0')
+    .setDescription('FocusFlow API. Quadrant is derived. Focus elapsed time is computed from timestamps. Website blocking follows focus mode, then each rule schedule.')
+    .setVersion('0.5.0')
     .addCookieAuth('ff_session', { type: 'apiKey', in: 'cookie', name: 'ff_session' }, 'session')
     .build()
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, config))

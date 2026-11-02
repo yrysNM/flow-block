@@ -1,3 +1,14 @@
+export {
+  hostMatchesDomain,
+  isWithinSchedule,
+  normalizeDomain,
+  shouldBlockWebsite,
+  type BlockingDecision,
+  type BlockingMode,
+  type BlockingReason,
+  type BlockingRule,
+} from './blocking'
+
 const DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/
 
 export function isValidTimeZone(timeZone: string): boolean {
@@ -98,6 +109,13 @@ export function focusElapsedSeconds(input: FocusTiming): number {
 
 export function focusRemainingSeconds(plannedSeconds: number, elapsedSeconds: number): number {
   return Math.max(0, plannedSeconds - elapsedSeconds)
+}
+
+/** Minute of the civil day in `timeZone`, from 0 through 1439. */
+export function minuteInTimeZone(instant: Date, timeZone: string): number {
+  if (!isValidTimeZone(timeZone)) throw new Error('Invalid time zone')
+  const parts = readZonedParts(instant, timeZone)
+  return parts.hour * 60 + parts.minute
 }
 
 /** Calendar date as YYYY-MM-DD in the given IANA time zone. */

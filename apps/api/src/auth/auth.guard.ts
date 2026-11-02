@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core'
 import type { Request } from 'express'
 import { IS_PUBLIC } from '../common/public.decorator'
 import { AuthService } from './auth.service'
-import { SESSION_COOKIE } from './session-cookie'
+import { readSessionToken } from './session-cookie'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,8 +20,8 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true
 
     const request = context.switchToHttp().getRequest<Request>()
-    const token = request.cookies?.[SESSION_COOKIE]
-    if (typeof token !== 'string' || token.length === 0) {
+    const token = readSessionToken(request)
+    if (!token) {
       throw new UnauthorizedException({
         statusCode: 401,
         error: 'Unauthorized',

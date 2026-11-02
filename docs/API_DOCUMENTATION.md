@@ -15,6 +15,7 @@ Error body:
 | GET | `/api/health` | `{ "status": "ok" }`. No database |
 | POST | `/api/auth/register` | 201 and session cookie. Body: email, password, name |
 | POST | `/api/auth/login` | 200 and session cookie |
+| POST | `/api/auth/extension/login` | 200, session cookie, and `{ token, user, preferences }`. The token is for the extension only. The web login response does not include it |
 | POST | `/api/auth/logout` | 204. Clears the cookie even when the token is already gone |
 
 ## Session required
@@ -58,9 +59,15 @@ Error body:
 | POST | `/api/focus-sessions/:id/resume` | Closes the open pause into `pausedSeconds`. A resume while running returns the session unchanged |
 | POST | `/api/focus-sessions/:id/complete` | Sets `endedAt` and `completed: true`. Does not update the task |
 | POST | `/api/focus-sessions/:id/stop` | Sets `endedAt` and `completed: false`. Does not update the task |
+| GET | `/api/websites` | The signed-in user’s rules, domain order |
+| POST | `/api/websites` | 201. `{ domain, mode?, enabled?, dailyLimitMinutes?, scheduleStartMinute?, scheduleEndMinute? }`. `mode` is `BLOCK` or `ALLOW`. Schedule minutes are both set or both null. A client `userId` is stripped. Duplicate domain is 409 |
+| PATCH | `/api/websites/:id` | Same fields. 404 if not owned |
+| DELETE | `/api/websites/:id` | 204 |
+| GET | `/api/websites/usage` | Optional `date=YYYY-MM-DD` in the user time zone. Totals per rule, including zeros |
+| POST | `/api/websites/usage-events` | `{ clientEventId, domain, seconds, occurredAt? }`. Stores the event once. A repeated `clientEventId` returns `stored: false` and does not add seconds |
 
 Task JSON includes `categoryId`, `category` (`{ id, name, color }` or null), `tags`, `subtasks`, `scheduledStart`, and `scheduledEnd`. `categoryId` must belong to the same user or the write is rejected. A client `userId` is stripped. Quadrant is computed and is not a stored field.
 
 Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `COMPLETED`, `STOPPED`), `startedAt`, `endedAt`, `pausedAt`, `pausedSeconds`, computed `elapsedSeconds` and `remainingSeconds`, `completed`, `serverNow`, and `task` (`{ id, title, status }` or null). `elapsedSeconds` in the response is calculated. The database column of that name is not the source of truth.
 
-Routes for habits, goals, website rules, and notifications are not implemented.
+A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Routes for habits, goals, and notifications are not implemented.
