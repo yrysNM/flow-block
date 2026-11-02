@@ -23,7 +23,8 @@
 - Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, a wrong current password, a theme round-trip, the focus page’s initial duration, password hashing, an empty assistant prompt, and a normal prompt that returns not-configured without creating a task
 - Docs listed in the milestone
 - Assistant foundation: session user, prompt validation, unconfigured provider, and `/assistant`
+- Recurring tasks: `NONE`, `DAILY`, or `WEEKLY` on the task. Completing a repeating task inserts one next open task. A second completion does not. A non-recurring completion inserts nothing
 
 ## Next, not started
 
-- A configured assistant provider, recurring tasks, a notification inbox, merging the legacy blocker, Redis
+- A configured assistant provider, a notification inbox, merging the legacy blocker, Redis

@@ -6,6 +6,7 @@
 // Website rules are BLOCK, LIMIT, or ALLOW. Schedule minutes are local minutes from midnight. Both null means all day.
 // Habit streak is computed from entries against target_count. The entry completed flag is not the streak.
 // Goal progress is derived from completed milestones and completed linked tasks. It is not a column.
+// Task recurrence is NONE, DAILY, or WEEKLY. Completing a recurring task inserts one successor. Reads do not invent future rows.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -28,6 +29,12 @@ enum TaskPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum TaskRecurrence {
+  NONE
+  DAILY
+  WEEKLY
 }
 
 enum HabitFrequency {
@@ -146,6 +153,11 @@ model Task {
   scheduledStart DateTime?    @map("scheduled_start")
   scheduledEnd   DateTime?    @map("scheduled_end")
   completedAt    DateTime?    @map("completed_at")
+  recurrence     TaskRecurrence @default(NONE)
+  /// Set on the successor. Unique, so one completed task has one next task.
+  recurredFromId String?        @unique @map("recurred_from_id") @db.Uuid
+  recurredFrom   Task?          @relation("TaskSuccessor", fields: [recurredFromId], references: [id], onDelete: SetNull)
+  successor      Task?          @relation("TaskSuccessor")
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 

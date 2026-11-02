@@ -33,9 +33,9 @@ Error body:
 | GET | `/api/tasks/matrix` | Same filters as the board. Four quadrants from `isUrgent` and `isImportant`. Counts are totals. Each quadrant returns at most 100 tasks |
 | GET | `/api/tasks/planner` | Optional `date=YYYY-MM-DD` in the user time zone. `timeline` is tasks whose `scheduledStart` falls on that day. `unscheduled` is tasks with a null start. Each list is capped at 100. `counts` are the full totals |
 | GET | `/api/tasks/:id` | 404 if not owned |
-| POST | `/api/tasks` | 201 |
-| PATCH | `/api/tasks/:id` | At least one field |
-| PATCH | `/api/tasks/:id/status` | `{ "status" }`. Writes status only in meaning: urgent and important stay as they are |
+| POST | `/api/tasks` | 201. Optional `recurrence` is `NONE` (default), `DAILY`, or `WEEKLY` |
+| PATCH | `/api/tasks/:id` | At least one field. `recurrence` may be set here |
+| PATCH | `/api/tasks/:id/status` | `{ "status" }`. Writes status only in meaning: urgent and important stay as they are. If the task is `DAILY` or `WEEKLY` and becomes `COMPLETED`, one next `TODO` is inserted. The response is the completed task. A second completion does not insert another |
 | PATCH | `/api/tasks/:id/quadrant` | `{ "isUrgent", "isImportant" }`. Writes those two fields only. Status is not in the update |
 | PATCH | `/api/tasks/:id/schedule` | `{ "scheduledStart", "scheduledEnd" }`. Both ISO datetimes, or both null to clear. Writes the block only. End must be after start and on the same local day |
 | DELETE | `/api/tasks/:id` | 204 |

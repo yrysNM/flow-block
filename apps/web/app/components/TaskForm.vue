@@ -34,6 +34,15 @@
         <input v-model="model.deadline" type="datetime-local" class="field mt-1" />
       </label>
       <label class="block text-sm font-medium text-ink">
+        Repeats
+        <select v-model="model.recurrence" class="field mt-1">
+          <option v-for="recurrence in TASK_RECURRENCES" :key="recurrence" :value="recurrence">
+            {{ TASK_RECURRENCE_LABELS[recurrence] }}
+          </option>
+        </select>
+        <span class="mt-1 block text-xs font-normal text-secondary">Completing a repeating task adds one open copy one interval later. The completed task stays completed.</span>
+      </label>
+      <label class="block text-sm font-medium text-ink">
         Category
         <select v-model="model.categoryId" class="field mt-1">
           <option value="">No category</option>
@@ -131,12 +140,15 @@ import {
   EISENHOWER_QUADRANT_LABELS,
   TASK_PRIORITIES,
   TASK_PRIORITY_LABELS,
+  TASK_RECURRENCE_LABELS,
+  TASK_RECURRENCES,
   TASK_STATUS_LABELS,
   deriveEisenhowerQuadrant,
   type CategoryView,
   type SubtaskView,
   type TagView,
   type TaskPriority,
+  type TaskRecurrence,
   type TaskStatus,
   type TaskTagRef,
 } from '@focusflow/shared-types'
@@ -150,6 +162,7 @@ export interface TaskDraft {
   isImportant: boolean
   deadline: string
   categoryId: string
+  recurrence: TaskRecurrence
 }
 
 const model = defineModel<TaskDraft>({ required: true })

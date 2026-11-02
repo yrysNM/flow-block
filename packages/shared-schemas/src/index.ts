@@ -6,6 +6,7 @@ import {
   GOAL_STATUSES,
   HABIT_FREQUENCIES,
   TASK_PRIORITIES,
+  TASK_RECURRENCES,
   TASK_STATUSES,
   THEME_PREFERENCES,
   WEBSITE_RULE_MODES,
@@ -20,6 +21,7 @@ const isoDateTime = z
 
 export const taskStatusSchema = z.enum(TASK_STATUSES)
 export const taskPrioritySchema = z.enum(TASK_PRIORITIES)
+export const taskRecurrenceSchema = z.enum(TASK_RECURRENCES)
 export const themePreferenceSchema = z.enum(THEME_PREFERENCES)
 
 export const registerSchema = z.object({
@@ -73,6 +75,7 @@ export const createTaskSchema = z.object({
   isImportant: z.boolean().optional(),
   deadline: isoDateTime.nullable().optional(),
   categoryId: z.uuid().nullable().optional(),
+  recurrence: taskRecurrenceSchema.optional(),
 })
 
 export const updateTaskSchema = z
@@ -85,6 +88,7 @@ export const updateTaskSchema = z
     isImportant: z.boolean().optional(),
     deadline: isoDateTime.nullable().optional(),
     categoryId: z.uuid().nullable().optional(),
+    recurrence: taskRecurrenceSchema.optional(),
   })
   .refine((value) => Object.values(value).some((item) => item !== undefined), {
     message: 'At least one field is required',

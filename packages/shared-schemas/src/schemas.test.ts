@@ -26,6 +26,11 @@ describe('shared schemas', () => {
     })
     expect(parsed).toEqual({ title: 'Write the slice' })
     expect(parsed).not.toHaveProperty('userId')
+    expect(createTaskSchema.parse({ title: 'Repeat', recurrence: 'DAILY', userId: 'someone-else' })).toEqual({
+      title: 'Repeat',
+      recurrence: 'DAILY',
+    })
+    expect(createTaskSchema.safeParse({ title: 'Repeat', recurrence: 'MONTHLY' }).success).toBe(false)
   })
 
   it('normalizes email and rejects a short password', () => {

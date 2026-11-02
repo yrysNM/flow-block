@@ -4,6 +4,16 @@ export type TaskStatus = (typeof TASK_STATUSES)[number]
 export const TASK_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] as const
 export type TaskPriority = (typeof TASK_PRIORITIES)[number]
 
+/** Stored on the task. NONE does not create another row when the task is completed. */
+export const TASK_RECURRENCES = ['NONE', 'DAILY', 'WEEKLY'] as const
+export type TaskRecurrence = (typeof TASK_RECURRENCES)[number]
+
+export const TASK_RECURRENCE_LABELS: Record<TaskRecurrence, string> = {
+  NONE: 'Does not repeat',
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+}
+
 /** Characters accepted by POST /api/assistant after trim. */
 export const ASSISTANT_PROMPT_MAX_LENGTH = 2000
 
@@ -216,6 +226,7 @@ export interface TaskView {
   subtasks: SubtaskView[]
   scheduledStart: string | null
   scheduledEnd: string | null
+  recurrence: TaskRecurrence
   completedAt: string | null
   createdAt: string
   updatedAt: string

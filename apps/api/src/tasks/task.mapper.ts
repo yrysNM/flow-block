@@ -3,6 +3,7 @@ import {
   deriveEisenhowerQuadrant,
   type SubtaskView,
   type TaskPriority,
+  type TaskRecurrence,
   type TaskStatus,
   type TaskView,
 } from '@focusflow/shared-types'
@@ -36,6 +37,7 @@ export interface TaskRecord {
   deadline: Date | null
   scheduledStart: Date | null
   scheduledEnd: Date | null
+  recurrence?: TaskRecurrence
   categoryId: string | null
   category?: TaskCategoryRelation | null
   tags?: TaskTagRelation[]
@@ -85,6 +87,7 @@ export function toTaskView(task: TaskRecord): TaskView {
     deadline: task.deadline ? task.deadline.toISOString() : null,
     scheduledStart: task.scheduledStart ? task.scheduledStart.toISOString() : null,
     scheduledEnd: task.scheduledEnd ? task.scheduledEnd.toISOString() : null,
+    recurrence: task.recurrence ?? 'NONE',
     categoryId: task.categoryId,
     category: task.category
       ? { id: task.category.id, name: task.category.name, color: task.category.color }

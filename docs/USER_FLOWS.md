@@ -101,6 +101,13 @@ There is no notification inbox on this page.
 2. The totals and the chart come from `GET /api/analytics` for the signed-in user
 3. A range with no tasks, focus time, website usage, or habit check-ins shows an empty state instead of a sample chart
 
+## Recurring task
+
+1. Create or edit a task and set Repeats to Daily or Weekly
+2. Mark that task completed
+3. The completed task stays completed. One new to-do appears, due one interval later when the original had a deadline
+4. Completing it again does not add a second copy. A task that does not repeat adds none
+
 ## Assistant
 
 1. Open Assistant and write a prompt

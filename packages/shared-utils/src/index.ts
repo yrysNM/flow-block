@@ -149,6 +149,25 @@ export function minuteInTimeZone(instant: Date, timeZone: string): number {
   return parts.hour * 60 + parts.minute
 }
 
+/**
+ * Move an instant by whole local days in `timeZone`, keeping the local clock time.
+ * Daylight-saving transitions change the UTC offset, not the wall time.
+ */
+export function addZonedInterval(instant: Date, days: number, timeZone: string): Date {
+  if (!isValidTimeZone(timeZone)) throw new Error('Invalid time zone')
+  const parts = readZonedParts(instant, timeZone)
+  const shifted = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + days))
+  return zonedLocalToUtc(
+    shifted.getUTCFullYear(),
+    shifted.getUTCMonth() + 1,
+    shifted.getUTCDate(),
+    parts.hour,
+    parts.minute,
+    parts.second,
+    timeZone,
+  )
+}
+
 /** Calendar date as YYYY-MM-DD in the given IANA time zone. */
 export function formatDateInTimeZone(instant: Date, timeZone: string): string {
   if (!isValidTimeZone(timeZone)) throw new Error('Invalid time zone')
