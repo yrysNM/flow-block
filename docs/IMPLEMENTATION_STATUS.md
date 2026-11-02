@@ -1,6 +1,6 @@
 # Implementation status
 
-Phase 3 adds the Eisenhower matrix and a daily planner on the Phase 2 branch. Focus, habits, goals, analytics, and extension blocking are still schema or docs only.
+Phase 4a adds a focus timer and session history on the Phase 3 branch. Habits, goals, analytics, and extension blocking are still schema or docs only.
 
 ## Reused
 
@@ -13,8 +13,8 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, categories, settings, login, register
-- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, Swagger
+- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, focus, categories, settings, login, register
+- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, focus sessions, Swagger
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
 - Prisma models listed in the milestone, plus `Session`
@@ -22,7 +22,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-Focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable.
+Extension blocking, habits, goals, analytics, sync. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable. The focus clock in the browser is a display. The API computes elapsed time.
 
 ## Database blocker
 
@@ -30,16 +30,16 @@ Focus timer, extension blocking, habits, goals, analytics, sync. Redis was not a
 
 ## Verification
 
-Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` and `psql` are not installed. The integration test did not run. `prisma migrate deploy` was not run. `prisma generate` did succeed, because it does not need a database.
+Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` and `psql` are not installed (`command -v` found neither). The integration test did not run. `prisma migrate deploy` was not run. `prisma generate` did succeed, because it does not need a database.
 
 ### FocusFlow unit tests
 
 `npm run test:focusflow`
 
 - `@focusflow/shared-types`: 7 passed
-- `@focusflow/shared-schemas`: 4 passed
-- `@focusflow/shared-utils`: 3 passed
-- `@focusflow/api`: 23 passed, 1 skipped (`test/tasks.integration.test.ts`)
+- `@focusflow/shared-schemas`: 5 passed
+- `@focusflow/shared-utils`: 7 passed
+- `@focusflow/api`: 30 passed, 1 skipped (`test/tasks.integration.test.ts`)
 
 ### Typecheck
 
@@ -54,7 +54,7 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 ### Production builds
 
 - `npm run build -w @focusflow/api` — passed (`nest build`)
-- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 3.6s)
+- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 4.65s)
 - `npm run build -w @focusflow/extension` — passed (`tsc`)
 
 ### Existing extension (preserved)
@@ -63,4 +63,4 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 
 ### Not exercised
 
-Matrix drag, planner scheduling, and the other signed-in screens were not clicked through in a browser. Those routes need Postgres. Service tests cover the quadrant write, the schedule update, and the split between timeline and unscheduled tasks.
+The signed-in focus timer was not clicked through. Creating a session needs Postgres, and headless Chrome hung while loading `/focus`. With the API up and no cookie, `GET /api/health` returned 200 and `GET /api/auth/me` returned 401. Service tests cover a second start, pause and resume, and elapsed time from timestamps.

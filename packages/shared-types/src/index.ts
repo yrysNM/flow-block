@@ -245,6 +245,59 @@ export interface TaskSummary {
   today: TaskView[]
 }
 
+export const FOCUS_PRESET_MINUTES = [15, 25, 50] as const
+export const FOCUS_MIN_PLANNED_SECONDS = 60
+export const FOCUS_MAX_PLANNED_SECONDS = 3 * 60 * 60
+
+export const FOCUS_SESSION_STATUSES = ['RUNNING', 'PAUSED', 'COMPLETED', 'STOPPED'] as const
+export type FocusSessionStatus = (typeof FOCUS_SESSION_STATUSES)[number]
+
+export const FOCUS_SESSION_STATUS_LABELS: Record<FocusSessionStatus, string> = {
+  RUNNING: 'Running',
+  PAUSED: 'Paused',
+  COMPLETED: 'Completed',
+  STOPPED: 'Stopped',
+}
+
+export function deriveFocusSessionStatus(input: {
+  endedAt: Date | string | null
+  pausedAt: Date | string | null
+  completed: boolean
+}): FocusSessionStatus {
+  if (input.endedAt) return input.completed ? 'COMPLETED' : 'STOPPED'
+  if (input.pausedAt) return 'PAUSED'
+  return 'RUNNING'
+}
+
+export interface FocusTaskRef {
+  id: string
+  title: string
+  status: TaskStatus
+}
+
+export interface FocusSessionView {
+  id: string
+  taskId: string | null
+  task: FocusTaskRef | null
+  plannedSeconds: number
+  status: FocusSessionStatus
+  startedAt: string
+  endedAt: string | null
+  pausedAt: string | null
+  pausedSeconds: number
+  elapsedSeconds: number
+  remainingSeconds: number
+  completed: boolean
+  serverNow: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FocusSessionListResponse {
+  data: FocusSessionView[]
+  meta: PageMeta
+}
+
 export interface ApiErrorBody {
   statusCode: number
   error: string

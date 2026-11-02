@@ -61,4 +61,12 @@
 2. Change name, time zone, or week start
 3. Save. The next dashboard “today” uses the saved time zone
 
-Unfinished flows (focus session, blocking, habits, goals, review) are not in the product yet.
+## Focus
+
+1. Open Focus
+2. Pick 15, 25, or 50 minutes, or a custom length, and optionally an existing task
+3. Start. If a session is already running or paused, the page keeps that one
+4. Pause and resume. The displayed clock follows the server’s elapsed time
+5. Complete, or end without completing. The task status does not change. The session moves to history
+
+Unfinished flows (blocking, habits, goals, review) are not in the product yet.

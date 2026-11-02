@@ -45,6 +45,10 @@ Toggling, renaming, reordering, or deleting a subtask updates `subtasks` only. I
 
 A task has one block. `scheduledStart` and `scheduledEnd` are both set or both null. Null means unscheduled, and the planner timeline query requires `scheduledStart` inside that local day, so unscheduled tasks are only in the unscheduled list. Scheduling calls `updateMany` on the existing id. It does not create a row. The schedule write does not include status, urgent, or important. A block that would end on the next civil day is rejected.
 
+## Focus sessions
+
+One row with `endedAt` null per user. Starting again returns that row. Pause and resume change pause timestamps only. Elapsed time is `floor` of the span from `startedAt` to `endedAt` or now, minus closed and open pauses. Completing or stopping a session writes the focus row and does not write the task. The rules live in `@focusflow/shared-utils` and `FocusService`. See [TIMER_LOGIC.md](TIMER_LOGIC.md).
+
 ## Today
 
 `localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.

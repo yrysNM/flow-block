@@ -51,7 +51,16 @@ Error body:
 | PATCH | `/api/tasks/:id/subtasks/reorder` | `{ "ids" }` must list each of that task’s subtasks once |
 | PATCH | `/api/tasks/:id/subtasks/:subtaskId` | `{ "title"? , "completed"? }`. Does not update the parent task |
 | DELETE | `/api/tasks/:id/subtasks/:subtaskId` | 204 |
+| GET | `/api/focus-sessions/active` | The active session, or `null`. Active means `endedAt` is null |
+| GET | `/api/focus-sessions` | Ended sessions for the signed-in user, newest `endedAt` first. `page`, `pageSize` (max 100) |
+| POST | `/api/focus-sessions` | `{ "plannedSeconds", "taskId"? }`. `plannedSeconds` is 60 to 10800. 201 when a row is created. 200 when an active session already exists: the body is that session, and the plan and task are left as they were. A client `userId` is stripped. An unknown or foreign `taskId` is 400 |
+| POST | `/api/focus-sessions/:id/pause` | Sets the open pause. A second pause returns the session unchanged |
+| POST | `/api/focus-sessions/:id/resume` | Closes the open pause into `pausedSeconds`. A resume while running returns the session unchanged |
+| POST | `/api/focus-sessions/:id/complete` | Sets `endedAt` and `completed: true`. Does not update the task |
+| POST | `/api/focus-sessions/:id/stop` | Sets `endedAt` and `completed: false`. Does not update the task |
 
 Task JSON includes `categoryId`, `category` (`{ id, name, color }` or null), `tags`, `subtasks`, `scheduledStart`, and `scheduledEnd`. `categoryId` must belong to the same user or the write is rejected. A client `userId` is stripped. Quadrant is computed and is not a stored field.
 
-Routes for habits, goals, focus sessions, website rules, and notifications are not implemented.
+Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `COMPLETED`, `STOPPED`), `startedAt`, `endedAt`, `pausedAt`, `pausedSeconds`, computed `elapsedSeconds` and `remainingSeconds`, `completed`, `serverNow`, and `task` (`{ id, title, status }` or null). `elapsedSeconds` in the response is calculated. The database column of that name is not the source of truth.
+
+Routes for habits, goals, website rules, and notifications are not implemented.

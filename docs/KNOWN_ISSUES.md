@@ -8,10 +8,13 @@
 - `weekStartsOn` is stored and editable. No calendar uses it yet
 - The board, matrix, and planner each show at most 100 tasks in a column or list. The count is still the full total
 - Planner drag snaps a block to the start of an hour. The length is kept when the block already has one. A block cannot cross local midnight
-- `20261102120000_task_schedule` is written and was not applied. `prisma migrate deploy` still needs Postgres
+- `20261102120000_task_schedule` and `20261102130000_focus_pause` are written and were not applied. `prisma migrate deploy` still needs Postgres
+- The one-active-session rule is a partial unique index in SQL. Prisma cannot model it. A later `prisma migrate dev` diff may propose dropping `focus_sessions_one_active_per_user`. Do not drop it
+- `elapsed_seconds` remains on `focus_sessions` and is not written. Elapsed time is computed on read
+- The focus page clock is a display. It is resynced from the API. The signed-in timer was not clicked through, because Postgres is still unavailable
 - `apps/extension` does not log in or block sites
 - The Website Blocker and the Expo app do not use FocusFlow accounts
 - There is no password reset, email verification, or CSRF token beyond `SameSite=Lax`
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
-- Unfinished product modules (focus timer, shared blocking, habits, goals, analytics, sync) are not implemented
+- Unfinished product modules (shared blocking, habits, goals, analytics, sync) are not implemented
 - Matrix, planner, Kanban, categories, tags, and subtasks were not clicked through in a browser. Postgres is still unavailable, so register cannot create the rows those screens need

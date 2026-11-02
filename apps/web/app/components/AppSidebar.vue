@@ -68,11 +68,12 @@ const primary = [
   { label: 'Board', to: '/board' },
   { label: 'Matrix', to: '/matrix' },
   { label: 'Planner', to: '/planner' },
+  { label: 'Focus', to: '/focus' },
   { label: 'Categories', to: '/categories' },
   { label: 'Settings', to: '/settings' },
 ]
 
-const later = ['Focus', 'Habits', 'Goals', 'Analytics']
+const later = ['Habits', 'Goals', 'Analytics']
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'

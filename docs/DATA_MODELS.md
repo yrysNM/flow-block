@@ -42,6 +42,18 @@ Category: `{ id, name, color, createdAt, updatedAt }`. Tag: `{ id, name, created
 
 `{ date, timezone, timeline: TaskView[], unscheduled: TaskView[], counts: { timeline, unscheduled } }`. Timeline tasks have `scheduledStart` on that local day. Unscheduled tasks have a null `scheduledStart`. A task is in one of those lists, not both.
 
+## Focus session
+
+Returned by `/api/focus-sessions`. `elapsedSeconds` and `remainingSeconds` are computed. `serverNow` is the server clock used for that calculation.
+
+- `id`, `taskId`, `plannedSeconds`, `pausedSeconds`, `completed`
+- `status`: `RUNNING | PAUSED | COMPLETED | STOPPED`
+- `startedAt`, `endedAt`, `pausedAt`, `serverNow`, `createdAt`, `updatedAt` as ISO strings (`endedAt` and `pausedAt` may be null)
+- `elapsedSeconds`, `remainingSeconds`
+- `task`: `{ id, title, status }` or null
+
+History uses the same page shape as tasks: `{ data, meta }`.
+
 ## Summary
 
 `{ date, timezone, counts: { TODO, IN_PROGRESS, COMPLETED, total }, today: TaskView[] }`

@@ -1,6 +1,8 @@
 // FocusFlow data model.
 // Eisenhower quadrant is derived from isUrgent + isImportant and is not stored.
 // scheduled_start and scheduled_end are one optional time block on the task. Both null means unscheduled.
+// Focus elapsed time is computed from started_at, paused_at, paused_seconds, and ended_at.
+// elapsed_seconds is not the source of truth. One active session per user is a partial unique index in SQL.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -212,6 +214,9 @@ model TaskTimeLog {
   @@map("task_time_logs")
 }
 
+// ended_at null means the session is active. A partial unique index on user_id
+// WHERE ended_at IS NULL lives in SQL only. Prisma cannot express that index.
+// Do not drop it if a later migrate diff suggests it.
 model FocusSession {
   id             String    @id @default(uuid()) @db.Uuid
   userId         String    @map("user_id") @db.Uuid
@@ -219,14 +224,19 @@ model FocusSession {
   taskId         String?   @map("task_id") @db.Uuid
   task           Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
   plannedSeconds Int       @map("planned_seconds")
+  /// Unused. Elapsed time is computed on read and is not written here.
   elapsedSeconds Int       @default(0) @map("elapsed_seconds")
   startedAt      DateTime? @map("started_at")
   endedAt        DateTime? @map("ended_at")
+  /// Open pause. Closed pauses are accumulated in pausedSeconds.
+  pausedAt       DateTime? @map("paused_at")
+  pausedSeconds  Int       @default(0) @map("paused_seconds")
   completed      Boolean   @default(false)
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@index([userId, endedAt])
   @@index([taskId])
   @@map("focus_sessions")
 }

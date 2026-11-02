@@ -6,7 +6,9 @@ NestJS 12 application in `apps/api`. Global prefix `api`. Global `AuthGuard` wit
 | --- | --- |
 | `auth` | Argon2 passwords, session issue and lookup, cookie, in-memory rate limit |
 | `users` | Profile and preferences. Imports `AuthModule` so it can map the public user |
-| `tasks` | Owner-scoped CRUD, summary, status rules |
+| `tasks` | Owner-scoped CRUD, summary, status rules, matrix, and planner |
+| `categories`, `tags` | Owner-scoped catalogs and assignment |
+| `focus` | One active focus session, pause, resume, and history. Elapsed time is computed |
 | `prisma` | Global `PrismaClient` |
 | `health` | Liveness without a database query |
 

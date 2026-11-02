@@ -24,8 +24,8 @@ export function configureApp(app: INestApplication): void {
 
   const config = new DocumentBuilder()
     .setTitle('FocusFlow API')
-    .setDescription('Phase 0 and the task vertical slice. Quadrant is derived and is not a stored field.')
-    .setVersion('0.1.0')
+    .setDescription('FocusFlow API. Quadrant is derived. Focus elapsed time is computed from timestamps.')
+    .setVersion('0.4.0')
     .addCookieAuth('ff_session', { type: 'apiKey', in: 'cookie', name: 'ff_session' }, 'session')
     .build()
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, config))

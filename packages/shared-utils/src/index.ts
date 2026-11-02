@@ -75,6 +75,31 @@ export function localDayBounds(date: string, timeZone: string): { start: Date; e
   return { start, end }
 }
 
+export interface FocusTiming {
+  startedAt: Date
+  endedAt: Date | null
+  pausedAt: Date | null
+  pausedSeconds: number
+  now: Date
+}
+
+/**
+ * Working time in whole seconds.
+ * Closed pauses are `pausedSeconds`. An open pause runs from `pausedAt` until `endedAt` or `now`.
+ */
+export function focusElapsedSeconds(input: FocusTiming): number {
+  const end = input.endedAt ?? input.now
+  let pausedMs = Math.max(0, input.pausedSeconds) * 1000
+  if (input.pausedAt && input.pausedAt.getTime() < end.getTime()) {
+    pausedMs += end.getTime() - input.pausedAt.getTime()
+  }
+  return Math.max(0, Math.floor((end.getTime() - input.startedAt.getTime() - pausedMs) / 1000))
+}
+
+export function focusRemainingSeconds(plannedSeconds: number, elapsedSeconds: number): number {
+  return Math.max(0, plannedSeconds - elapsedSeconds)
+}
+
 /** Calendar date as YYYY-MM-DD in the given IANA time zone. */
 export function formatDateInTimeZone(instant: Date, timeZone: string): string {
   if (!isValidTimeZone(timeZone)) throw new Error('Invalid time zone')
