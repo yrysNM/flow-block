@@ -62,7 +62,7 @@
 3. Save. The shell uses the saved theme. The next dashboard “today” uses the saved time zone. The focus page starts at the saved length
 4. To change the password, enter the current password and a new one. A wrong current password does nothing. A correct one keeps this session signed in
 
-There is no notification inbox on this page.
+The shell shows an unread count. Open Notifications to mark a row read. Nothing on that page is email.
 
 ## Focus
 
@@ -114,4 +114,4 @@ There is no notification inbox on this page.
 2. Submit it. The page calls `POST /api/assistant` as the signed-in user
 3. The response is not-configured. No suggestion list is invented, and no task is created
 
-A configured model is not in the product yet. Recurring tasks and a notification inbox are not either.
+A configured model is not in the product yet. Email and push notifications are not either.

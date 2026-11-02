@@ -11,6 +11,10 @@
       <p class="text-sm font-medium text-ink">{{ title }}</p>
     </div>
     <div class="flex items-center gap-3">
+      <NuxtLink to="/notifications" class="inline-flex items-center gap-2 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-background">
+        Notifications
+        <span v-if="notes.unreadCount > 0" class="rounded-full bg-primary px-1.5 py-0.5 text-xs font-semibold text-white">{{ notes.unreadCount }}</span>
+      </NuxtLink>
       <p class="hidden text-sm text-secondary sm:block">{{ auth.user?.name }}</p>
       <button type="button" class="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-background" @click="logout">
         Log out
@@ -22,7 +26,12 @@
 <script setup lang="ts">
 const emit = defineEmits<{ 'open-nav': [] }>()
 const auth = useAuthStore()
+const notes = useNotificationsStore()
 const route = useRoute()
+
+onMounted(() => {
+  notes.refresh().catch(() => undefined)
+})
 
 const title = computed(() => {
   if (route.path.startsWith('/tasks')) return 'Tasks'
@@ -36,6 +45,7 @@ const title = computed(() => {
   if (route.path.startsWith('/goals')) return 'Goals'
   if (route.path.startsWith('/analytics')) return 'Analytics'
   if (route.path.startsWith('/assistant')) return 'Assistant'
+  if (route.path.startsWith('/notifications')) return 'Notifications'
   if (route.path.startsWith('/settings')) return 'Settings'
   return 'Dashboard'
 })

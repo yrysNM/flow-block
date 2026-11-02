@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, ConflictException } from '@nestjs/common'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PrismaService } from '../prisma/prisma.service'
 import { FocusService } from './focus.service'
@@ -28,7 +28,7 @@ function sessionRecord(overrides: Record<string, unknown> = {}) {
 }
 
 function createPrisma() {
-  return {
+  const prisma = {
     focusSession: {
       create: vi.fn(),
       findFirst: vi.fn(),
@@ -41,7 +41,16 @@ function createPrisma() {
       update: vi.fn(),
       updateMany: vi.fn(),
     },
+    notification: {
+      create: vi.fn(),
+    },
+    $transaction: vi.fn(),
   }
+  prisma.$transaction.mockImplementation((input: unknown) => {
+    if (typeof input === 'function') return (input as (tx: typeof prisma) => unknown)(prisma)
+    return Promise.all(input as Promise<unknown>[])
+  })
+  return prisma
 }
 
 describe('FocusService', () => {
@@ -191,6 +200,34 @@ describe('FocusService', () => {
       endedAt: new Date('2026-11-02T12:00:40.000Z'),
     })
     expect(written.data).not.toHaveProperty('status')
+    expect(prisma.notification.create).toHaveBeenCalledTimes(1)
+    expect(prisma.notification.create).toHaveBeenCalledWith({
+      data: {
+        userId,
+        type: 'FOCUS',
+        title: 'Focus session completed',
+        linkPath: '/focus',
+      },
+    })
+  })
+
+  it('does not insert a second notification when the same session is completed again', async () => {
+    const running = sessionRecord()
+    const ended = sessionRecord({
+      endedAt: new Date('2026-11-02T12:10:00.000Z'),
+      completed: true,
+    })
+    prisma.focusSession.findFirst
+      .mockResolvedValueOnce(running)
+      .mockResolvedValueOnce(ended)
+      .mockResolvedValueOnce(ended)
+    prisma.focusSession.updateMany.mockResolvedValue({ count: 1 })
+
+    await service.complete(userId, sessionId)
+    await expect(service.complete(userId, sessionId)).rejects.toBeInstanceOf(ConflictException)
+
+    expect(prisma.notification.create).toHaveBeenCalledTimes(1)
+    expect(JSON.stringify(prisma.notification.create.mock.calls)).not.toContain(otherUserId)
   })
 
   it('lists only the owner’s ended sessions', async () => {

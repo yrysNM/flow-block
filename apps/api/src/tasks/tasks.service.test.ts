@@ -48,7 +48,7 @@ function taskRecord(overrides: Partial<{
 }
 
 function createPrisma() {
-  return {
+  const prisma = {
     task: {
       create: vi.fn(),
       findFirst: vi.fn(),
@@ -78,8 +78,16 @@ function createPrisma() {
       deleteMany: vi.fn(),
       aggregate: vi.fn(),
     },
-    $transaction: vi.fn((operations: Promise<unknown>[]) => Promise.all(operations)),
+    notification: {
+      create: vi.fn(),
+    },
+    $transaction: vi.fn(),
   }
+  prisma.$transaction.mockImplementation((input: unknown) => {
+    if (typeof input === 'function') return (input as (tx: typeof prisma) => unknown)(prisma)
+    return Promise.all(input as Promise<unknown>[])
+  })
+  return prisma
 }
 
 describe('TasksService', () => {
@@ -448,6 +456,15 @@ describe('TasksService', () => {
         subtasks: { create: [{ userId, title: 'Outline', completed: false, position: 0 }] },
       }),
     })
+    expect(prisma.notification.create).toHaveBeenCalledTimes(1)
+    expect(prisma.notification.create).toHaveBeenCalledWith({
+      data: {
+        userId,
+        type: 'TASK_DUE',
+        title: 'Next task: Write spec',
+        linkPath: '/tasks',
+      },
+    })
   })
 
   it('does not create a second successor when the same task is completed again', async () => {
@@ -470,6 +487,7 @@ describe('TasksService', () => {
     await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
 
     expect(prisma.task.create).toHaveBeenCalledTimes(1)
+    expect(prisma.notification.create).toHaveBeenCalledTimes(1)
   })
 
   it('does not create a task when a non-recurring task is completed', async () => {
@@ -483,6 +501,7 @@ describe('TasksService', () => {
 
     expect(updated.status).toBe('COMPLETED')
     expect(prisma.task.create).not.toHaveBeenCalled()
+    expect(prisma.notification.create).not.toHaveBeenCalled()
   })
 
   it('schedules a weekly successor seven days ahead', async () => {

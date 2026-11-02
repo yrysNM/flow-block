@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 5f is in the tree on top of the assistant seam: a task may recur daily, weekly, or not at all. Completing a recurring task inserts one next open task and leaves the original completed. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, habits-goals, account-preference, and task-recurrence migrations are written and were not applied. Image builds were not run.
+Phase 5g is in the tree on top of recurring tasks: in-app notifications. Completing a focus session and inserting a recurrence successor each write one row for the session user. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, habits-goals, account-preference, task-recurrence, and notification-link migrations are written and were not applied. Image builds were not run.
 
 ## Completed modules
 
@@ -21,6 +21,7 @@ Phase 5f is in the tree on top of the assistant seam: a task may recur daily, we
 - Production Dockerfiles for the API and web app, and a Compose file for Postgres, the API, and the web app
 - Assistant seam: `AssistantProvider`, an unconfigured default, `POST /api/assistant`, and `/assistant`
 - Recurring tasks stored on the task. Completion inserts one successor. Reads do not generate future rows
+- In-app notifications for a completed focus session and that successor, plus mark read in the shell
 - Derived Eisenhower quadrant and status rules
 - Preservation of `src/` and `mobile/`
 
@@ -30,7 +31,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-A configured assistant provider and a notification inbox. Recurring tasks, the assistant foundation, settings, analytics, and production packaging are in this branch. Email change and password reset are not. Language is stored and is not translated. Image builds were not run. `ASSISTANT_PROVIDER` is optional and is not required at startup.
+A configured assistant provider, email, and push. In-app notifications, recurring tasks, the assistant foundation, settings, analytics, and production packaging are in this branch. Email change and password reset are not. Language is stored and is not translated. Image builds were not run. `ASSISTANT_PROVIDER` is optional and is not required at startup.
 
 ## Architecture
 
@@ -46,12 +47,12 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The important one for the next session: 
 
 ## Database status
 
-Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, `20261102150000_habits_goals`, `20261102160000_account_preferences`, and `20261102170000_task_recurrence` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
+Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, `20261102150000_habits_goals`, `20261102160000_account_preferences`, `20261102170000_task_recurrence`, and `20261102180000_notification_link` are written. `prisma generate` succeeded for the link column. `prisma migrate deploy` did not run. No database was created here.
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/password`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, subtasks, and recurrence, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), `/api/goals` (milestones, reorder, and task links), `GET /api/analytics`, and `POST /api/assistant`. Swagger at `/api/docs` is version 0.11.0. Completing a daily or weekly task inserts one next open task. The assistant returns not-configured until a provider is selected. Notifications still have tables only. There is no inbox. Production boot checks `SESSION_SECRET` and does not require `ASSISTANT_PROVIDER`.
+Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/password`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, subtasks, and recurrence, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), `/api/goals` (milestones, reorder, and task links), `GET /api/analytics`, `POST /api/assistant`, and `/api/notifications` (list, mark one read, mark all read). Swagger at `/api/docs` is version 0.12.0. Completing a daily or weekly task inserts one next open task and one in-app notification. Completing a focus session inserts one notification. The assistant returns not-configured until a provider is selected. There is no email or push. Production boot checks `SESSION_SECRET` and does not require `ASSISTANT_PROVIDER`.
 
 ## Next recommended tasks
 
-A provider that calls a model, and a notification inbox. The legacy blocker in `src/` is still separate. Headless Chrome on `/focus` is recorded in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Image builds still need a machine with Docker.
+A provider that calls a model. Email and push are still absent. The legacy blocker in `src/` is still separate. Headless Chrome on `/focus` is recorded in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Image builds still need a machine with Docker.

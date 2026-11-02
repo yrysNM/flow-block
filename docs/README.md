@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 5f: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, production packaging, an unconfigured assistant, and recurring tasks.
+These files describe the product and what this repository actually contains after Phase 5g: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, production packaging, an unconfigured assistant, recurring tasks, and in-app notifications.
 
 Start here:
 
@@ -16,5 +16,6 @@ Start here:
 - [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) — how each analytics number is computed
 - [SETTINGS.md](SETTINGS.md) — profile, password change, theme, focus default, and stored language
 - [ASSISTANT.md](ASSISTANT.md) — the unconfigured assistant provider
+- [NOTIFICATIONS.md](NOTIFICATIONS.md) — in-app rows for a completed focus session and a recurrence successor
 
-Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The assistant validates a prompt and returns not-configured. It does not call a model. A daily or weekly task inserts one next open task when completed. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. Recurring tasks and notification delivery are not built. Image builds were not run here.
+Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The assistant validates a prompt and returns not-configured. It does not call a model. A daily or weekly task inserts one next open task when completed. That completion and a completed focus session each add one in-app notification. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. Email and push are not built. Image builds were not run here.

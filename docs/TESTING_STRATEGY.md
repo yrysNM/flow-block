@@ -12,6 +12,8 @@ Vitest 3.
 | `apps/api/src/auth/session-secret.test.ts` | Production refuses an empty or placeholder `SESSION_SECRET` |
 | `apps/api/src/users/users.service.test.ts` | Wrong current password does not write a hash. A correct one does, and sessions are not deleted. Theme round-trips |
 | `apps/api/src/assistant/assistant.service.test.ts` | An empty prompt is rejected. A normal prompt returns not-configured, does not call fetch, and the module does not register a task writer |
+| `apps/api/src/focus/focus.service.test.ts` | One active session, pause math, timestamp elapsed time, one notification on complete, no second notification for that session |
+| `apps/api/src/notifications/notifications.service.test.ts` | List is owner-scoped. Mark read is owner-scoped and a second call keeps the first read time |
 | `packages/shared-utils/src/account.test.ts` | Saved focus seconds become the focus page’s initial duration |
 | `apps/api/test/tasks.integration.test.ts` | Register, create task, list tasks against Postgres |
 

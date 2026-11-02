@@ -24,7 +24,8 @@
 - Docs listed in the milestone
 - Assistant foundation: session user, prompt validation, unconfigured provider, and `/assistant`
 - Recurring tasks: `NONE`, `DAILY`, or `WEEKLY` on the task. Completing a repeating task inserts one next open task. A second completion does not. A non-recurring completion inserts nothing
+- In-app notifications: one row when a focus session completes, one when a successor is inserted, owner-scoped mark read, and a list in the shell
 
 ## Next, not started
 
-- A configured assistant provider, a notification inbox, merging the legacy blocker, Redis
+- A configured assistant provider, merging the legacy blocker, Redis

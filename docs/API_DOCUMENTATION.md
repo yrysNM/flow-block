@@ -90,9 +90,12 @@ Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `CO
 | DELETE | `/api/goals/:id/tasks/:taskId` | Removes the link. The task stays |
 | GET | `/api/analytics` | Optional `range=7` or `range=30` (default 7). Totals and one series point per local day. A client `userId` or client totals are stripped. See [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) |
 | POST | `/api/assistant` | 200. `{ "prompt" }` trimmed, 1–2000 characters. A client `userId` is stripped. The user id is the session. The default body is `{ "status": "not-configured" }`. No task is created. See [ASSISTANT.md](ASSISTANT.md) |
+| GET | `/api/notifications` | Newest first for the signed-in user, plus `unreadCount`. A client `userId` is ignored. See [NOTIFICATIONS.md](NOTIFICATIONS.md) |
+| POST | `/api/notifications/:id/read` | 200. Marks that user’s row. A second call keeps `readAt`. Another user’s id is 404 |
+| POST | `/api/notifications/read-all` | 200. Marks that user’s unread rows. Does not touch other users |
 
 Habit JSON includes `frequency`, `targetCount`, `streak`, `todayCount`, and `todayMet`. A detail adds `month` and `entries` (`date`, `count`, `met`). Goal JSON includes `deadline`, `status`, `milestones`, `tasks`, and `progress: { completed, total }`. There is no progress percentage column.
 
 Analytics JSON includes `range`, `timezone`, `startDate`, `endDate`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitConsistency: { checkIns, expected }`, and `series`. Each series point has `date`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitCheckIns`, and `habitExpected`. A day with no rows is a zero.
 
-A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notification routes are not implemented. There is no notification inbox and no delivery. Language is stored and is not a translation catalog. The web shell applies the saved theme.
+A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notifications are in-app rows only. There is no email, push, or scheduler. Language is stored and is not a translation catalog. The web shell applies the saved theme.

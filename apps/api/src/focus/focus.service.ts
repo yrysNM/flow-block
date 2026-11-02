@@ -167,22 +167,34 @@ export class FocusService {
     const openPause = row.pausedAt && row.pausedAt.getTime() < now.getTime()
       ? Math.floor((now.getTime() - row.pausedAt.getTime()) / 1000)
       : 0
-    const written = await this.prisma.focusSession.updateMany({
-      where: { id, userId, endedAt: null },
-      data: {
-        endedAt: now,
-        completed,
-        pausedAt: null,
-        pausedSeconds: row.pausedSeconds + openPause,
-      },
-    })
-    if (written.count === 0) {
-      throw new ConflictException({
-        statusCode: 409,
-        error: 'Conflict',
-        message: 'That focus session has already ended.',
+    await this.prisma.$transaction(async (tx) => {
+      const written = await tx.focusSession.updateMany({
+        where: { id, userId, endedAt: null },
+        data: {
+          endedAt: now,
+          completed,
+          pausedAt: null,
+          pausedSeconds: row.pausedSeconds + openPause,
+        },
       })
-    }
+      if (written.count === 0) {
+        throw new ConflictException({
+          statusCode: 409,
+          error: 'Conflict',
+          message: 'That focus session has already ended.',
+        })
+      }
+      if (completed) {
+        await tx.notification.create({
+          data: {
+            userId,
+            type: 'FOCUS',
+            title: 'Focus session completed',
+            linkPath: '/focus',
+          },
+        })
+      }
+    })
     return toView(await this.requireOwned(userId, id), now)
   }
 

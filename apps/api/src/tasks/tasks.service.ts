@@ -409,38 +409,49 @@ export class TasksService {
     if (existing) return
     const days = saved.recurrence === 'WEEKLY' ? 7 : 1
     const shift = (value: Date | null) => (value ? addZonedInterval(value, days, timeZone) : null)
+    const title = successorTitle(saved.title)
     try {
-      await this.prisma.task.create({
-        data: {
-          userId,
-          recurredFromId: current.id,
-          title: saved.title,
-          description: saved.description,
-          status: 'TODO',
-          priority: saved.priority,
-          isUrgent: saved.isUrgent,
-          isImportant: saved.isImportant,
-          deadline: shift(saved.deadline),
-          scheduledStart: shift(current.scheduledStart),
-          scheduledEnd: shift(current.scheduledEnd),
-          categoryId: saved.categoryId,
-          recurrence: saved.recurrence,
-          completedAt: null,
-          tags: {
-            create: (current.tags ?? []).map((link) => ({
-              userId,
-              tagId: link.tag.id,
-            })),
+      await this.prisma.$transaction(async (tx) => {
+        await tx.task.create({
+          data: {
+            userId,
+            recurredFromId: current.id,
+            title: saved.title,
+            description: saved.description,
+            status: 'TODO',
+            priority: saved.priority,
+            isUrgent: saved.isUrgent,
+            isImportant: saved.isImportant,
+            deadline: shift(saved.deadline),
+            scheduledStart: shift(current.scheduledStart),
+            scheduledEnd: shift(current.scheduledEnd),
+            categoryId: saved.categoryId,
+            recurrence: saved.recurrence,
+            completedAt: null,
+            tags: {
+              create: (current.tags ?? []).map((link) => ({
+                userId,
+                tagId: link.tag.id,
+              })),
+            },
+            subtasks: {
+              create: (current.subtasks ?? []).map((subtask) => ({
+                userId,
+                title: subtask.title,
+                completed: false,
+                position: subtask.position,
+              })),
+            },
           },
-          subtasks: {
-            create: (current.subtasks ?? []).map((subtask) => ({
-              userId,
-              title: subtask.title,
-              completed: false,
-              position: subtask.position,
-            })),
+        })
+        await tx.notification.create({
+          data: {
+            userId,
+            type: 'TASK_DUE',
+            title,
+            linkPath: '/tasks',
           },
-        },
+        })
       })
     } catch (error) {
       if (isUniqueConflict(error)) return
@@ -569,6 +580,12 @@ export class TasksService {
     }
     return { scheduledStart, scheduledEnd }
   }
+}
+
+function successorTitle(title: string): string {
+  const trimmed = title.trim()
+  const text = trimmed.length === 0 ? 'Next task added' : `Next task: ${trimmed}`
+  return text.length <= 80 ? text : `${text.slice(0, 79)}…`
 }
 
 function isRecurring(value: TaskRecurrence): boolean {

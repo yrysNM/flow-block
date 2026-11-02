@@ -8,6 +8,7 @@ import { FocusModule } from './focus/focus.module'
 import { GoalsModule } from './goals/goals.module'
 import { HabitsModule } from './habits/habits.module'
 import { HealthController } from './health/health.controller'
+import { NotificationsModule } from './notifications/notifications.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TagsModule } from './tags/tags.module'
 import { TasksModule } from './tasks/tasks.module'
@@ -29,6 +30,7 @@ import { WebsitesModule } from './websites/websites.module'
     GoalsModule,
     AnalyticsModule,
     AssistantModule,
+    NotificationsModule,
   ],
   controllers: [HealthController],
 })
