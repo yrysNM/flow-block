@@ -1,4 +1,5 @@
 import {
+  ACCOUNT_LANGUAGE,
   FOCUS_MAX_PLANNED_SECONDS,
   FOCUS_MIN_PLANNED_SECONDS,
   GOAL_STATUSES,
@@ -45,11 +46,18 @@ export const updateProfileSchema = z.object({
   name: z.string().trim().min(1).max(80),
 })
 
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: z.string().min(8).max(200),
+})
+
 export const updatePreferencesSchema = z
   .object({
     timezone: z.string().trim().min(1).max(100).optional(),
     theme: themePreferenceSchema.optional(),
     weekStartsOn: z.number().int().min(0).max(6).optional(),
+    focusDefaultSeconds: z.number().int().min(FOCUS_MIN_PLANNED_SECONDS).max(FOCUS_MAX_PLANNED_SECONDS).optional(),
+    language: z.literal(ACCOUNT_LANGUAGE).optional(),
   })
   .refine((value) => Object.values(value).some((item) => item !== undefined), {
     message: 'At least one preference is required',
@@ -344,6 +352,7 @@ export const taskSubtaskParamsSchema = z.object({
 export type RegisterInput = z.infer<typeof registerSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>
 export type UpdatePreferencesInput = z.infer<typeof updatePreferencesSchema>
 export type CreateTaskInput = z.infer<typeof createTaskSchema>
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>

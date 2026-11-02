@@ -1,5 +1,5 @@
 import type { PublicPreferences, PublicUser, SessionResponse } from '@focusflow/shared-types'
-import type { LoginInput, RegisterInput, UpdatePreferencesInput } from '@focusflow/shared-schemas'
+import type { ChangePasswordInput, LoginInput, RegisterInput, UpdatePreferencesInput } from '@focusflow/shared-schemas'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
@@ -56,6 +56,10 @@ export const useAuthStore = defineStore('auth', {
       const api = useApi()
       const preferences = await api<PublicPreferences>('/users/me/preferences', { method: 'PATCH', body: input })
       this.preferences = preferences
+    },
+    async changePassword(input: ChangePasswordInput) {
+      const api = useApi()
+      await api('/users/me/password', { method: 'PATCH', body: input })
     },
   },
 })

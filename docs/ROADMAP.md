@@ -18,6 +18,8 @@ Phase 5a: habits and goals. Check-ins update one entry per date. Streaks and goa
 
 Phase 5b: analytics. `GET /api/analytics` computes tasks completed, focus time, website usage, habit consistency, and a per-day series. The page uses Apache ECharts. The AI assistant is still later.
 
+Phase 5c: settings and account security. Display name, password change that keeps the session, theme applied on the shell, a default focus duration, and a stored English language. No notification inbox. Email change, password reset, the AI assistant, recurring tasks, and deployment packaging are still later.
+
 ## Later, not scheduled in this change
 
-Merging the legacy blocker, the AI assistant, notifications, password reset, and deployment. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.
+Merging the legacy blocker, the AI assistant, recurring tasks, a notification inbox, password reset, and deployment packaging. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.

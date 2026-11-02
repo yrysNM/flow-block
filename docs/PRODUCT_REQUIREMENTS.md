@@ -19,7 +19,9 @@ A person can:
 - Give a task one start and end on that day, or clear it, without changing status or quadrant
 - Change urgent or important without that change rewriting status
 - Change status without that change rewriting urgent or important
-- Set their name, IANA time zone, and the day the week starts on
+- Set their name, IANA time zone, the day the week starts on, a light, dark, or system theme, and a default focus length
+- Change their password while signed in, after entering the current password, and stay on the same session
+- Store English as the account language without switching the interface to another language
 - Run a focus timer and block sites with the FocusFlow extension
 - Create habits, check in for a date, and see a streak and a month of check-ins
 - Create goals with a deadline, milestones, and links to existing tasks, and see progress derived from those rows
@@ -29,7 +31,7 @@ A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Recurring tasks, reminders, an AI assistant, and sync with the existing blocker.
+Recurring tasks, reminders, an AI assistant, a notification inbox, deployment packaging, email change, password reset, and sync with the existing blocker. Language is stored and is not translated.
 
 ## Task rules
 

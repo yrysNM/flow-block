@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
 import type { LoginInput, RegisterInput } from '@focusflow/shared-schemas'
-import type { PublicPreferences, PublicUser, ThemePreference } from '@focusflow/shared-types'
+import type { PublicPreferences, PublicUser } from '@focusflow/shared-types'
+import { accountPreferences } from '@focusflow/shared-utils'
 import type { Response } from 'express'
 import { PrismaService } from '../prisma/prisma.service'
 import type { AuthContext, AuthResult } from './auth.types'
@@ -17,6 +18,8 @@ interface UserWithPreferences {
     timezone: string
     theme: string
     weekStartsOn: number
+    focusDefaultSeconds?: number
+    language?: string
   } | null
 }
 
@@ -112,17 +115,11 @@ export class AuthService {
   }
 
   private toContext(user: UserWithPreferences): AuthContext {
-    const theme = user.preferences?.theme
-    const safeTheme: ThemePreference = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system'
     return {
       id: user.id,
       email: user.email,
       name: user.name,
-      preferences: {
-        timezone: user.preferences?.timezone ?? 'UTC',
-        theme: safeTheme,
-        weekStartsOn: user.preferences?.weekStartsOn ?? 1,
-      },
+      preferences: accountPreferences(user.preferences),
     }
   }
 }

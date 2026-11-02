@@ -26,9 +26,9 @@ Category: `{ id, name, color, createdAt, updatedAt }`. Tag: `{ id, name, created
 
 ## Session response
 
-`{ user: { id, email, name }, preferences: { timezone, theme, weekStartsOn } }`
+`{ user: { id, email, name }, preferences: { timezone, theme, weekStartsOn, focusDefaultSeconds, language } }`
 
-`theme` is `light | dark | system`. The web UI does not switch themes yet.
+`theme` is `light | dark | system`. The web shell sets `data-theme` from that value. `focusDefaultSeconds` is the focus page’s initial duration. `language` is `en`. It is stored only. The interface stays English.
 
 ## List
 

@@ -1,6 +1,15 @@
 import { bindAnalyticsTime } from './analytics'
 
 export {
+  accountPreferences,
+  DEFAULT_FOCUS_SECONDS,
+  initialFocusSelection,
+  type AccountPreferenceInput,
+  type AccountPreferences,
+  type FocusDurationSelection,
+} from './account'
+
+export {
   hostMatchesDomain,
   isWithinSchedule,
   normalizeDomain,

@@ -4,18 +4,20 @@
 - Register and task routes return 503 when Postgres is down. Health stays 200 on purpose
 - Auth rate limiting is per process and resets on restart
 - Login timing can differ between an unknown email and a wrong password. The message does not
-- The UI stores `theme` but always renders the light design system
+- Theme `light` and `dark` change the shell. `system` follows the device color scheme. Some page-local form fields still paint their own background
 - `weekStartsOn` is stored and editable. Weekly habit streaks and the habits calendar use it. The planner still does not
 - The board, matrix, and planner each show at most 100 tasks in a column or list. The count is still the full total
 - Planner drag snaps a block to the start of an hour. The length is kept when the block already has one. A block cannot cross local midnight
-- `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, and `20261102150000_habits_goals` are written and were not applied. `prisma migrate deploy` still needs Postgres
+- `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, `20261102150000_habits_goals`, and `20261102160000_account_preferences` are written and were not applied. `prisma migrate deploy` still needs Postgres
 - The one-active-session rule is a partial unique index in SQL. Prisma cannot model it. A later `prisma migrate dev` diff may propose dropping `focus_sessions_one_active_per_user`. Do not drop it
 - `elapsed_seconds` remains on `focus_sessions` and is not written. Elapsed time is computed on read
 - The focus page clock is a display. It is resynced from the API. The signed-in timer was not clicked through, because Postgres is still unavailable
-- Headless Chrome hung while loading `/focus` in Phase 4a. That hang is still unfixed. This milestone did not rewrite the timer
+- Headless Chrome `--dump-dom` does not exit in this environment. The same non-exit happens for `about:blank` and `/login`, so it is not the focus clock. With the API stopped, `/focus` returns its HTML immediately and `/api/auth/me` is a 502 in a few milliseconds, then the page redirects to login. The timer was not rewritten. A hang that only appears while the API waits on Postgres was not reproduced, because Postgres is not installed
 - The FocusFlow extension was not loaded into Chrome here. Enforcement is covered by unit tests of the cache and the pure block decision
 - The legacy Website Blocker in `src/` and the Expo app still do not use FocusFlow accounts
-- There is no password reset, email verification, or CSRF token beyond `SameSite=Lax`
+- Password change while signed in is implemented and keeps the session. There is still no password reset, email change, email verification, or CSRF token beyond `SameSite=Lax`
+- `language` is stored as `en` and is not a translation system. The interface stays English
+- There is no notification inbox and no delivery. Settings does not add a toggle for one
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
 - Notifications still have no product UI. The AI assistant and deployment are not in this tree
 - The habits, goals, and analytics pages were not clicked through. Creating those rows needs Postgres

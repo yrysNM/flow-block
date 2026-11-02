@@ -5,7 +5,7 @@
 | Feature | Where |
 | --- | --- |
 | Register, login, logout, current user | API and web |
-| Display name, time zone, week start | API and Settings |
+| Display name, email shown read-only, password change, theme, time zone, week start, focus default, stored English | API and Settings |
 | Task create, read, update, delete | API and Tasks page |
 | Status change with transition rules | API and Tasks page |
 | Filter by search, status, priority, and category, plus sort and pagination | API and Tasks page |
@@ -35,4 +35,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-The AI assistant, notifications, and connecting the legacy `src/` blocker to these rules.
+The AI assistant, recurring tasks, a notification inbox, deployment packaging, and connecting the legacy `src/` blocker to these rules. Email change and password reset are not implemented. Language is stored and is not translated.

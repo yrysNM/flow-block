@@ -10,8 +10,8 @@ The interface is a calm productivity tool: light surfaces, one blue action color
 - Matrix quadrants stack on a narrow screen and sit in a two-by-two grid from the tablet width up. The planner stacks the timeline and the unscheduled list until a wide screen
 - Errors from the API are shown as text, not only a color
 - Buttons and links have visible keyboard focus
-- The sidebar labels later modules as Soon and does not navigate there
+- The sidebar lists the shipped pages, including Settings. It does not label a Soon section
 - Desktop keeps a fixed sidebar. Smaller widths use a Menu button and an overlay drawer
 - Do not invent sample tasks. An empty account looks empty
 
-The light design system is what the UI renders. The stored theme preference is not applied yet.
+Light, dark, and system themes are applied on the shell from the saved preference. System follows the device. Language is stored as English and is not a translation system. There is no notification inbox.
