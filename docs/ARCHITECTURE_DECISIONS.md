@@ -10,11 +10,11 @@ The repo already contained a Chrome extension and an Expo app. They still build 
 
 ## ADR-3. No Redis
 
-Sessions are Postgres rows. The auth rate limit is a process-local map. A second store would not earn its keep for one API process. Compose starts Postgres only.
+Sessions are Postgres rows. The auth rate limit is a process-local map. A second store would not earn its keep for one API process. Dev Compose starts Postgres only. The production-style Compose file starts Postgres, the API, and the web app, and still does not start Redis.
 
 ## ADR-4. HTTP-only session, same-origin proxy
 
-The token is random. Only its SHA-256 is stored. The web app is `ssr: false` and calls `/api` on its own origin. Nitro proxies to Nest at runtime via `NUXT_API_PROXY_TARGET`. That avoids cross-site cookies during local development.
+The token is random. The database stores HMAC-SHA256 with `SESSION_SECRET`, not an unsalted hash. Production refuses a missing or placeholder secret. The web app is `ssr: false` and calls `/api` on its own origin. Nitro proxies to Nest at runtime via `NUXT_API_PROXY_TARGET`. That avoids cross-site cookies during local development. The web image uses the same variable.
 
 ## ADR-5. Quadrant is not stored
 
@@ -57,3 +57,7 @@ Phase 5b does not add a table. `GET /api/analytics` loads the signed-in user’s
 ## ADR-14. Account preferences stay on the existing row
 
 Theme, week start, and time zone were already columns on `user_preferences`. Phase 5c adds `focus_default_seconds` and `language` there instead of a second table. `language` accepts only `en` because the UI is not a translation system. Theme is applied by setting `data-theme` on the document, so the stored value changes the shell. Password change hashes with the same argon2id helper and does not delete sessions. Email stays immutable. Notifications stay tables without an inbox.
+
+## ADR-15. Production images stay free of secrets
+
+`apps/api/Dockerfile` and `apps/web/Dockerfile` are multi-stage builds from the repository root. The API runtime receives `DATABASE_URL` and `SESSION_SECRET` from the environment, not from the image. The web runtime reads `NUXT_API_PROXY_TARGET` the same way the dev server does. `infrastructure/docker-compose.yml` remains the dev database. `infrastructure/docker-compose.prod.yml` is the local production-style stack. The API process checks `SESSION_SECRET` before it listens when `NODE_ENV=production`.

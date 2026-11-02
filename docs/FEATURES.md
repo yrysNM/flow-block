@@ -35,4 +35,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-The AI assistant, recurring tasks, a notification inbox, deployment packaging, and connecting the legacy `src/` blocker to these rules. Email change and password reset are not implemented. Language is stored and is not translated.
+The AI assistant, recurring tasks, a notification inbox, and connecting the legacy `src/` blocker to these rules. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.

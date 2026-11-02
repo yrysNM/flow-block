@@ -31,7 +31,7 @@ A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Recurring tasks, reminders, an AI assistant, a notification inbox, deployment packaging, email change, password reset, and sync with the existing blocker. Language is stored and is not translated.
+Recurring tasks, reminders, an AI assistant, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
 
 ## Task rules
 

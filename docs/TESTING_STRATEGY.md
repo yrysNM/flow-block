@@ -8,7 +8,8 @@ Vitest 3.
 | `packages/shared-schemas` | Unknown `userId` is stripped. Email is normalized |
 | `packages/shared-utils` | UTC and America/New_York day bounds |
 | `apps/api/src/tasks/tasks.service.test.ts` | Owner id on writes, status unchanged when only flags change, illegal transition does not write, 404 for a missing row, `completedAt` on complete |
-| `apps/api/src/auth/auth.service.test.ts` | Password hash, preferences row, session token stored only as SHA-256, duplicate email, bad password |
+| `apps/api/src/auth/auth.service.test.ts` | Password hash, preferences row, session token stored as an HMAC rather than the raw token, duplicate email, bad password |
+| `apps/api/src/auth/session-secret.test.ts` | Production refuses an empty or placeholder `SESSION_SECRET` |
 | `apps/api/src/users/users.service.test.ts` | Wrong current password does not write a hash. A correct one does, and sessions are not deleted. Theme round-trips |
 | `packages/shared-utils/src/account.test.ts` | Saved focus seconds become the focus page’s initial duration |
 | `apps/api/test/tasks.integration.test.ts` | Register, create task, list tasks against Postgres |

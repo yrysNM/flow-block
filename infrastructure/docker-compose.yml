@@ -1,6 +1,7 @@
-# Local PostgreSQL for FocusFlow.
+# Local PostgreSQL for FocusFlow development.
 # Redis is intentionally absent: sessions live in Postgres, and the auth
 # rate limit is in-memory for this single-process slice.
+# The production-style stack (Postgres, API, and web) is docker-compose.prod.yml.
 services:
   postgres:
     image: postgres:16-alpine

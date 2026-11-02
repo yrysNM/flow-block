@@ -1,5 +1,4 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { ApiBody, ApiCookieAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { loginSchema, registerSchema, type LoginInput, type RegisterInput } from '@focusflow/shared-schemas'
 import type { Request, Response } from 'express'
@@ -9,15 +8,12 @@ import { ZodValidationPipe } from '../common/zod-validation.pipe'
 import { AuthRateLimitGuard } from './auth-rate-limit.guard'
 import { AuthService } from './auth.service'
 import type { AuthContext } from './auth.types'
-import { readSessionToken } from './session-cookie'
+import { cookieSecure, readSessionToken } from './session-cookie'
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly auth: AuthService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly auth: AuthService) {}
 
   @Public()
   @UseGuards(AuthRateLimitGuard)
@@ -102,6 +98,6 @@ export class AuthController {
   }
 
   private secure(): boolean {
-    return this.config.get<string>('NODE_ENV') === 'production'
+    return cookieSecure()
   }
 }

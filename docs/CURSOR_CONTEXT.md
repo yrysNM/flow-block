@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 5c is in the tree on top of analytics: account settings for the signed-in user. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, habits-goals, and account-preference migrations are written and were not applied.
+Phase 5d is in the tree on top of account settings: production Dockerfiles and a Compose file for Postgres, the API, and the web app. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, habits-goals, and account-preference migrations are written and were not applied. Image builds were not run.
 
 ## Completed modules
 
@@ -18,6 +18,7 @@ Phase 5c is in the tree on top of analytics: account settings for the signed-in 
 - Goals with a deadline, milestones, links to existing tasks, and progress derived on read
 - Analytics for the last 7 or 30 local days, with a per-day series and an ECharts page
 - Account settings: display name, password change that keeps the session, theme applied on the shell, default focus duration, and stored English
+- Production Dockerfiles for the API and web app, and a Compose file for Postgres, the API, and the web app
 - Derived Eisenhower quadrant and status rules
 - Preservation of `src/` and `mobile/`
 
@@ -27,7 +28,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-The AI assistant, recurring tasks, a notification inbox, and deployment packaging. Settings and analytics are in this branch. Email change and password reset are not. Language is stored and is not translated.
+The AI assistant, recurring tasks, and a notification inbox. Settings, analytics, and production packaging are in this branch. Email change and password reset are not. Language is stored and is not translated. Image builds were not run.
 
 ## Architecture
 
@@ -47,8 +48,8 @@ Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_f
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/password`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), `/api/goals` (milestones, reorder, and task links), and `GET /api/analytics`. Swagger at `/api/docs` is version 0.8.0. Notifications still have tables only. There is no inbox.
+Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/password`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), `/api/goals` (milestones, reorder, and task links), and `GET /api/analytics`. Swagger at `/api/docs` is version 0.9.0. Notifications still have tables only. There is no inbox. Production boot checks `SESSION_SECRET`.
 
 ## Next recommended tasks
 
-The AI assistant, recurring tasks, a notification inbox, and deployment packaging. The legacy blocker in `src/` is still separate. Headless Chrome on `/focus` is recorded in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+The AI assistant, recurring tasks, and a notification inbox. The legacy blocker in `src/` is still separate. Headless Chrome on `/focus` is recorded in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Image builds still need a machine with Docker.

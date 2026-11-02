@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 — Production packaging
+
+- Added multi-stage Dockerfiles for the API and the web app. Images do not contain secrets. The web image proxies `/api` with `NUXT_API_PROXY_TARGET`
+- Added `infrastructure/docker-compose.prod.yml` for Postgres, the API, and the web app. The dev Postgres file is unchanged
+- API responses now send a small set of security headers. HSTS is sent only on HTTPS
+- Production boot refuses an empty or placeholder `SESSION_SECRET`. Session token hashes are HMAC-SHA256 with that secret
+- Left the AI assistant, recurring tasks, and a notification inbox unbuilt. Redis was not added
+- Image builds and `docker compose up` were not run here, because Docker was not installed
+
 ## 0.8.0 — Settings and account security
 
 - Display name still updates from Settings. Email is shown and cannot be changed

@@ -4,7 +4,7 @@ NestJS 12 application in `apps/api`. Global prefix `api`. Global `AuthGuard` wit
 
 | Module | Responsibility |
 | --- | --- |
-| `auth` | Argon2 passwords, session issue and lookup, cookie, in-memory rate limit |
+| `auth` | Argon2 passwords, session issue and lookup, HTTP-only cookie, HMAC session hash, in-memory rate limit |
 | `users` | Display name, password change, and preferences. Imports `AuthModule` so it can map the public user. Password change verifies the current hash and does not delete sessions |
 | `tasks` | Owner-scoped CRUD, summary, status rules, matrix, and planner |
 | `categories`, `tags` | Owner-scoped catalogs and assignment |
