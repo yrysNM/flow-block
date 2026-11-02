@@ -4,7 +4,7 @@ import { deriveFocusSessionStatus } from '@focusflow/shared-types'
 import type { ListFocusSessionsQuery, StartFocusSessionInput } from '@focusflow/shared-schemas'
 import { focusElapsedSeconds, focusRemainingSeconds } from '@focusflow/shared-utils'
 import type { Prisma } from '@prisma/client'
-import type { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 
 const sessionInclude = {
   task: { select: { id: true, title: true, status: true } },

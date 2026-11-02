@@ -13,6 +13,7 @@ Examples: `.env.example`, `apps/api/.env.example`, `apps/web/.env.example`. Do n
 | `SESSION_SECRET` | In production | Pepper for the session-token HMAC. At least 32 characters. Not a placeholder |
 | `COOKIE_SECURE` | No | `1` or `true` forces the Secure cookie. `0` or `false` leaves it off. Unset follows `NODE_ENV=production` |
 | `RUN_MIGRATIONS` | No | API image only. `1` (default) runs `prisma migrate deploy` before listen. `0` skips it |
+| `ASSISTANT_PROVIDER` | No | Optional name for a future assistant provider. Unset, empty, `unconfigured`, and unknown names use the unconfigured provider. Not required at startup. Not an API key. See [ASSISTANT.md](ASSISTANT.md) |
 
 Local dev Compose value:
 
@@ -20,7 +21,7 @@ Local dev Compose value:
 postgresql://focusflow:focusflow@localhost:5432/focusflow?schema=public
 ```
 
-That password is only for local Docker. Development can omit `SESSION_SECRET`. The API then uses a built-in development pepper that production rejects.
+That password is only for local Docker. Development can omit `SESSION_SECRET`. The API then uses a built-in development pepper that production rejects. `ASSISTANT_PROVIDER` can be omitted in every environment. Production boot does not read it.
 
 Production refuses to boot when `SESSION_SECRET` is empty, shorter than 32 characters, or any of these placeholders:
 

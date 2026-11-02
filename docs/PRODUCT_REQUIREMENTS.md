@@ -26,12 +26,13 @@ A person can:
 - Create habits, check in for a date, and see a streak and a month of check-ins
 - Create goals with a deadline, milestones, and links to existing tasks, and see progress derived from those rows
 - See tasks completed, focus time, website usage, habit consistency, and a daily trend for the last 7 or 30 local days
+- Submit a prompt to the assistant and see that it is not configured. No task is created from that prompt
 
 A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Recurring tasks, reminders, an AI assistant, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
+A connected assistant model, recurring tasks, reminders, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
 
 ## Task rules
 

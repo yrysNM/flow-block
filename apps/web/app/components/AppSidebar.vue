@@ -57,6 +57,7 @@ const primary = [
   { label: 'Habits', to: '/habits' },
   { label: 'Goals', to: '/goals' },
   { label: 'Analytics', to: '/analytics' },
+  { label: 'Assistant', to: '/assistant' },
   { label: 'Settings', to: '/settings' },
 ]
 

@@ -19,6 +19,7 @@
 - `language` is stored as `en` and is not a translation system. The interface stays English
 - There is no notification inbox and no delivery. Settings does not add a toggle for one
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
-- Notifications still have no product UI. The AI assistant and deployment are not in this tree
+- The assistant provider is unconfigured. `POST /api/assistant` validates the prompt and returns not-configured. It does not call a model and does not create a task. `ASSISTANT_PROVIDER` is optional
+- Notifications still have no product UI. Production images are defined and were not built in this environment
 - The habits, goals, and analytics pages were not clicked through. Creating those rows needs Postgres
 - Matrix, planner, Kanban, categories, tags, and subtasks were not clicked through in a browser. Postgres is still unavailable, so register cannot create the rows those screens need

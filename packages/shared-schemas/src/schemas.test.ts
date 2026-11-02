@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   analyticsQuerySchema,
+  assistantPromptSchema,
   changePasswordSchema,
   createCategorySchema,
   createGoalSchema,
@@ -143,5 +144,15 @@ describe('shared schemas', () => {
     })
     expect(updatePreferencesSchema.safeParse({ language: 'fr' }).success).toBe(false)
     expect(updatePreferencesSchema.safeParse({ focusDefaultSeconds: 30 }).success).toBe(false)
+  })
+
+  it('rejects an empty assistant prompt and strips userId', () => {
+    expect(assistantPromptSchema.parse({
+      prompt: '  Outline the chapter  ',
+      userId: 'someone-else',
+    })).toEqual({ prompt: 'Outline the chapter' })
+    expect(assistantPromptSchema.safeParse({ prompt: '   ' }).success).toBe(false)
+    expect(assistantPromptSchema.safeParse({ prompt: '' }).success).toBe(false)
+    expect(assistantPromptSchema.safeParse({ prompt: 'a'.repeat(2001) }).success).toBe(false)
   })
 })

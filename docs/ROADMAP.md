@@ -22,6 +22,8 @@ Phase 5c: settings and account security. Display name, password change that keep
 
 Phase 5d: production packaging. Multi-stage Dockerfiles for the API and web app, and a Compose file for Postgres, the API, and the web app. The dev Postgres file remains. Redis was not added.
 
+Phase 5e: assistant foundation. `POST /api/assistant` and `/assistant` use an unconfigured provider. A prompt is validated. The result is not-configured. No model is called, no API key is stored, and no task is created. `ASSISTANT_PROVIDER` can name a future provider and is not required at startup.
+
 ## Later, not scheduled in this change
 
-Merging the legacy blocker, the AI assistant, recurring tasks, a notification inbox, and password reset. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.
+Merging the legacy blocker, a configured assistant provider, recurring tasks, a notification inbox, and password reset. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.

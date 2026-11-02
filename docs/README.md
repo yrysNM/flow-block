@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 5d: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, and production packaging.
+These files describe the product and what this repository actually contains after Phase 5e: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, production packaging, and an unconfigured assistant.
 
 Start here:
 
@@ -15,5 +15,6 @@ Start here:
 - [GOALS.md](GOALS.md) — milestones, task links, and derived progress
 - [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) — how each analytics number is computed
 - [SETTINGS.md](SETTINGS.md) — profile, password change, theme, focus default, and stored language
+- [ASSISTANT.md](ASSISTANT.md) — the unconfigured assistant provider
 
-Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. The AI assistant, recurring tasks, and notification delivery are not built. Image builds were not run here.
+Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The assistant validates a prompt and returns not-configured. It does not call a model. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. Recurring tasks and notification delivery are not built. Image builds were not run here.

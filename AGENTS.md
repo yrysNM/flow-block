@@ -2,7 +2,7 @@
 
 FocusFlow is an all-in-one productivity product: “Focus on what matters.” Web, Chrome extension, and API share one account and one Task. The canonical workflow is Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 0 through Phase 5d are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, a focus timer, website rules, Chrome extension enforcement, habits, goals, analytics, account settings, and production packaging. Settings cover the display name, a password change that keeps the session, a theme applied on the shell, a default focus duration, and a stored English language. Packaging is the API and web Dockerfiles plus a production-style Compose file. Do not start the AI assistant, recurring tasks, or a notification inbox unless the task says so.
+Phase 0 through Phase 5e are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, a focus timer, website rules, Chrome extension enforcement, habits, goals, analytics, account settings, production packaging, and an unconfigured assistant seam. Settings cover the display name, a password change that keeps the session, a theme applied on the shell, a default focus duration, and a stored English language. Packaging is the API and web Dockerfiles plus a production-style Compose file. The assistant validates a prompt and returns not-configured. Do not call an external model, add an API key, or build recurring tasks or a notification inbox unless the task says so.
 
 ## Stack
 
