@@ -45,7 +45,7 @@ esbuild.build({
   bundle: true,
   platform: 'node',
   format: 'esm',
-  outfile: path.join(apiRoot, 'src/vercel-bundle.mjs'),
+  outfile: path.join(apiRoot, 'native/vercel-bundle.mjs'),
   packages: 'external',
   sourcemap: false,
   plugins: [

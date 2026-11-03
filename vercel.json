@@ -16,9 +16,9 @@
     "api": {
       "root": "apps/api",
       "framework": "express",
-      "entrypoint": "src/vercel-server.mjs",
+      "entrypoint": "src/server.mjs",
       "functions": {
-        "src/vercel-server.mjs": {
+        "src/server.mjs": {
           "includeFiles": "native/**"
         }
       }

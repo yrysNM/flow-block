@@ -39,7 +39,6 @@ apps/web/.output
 apps/web/.data
 apps/api/dist
 apps/api/native
-apps/api/src/vercel-bundle.mjs
 apps/extension/dist
 packages/*/dist
 
