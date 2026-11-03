@@ -3,11 +3,13 @@
 FocusFlow production is one Vercel project, configured in `vercel.json` as two services:
 
 1. `web` — Nuxt 4, root `apps/web`, framework `nuxtjs`
-2. `api` — NestJS, root `apps/api`, entry `src/main.ts`, framework `nestjs`
+2. `api` — NestJS, root `apps/api`, entry `src/vercel-server.mjs`, framework `express`
 
 Vercel rewrites `/api/(.*)` to the API service and every other path to the web service. The browser calls same-origin `/api`, so the session cookie does not need a second origin. Services is in beta on all plans.
 
 The root `npm run build` script is still the Website Blocker. Do not point the Vercel project at that script.
+
+API install writes `apps/api/src/vercel-bundle.mjs` (gitignored) and copies Linux argon2 and Prisma engine files into `apps/api/native`. The Express entry imports that bundle. `src/main.ts` remains the local process entry (`node apps/api/dist/main.js`).
 
 ## What has to be true in the Vercel project
 
