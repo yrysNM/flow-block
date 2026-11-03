@@ -61,3 +61,7 @@ Theme, week start, and time zone were already columns on `user_preferences`. Pha
 ## ADR-15. Production images stay free of secrets
 
 `apps/api/Dockerfile` and `apps/web/Dockerfile` are multi-stage builds from the repository root. The API runtime receives `DATABASE_URL` and `SESSION_SECRET` from the environment, not from the image. The web runtime reads `NUXT_API_PROXY_TARGET` the same way the dev server does. `infrastructure/docker-compose.yml` remains the dev database. `infrastructure/docker-compose.prod.yml` is the local production-style stack. The API process checks `SESSION_SECRET` before it listens when `NODE_ENV=production`.
+
+## ADR-16. The assistant is a provider seam
+
+`POST /api/assistant` calls `AssistantProvider.complete` with the session user id and the prompt. The default class validates the prompt and returns `{ status: 'not-configured' }`. It does not fetch, and it does not create a task. `ASSISTANT_PROVIDER` names a future class inside `selectAssistantProvider`. An unset or unknown name stays on the default and is not required for the process to start. No API key is part of this seam. See [ASSISTANT.md](ASSISTANT.md).

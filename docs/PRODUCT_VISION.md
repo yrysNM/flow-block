@@ -16,6 +16,6 @@ The canonical workflow is:
 6. Complete Task
 7. Analyze Results
 
-Accounts, the task, categories, tags, subtasks, a status board, the matrix, a one-day planner, the focus timer, website blocking, habits, goals, and analytics are in the product. Prioritization is stored as two booleans. The quadrant is calculated from them. A deadline and a time block are different fields. Habit streaks, goal progress, and analytics totals are calculated too. An AI assistant is later.
+Accounts, the task, categories, tags, subtasks, a status board, the matrix, a one-day planner, the focus timer, website blocking, habits, goals, and analytics are in the product. Prioritization is stored as two booleans. The quadrant is calculated from them. A deadline and a time block are different fields. Habit streaks, goal progress, and analytics totals are calculated too. An assistant page accepts a prompt and reports that no model is connected.
 
 The Website Blocker already in this repository is the seed of “Block Distractions.” It still runs locally in Chrome and on Android. It is not the shared account yet.

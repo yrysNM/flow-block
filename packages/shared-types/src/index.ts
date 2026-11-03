@@ -4,6 +4,23 @@ export type TaskStatus = (typeof TASK_STATUSES)[number]
 export const TASK_PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] as const
 export type TaskPriority = (typeof TASK_PRIORITIES)[number]
 
+/** Characters accepted by POST /api/assistant after trim. */
+export const ASSISTANT_PROMPT_MAX_LENGTH = 2000
+
+export interface AssistantSuggestion {
+  title: string
+  notes: string
+  priority: TaskPriority
+}
+
+/**
+ * A provider either has no model connected, or returns suggestions.
+ * Suggestions are not tasks. This milestone does not write them.
+ */
+export type AssistantResult =
+  | { status: 'not-configured' }
+  | { status: 'suggestions'; suggestions: AssistantSuggestion[] }
+
 export const EISENHOWER_QUADRANTS = ['DO', 'SCHEDULE', 'DELEGATE', 'ELIMINATE'] as const
 export type EisenhowerQuadrant = (typeof EISENHOWER_QUADRANTS)[number]
 

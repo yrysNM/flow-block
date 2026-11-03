@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0 — Assistant foundation
+
+- Added a server-side `AssistantProvider` with one method. The session user id is the only user id it receives
+- The default provider validates the prompt and returns `{ "status": "not-configured" }`. It does not call the network and does not create a task
+- Added `POST /api/assistant`. An empty prompt is rejected. A client `userId` is stripped
+- `ASSISTANT_PROVIDER` selects a future provider. Unset, empty, `unconfigured`, and unknown names stay unconfigured and are not required at startup. No API key was added
+- Added `/assistant`. Submitting a prompt shows the not-configured state. The page does not invent suggestions or sample tasks
+- `FocusService` now imports `PrismaService` as a value so the compiled API can construct it. A type-only import erased the constructor type and the process would not start
+- Recurring tasks and a notification inbox stay unbuilt
+
 ## 0.9.0 — Production packaging
 
 - Added multi-stage Dockerfiles for the API and the web app. Images do not contain secrets. The web image proxies `/api` with `NUXT_API_PROXY_TARGET`

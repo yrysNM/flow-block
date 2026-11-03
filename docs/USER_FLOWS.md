@@ -101,4 +101,10 @@ There is no notification inbox on this page.
 2. The totals and the chart come from `GET /api/analytics` for the signed-in user
 3. A range with no tasks, focus time, website usage, or habit check-ins shows an empty state instead of a sample chart
 
-The AI assistant is not in the product yet.
+## Assistant
+
+1. Open Assistant and write a prompt
+2. Submit it. The page calls `POST /api/assistant` as the signed-in user
+3. The response is not-configured. No suggestion list is invented, and no task is created
+
+A configured model is not in the product yet. Recurring tasks and a notification inbox are not either.

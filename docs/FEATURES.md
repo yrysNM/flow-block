@@ -21,6 +21,7 @@
 | Habit CRUD, check-in, streak, and a month calendar | API and Habits page |
 | Goal CRUD, milestones, task links, and derived progress | API and Goals page |
 | Analytics totals and a daily trend | API and Analytics page |
+| Assistant prompt that returns not-configured | API and Assistant page |
 | Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories, Habits, Goals |
 | Derived Eisenhower quadrant | API response and task UI |
 | OpenAPI | `/api/docs` |
@@ -35,4 +36,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-The AI assistant, recurring tasks, a notification inbox, and connecting the legacy `src/` blocker to these rules. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.
+A configured assistant model, recurring tasks, a notification inbox, and connecting the legacy `src/` blocker to these rules. The assistant page does not call a model and does not create tasks. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.

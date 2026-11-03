@@ -89,6 +89,7 @@ Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `CO
 | POST | `/api/goals/:id/tasks` | `{ taskId }` links an existing task owned by the same user. A second link returns the goal |
 | DELETE | `/api/goals/:id/tasks/:taskId` | Removes the link. The task stays |
 | GET | `/api/analytics` | Optional `range=7` or `range=30` (default 7). Totals and one series point per local day. A client `userId` or client totals are stripped. See [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) |
+| POST | `/api/assistant` | 200. `{ "prompt" }` trimmed, 1–2000 characters. A client `userId` is stripped. The user id is the session. The default body is `{ "status": "not-configured" }`. No task is created. See [ASSISTANT.md](ASSISTANT.md) |
 
 Habit JSON includes `frequency`, `targetCount`, `streak`, `todayCount`, and `todayMet`. A detail adds `month` and `entries` (`date`, `count`, `met`). Goal JSON includes `deadline`, `status`, `milestones`, `tasks`, and `progress: { completed, total }`. There is no progress percentage column.
 

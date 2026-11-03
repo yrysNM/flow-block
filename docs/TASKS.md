@@ -20,9 +20,10 @@
 - Analytics for 7 and 30 local days: tasks completed, focus time, website usage, habit consistency, and a per-day series
 - Account settings: display name, password change that keeps the session, theme applied on the shell, default focus duration, and a stored English language
 - Production Dockerfiles for the API and web app, a production-style Compose file, API security headers, and a production session-secret check
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, a wrong current password, a theme round-trip, the focus page’s initial duration, and password hashing
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, a wrong current password, a theme round-trip, the focus page’s initial duration, password hashing, an empty assistant prompt, and a normal prompt that returns not-configured without creating a task
 - Docs listed in the milestone
+- Assistant foundation: session user, prompt validation, unconfigured provider, and `/assistant`
 
 ## Next, not started
 
-- AI assistant, recurring tasks, a notification inbox, merging the legacy blocker, Redis
+- A configured assistant provider, recurring tasks, a notification inbox, merging the legacy blocker, Redis
