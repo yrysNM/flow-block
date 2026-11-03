@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 5b: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, and analytics.
+These files describe the product and what this repository actually contains after Phase 5c: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, and account settings.
 
 Start here:
 
@@ -14,5 +14,6 @@ Start here:
 - [HABITS.md](HABITS.md) — check-ins and streaks
 - [GOALS.md](GOALS.md) — milestones, task links, and derived progress
 - [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md) — how each analytics number is computed
+- [SETTINGS.md](SETTINGS.md) — profile, password change, theme, focus default, and stored language
 
-Website rules and the FocusFlow extension are shipped. Habits, goals, and analytics are shipped. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. The AI assistant is not built.
+Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, and account settings are shipped. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. The AI assistant, recurring tasks, notification delivery, and deployment packaging are not built.

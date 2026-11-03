@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 — Settings and account security
+
+- Display name still updates from Settings. Email is shown and cannot be changed
+- `PATCH /api/users/me/password` requires the current password, stores a new argon2id hash, and leaves the session in place. A wrong current password does not write
+- Theme `light`, `dark`, and `system` are saved and applied on the web shell
+- A default focus duration is saved and used as the initial duration on the focus page. Completing a session still does not change task status
+- Language is stored as `en` only. The interface stays English. This is not a translation system
+- No notification inbox was added. The AI assistant, recurring tasks, and deployment packaging stay unbuilt
+
 ## 0.7.0 — Analytics
 
 - Added `GET /api/analytics` for the last 7 or 30 local days. Every number is computed on the server for the signed-in user

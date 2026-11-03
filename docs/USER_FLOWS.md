@@ -4,7 +4,7 @@
 
 1. Open `/register`
 2. Enter name, email, and a password of at least 8 characters
-3. The API creates the user, default preferences (UTC, system theme, Monday week start), and a session cookie
+3. The API creates the user, default preferences (UTC, system theme, Monday week start, 25 minute focus default, English), and a session cookie
 4. The app opens the dashboard
 
 ## Return later
@@ -58,13 +58,16 @@
 ## Settings
 
 1. Open Settings
-2. Change name, time zone, or week start
-3. Save. The next dashboard “today” uses the saved time zone
+2. Change the display name, theme, time zone, week start, or default focus length. Email is shown and cannot be changed. Language stays English and is stored, not translated
+3. Save. The shell uses the saved theme. The next dashboard “today” uses the saved time zone. The focus page starts at the saved length
+4. To change the password, enter the current password and a new one. A wrong current password does nothing. A correct one keeps this session signed in
+
+There is no notification inbox on this page.
 
 ## Focus
 
 1. Open Focus
-2. Pick 15, 25, or 50 minutes, or a custom length, and optionally an existing task
+2. The duration starts from the saved focus default (15, 25, or 50 minutes when that is exact, otherwise custom). Change it if you want, and optionally pick an existing task
 3. Start. If a session is already running or paused, the page keeps that one
 4. Pause and resume. The displayed clock follows the server’s elapsed time
 5. Complete, or end without completing. The task status does not change. The session moves to history

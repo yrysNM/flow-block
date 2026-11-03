@@ -1,6 +1,6 @@
 # Implementation status
 
-Phase 5b adds server-computed analytics on the Phase 5a branch. The AI assistant, notifications product, and deployment are not in this milestone. The legacy blocker in `src/` is unchanged.
+Phase 5c adds account settings on the Phase 5b branch: display name, password change, theme applied on the shell, a default focus duration, and a stored English language. The AI assistant, recurring tasks, a notification inbox, and deployment packaging are not in this milestone. The legacy blocker in `src/` is unchanged.
 
 ## Reused
 
@@ -13,8 +13,8 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, focus, blocking, categories, habits, goals, analytics, settings, login, register
-- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, focus sessions, website rules, habits, goals, analytics, Swagger
+- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, focus, blocking, categories, habits, goals, analytics, settings (profile, password, theme, focus default, stored language), login, register
+- `apps/api` NestJS auth, users, password change, tasks, categories, tags, subtasks, matrix, planner, focus sessions, website rules, habits, goals, analytics, Swagger
 - `apps/extension` sign-in, cached rules, alarms, and blocking
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
@@ -23,7 +23,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-The AI assistant, notifications, and merging the legacy blocker. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable. The focus clock in the browser is a display. The API computes elapsed time, habit streaks, goal progress, and analytics. Apache ECharts is used on `/analytics` only. The extension enforces from its cache when sync fails.
+The AI assistant, recurring tasks, a notification inbox, deployment packaging, email change, password reset, and merging the legacy blocker. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable. The focus clock in the browser is a display. The API computes elapsed time, habit streaks, goal progress, and analytics. Apache ECharts is used on `/analytics` only. The extension enforces from its cache when sync fails. Language is stored and is not translated.
 
 ## Database blocker
 
@@ -38,9 +38,9 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 `npm run test:focusflow`
 
 - `@focusflow/shared-types`: 7 passed
-- `@focusflow/shared-schemas`: 8 passed
-- `@focusflow/shared-utils`: 21 passed
-- `@focusflow/api`: 41 passed, 1 skipped (`test/tasks.integration.test.ts`)
+- `@focusflow/shared-schemas`: 11 passed
+- `@focusflow/shared-utils`: 24 passed
+- `@focusflow/api`: 44 passed, 1 skipped (`test/tasks.integration.test.ts`)
 
 `npm run test -w @focusflow/extension` — 4 passed.
 
@@ -50,7 +50,7 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 - `npm run typecheck -w @focusflow/web` (`nuxt typecheck`) — passed
 - `npm run typecheck -w @focusflow/extension` — passed
 
-Shared packages were built first (`npm run build -w @focusflow/shared-types`, `shared-schemas`, and `shared-utils`) so the API typecheck and Nest build read the new streak and progress helpers.
+Shared packages were built first (`npm run build -w @focusflow/shared-types`, `shared-schemas`, and `shared-utils`) so the API typecheck and Nest build read the new preference fields.
 
 ### Lint
 
@@ -59,8 +59,10 @@ Shared packages were built first (`npm run build -w @focusflow/shared-types`, `s
 ### Production builds
 
 - `npm run build -w @focusflow/api` — passed (`nest build`)
-- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 4.24s). The analytics route chunk is large because it includes ECharts
+- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 4.07s). The analytics route chunk is still large because it includes ECharts (about 538 kB)
 - `npm run build -w @focusflow/extension` — passed (`node build.mjs`, esbuild bundle)
+
+The built shell CSS uses `background-color: var(--color-background)`, and `html[data-theme=dark]` replaces that variable. Saving dark or light changes the shell.
 
 ### Existing extension (preserved)
 
@@ -68,4 +70,4 @@ Shared packages were built first (`npm run build -w @focusflow/shared-types`, `s
 
 ### Not exercised
 
-The signed-in analytics page was not clicked through. Those rows need Postgres. Headless Chrome hung on `/focus` in Phase 4a; that hang is still unfixed and this milestone did not rewrite the timer. Service tests cover another user’s completed tasks, focus time with a pause removed, and a zero for a day with no rows.
+The signed-in settings and focus pages were not clicked through. Those writes need Postgres. `docker` and `psql` are not installed, so `prisma migrate deploy` and the integration test did not run. `prisma generate` did succeed. Headless Chrome `--dump-dom` does not exit here, including on `about:blank`. With the API stopped, `/focus` HTML returns immediately and the auth proxy answers 502 in a few milliseconds. The focus timer was not rewritten. Service tests cover a wrong current password, a theme round-trip, and the focus page’s initial duration.

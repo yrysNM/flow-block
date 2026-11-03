@@ -18,9 +18,10 @@
 - Habit CRUD, check-in that updates the same date, computed streaks, and a month calendar
 - Goal CRUD, milestones, links to existing tasks, and progress derived on read
 - Analytics for 7 and 30 local days: tasks completed, focus time, website usage, habit consistency, and a per-day series
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, and password hashing
+- Account settings: display name, password change that keeps the session, theme applied on the shell, default focus duration, and a stored English language
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, a wrong current password, a theme round-trip, the focus page’s initial duration, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- AI assistant, notifications, merging the legacy blocker, Redis, deployment
+- AI assistant, recurring tasks, a notification inbox, merging the legacy blocker, Redis, deployment packaging

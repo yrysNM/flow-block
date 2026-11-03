@@ -24,8 +24,9 @@ Error body:
 | --- | --- | --- |
 | GET | `/api/auth/me` | User and preferences |
 | GET | `/api/users/me` | Same shape |
-| PATCH | `/api/users/me` | `{ "name" }` |
-| PATCH | `/api/users/me/preferences` | timezone, theme, and/or weekStartsOn |
+| PATCH | `/api/users/me` | `{ "name" }`. Email and `userId` are stripped |
+| PATCH | `/api/users/me/password` | `{ "currentPassword", "newPassword" }`. Wrong current password is 401 and does not change the hash. Success returns `{ "ok": true }` and keeps the session |
+| PATCH | `/api/users/me/preferences` | timezone, theme (`light`, `dark`, or `system`), weekStartsOn, focusDefaultSeconds (60–10800), and/or language (`en` only). See [SETTINGS.md](SETTINGS.md) |
 | GET | `/api/tasks` | `q`, `status`, `priority`, `categoryId` (uuid or `none`), `sort` (`createdAt`, `updatedAt`, `deadline`, `priority`, `title`), `order`, `page`, `pageSize` (max 100). A blank `q` is ignored |
 | GET | `/api/tasks/summary` | Optional `date=YYYY-MM-DD`. Defaults to today in the user time zone |
 | GET | `/api/tasks/board` | Same search, priority, and category filters. No status filter. Counts are totals. Each column returns at most 100 tasks, newest update first |
@@ -93,4 +94,4 @@ Habit JSON includes `frequency`, `targetCount`, `streak`, `todayCount`, and `tod
 
 Analytics JSON includes `range`, `timezone`, `startDate`, `endDate`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitConsistency: { checkIns, expected }`, and `series`. Each series point has `date`, `tasksCompleted`, `focusSeconds`, `websiteUsedSeconds`, `habitCheckIns`, and `habitExpected`. A day with no rows is a zero.
 
-A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notification routes are not implemented.
+A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notification routes are not implemented. There is no notification inbox and no delivery. Language is stored and is not a translation catalog. The web shell applies the saved theme.

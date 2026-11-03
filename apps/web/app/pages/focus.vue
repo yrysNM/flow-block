@@ -59,7 +59,7 @@
               type="button"
               class="rounded-lg border px-3 py-1.5 text-sm font-medium"
               :class="preset === minutes ? 'border-primary bg-primary/10 text-primary' : 'border-line text-ink'"
-              @click="preset = minutes"
+              @click="choosePreset(minutes)"
             >
               {{ minutes }} min
             </button>
@@ -67,14 +67,14 @@
               type="button"
               class="rounded-lg border px-3 py-1.5 text-sm font-medium"
               :class="preset === 'custom' ? 'border-primary bg-primary/10 text-primary' : 'border-line text-ink'"
-              @click="preset = 'custom'"
+              @click="choosePreset('custom')"
             >
               Custom
             </button>
           </div>
           <label v-if="preset === 'custom'" class="mt-3 block max-w-xs text-sm font-medium">
             Minutes
-            <input v-model.number="customMinutes" type="number" min="1" max="180" required class="field mt-1" />
+            <input v-model.number="customMinutes" type="number" min="1" max="180" required class="field mt-1" @input="durationChosen = true" />
           </label>
         </div>
         <label class="block max-w-md text-sm font-medium">
@@ -119,9 +119,11 @@ import {
   type FocusSessionView,
   type TaskListResponse,
 } from '@focusflow/shared-types'
+import { initialFocusSelection } from '@focusflow/shared-utils'
 import { apiErrorMessage } from '~/utils/api-error'
 
 const api = useApi()
+const auth = useAuthStore()
 const presets = FOCUS_PRESET_MINUTES
 const active = ref<FocusSessionView | null>(null)
 const history = ref<FocusSessionView[]>([])
@@ -131,6 +133,7 @@ const notice = ref('')
 const busy = ref(false)
 const preset = ref<number | 'custom'>(25)
 const customMinutes = ref(25)
+const durationChosen = ref(false)
 const taskId = ref('')
 const receivedAt = ref(0)
 const nowMs = ref(Date.now())
@@ -197,6 +200,23 @@ async function loadTasks() {
   tasks.value = page.data
     .filter((task) => task.status !== 'COMPLETED')
     .map((task) => ({ id: task.id, title: task.title }))
+}
+
+watch(
+  () => auth.preferences?.focusDefaultSeconds,
+  (seconds) => {
+    if (durationChosen.value || seconds === undefined) return
+    const selection = initialFocusSelection(seconds)
+    preset.value = selection.preset
+    customMinutes.value = selection.customMinutes
+    durationChosen.value = true
+  },
+  { immediate: true },
+)
+
+function choosePreset(minutes: number | 'custom') {
+  durationChosen.value = true
+  preset.value = minutes
 }
 
 function plannedSeconds(): number {

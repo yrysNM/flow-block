@@ -1,8 +1,10 @@
 import { Body, Controller, Get, Patch } from '@nestjs/common'
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
+  changePasswordSchema,
   updatePreferencesSchema,
   updateProfileSchema,
+  type ChangePasswordInput,
   type UpdatePreferencesInput,
   type UpdateProfileInput,
 } from '@focusflow/shared-schemas'
@@ -32,8 +34,17 @@ export class UsersController {
     return this.users.updateProfile(user.id, body)
   }
 
+  @Patch('me/password')
+  @ApiOperation({ summary: 'Change the password. The current session stays valid.' })
+  changePassword(
+    @CurrentUser() user: AuthContext,
+    @Body(new ZodValidationPipe(changePasswordSchema)) body: ChangePasswordInput,
+  ) {
+    return this.users.changePassword(user.id, body)
+  }
+
   @Patch('me/preferences')
-  @ApiOperation({ summary: 'Update timezone, theme, or week start' })
+  @ApiOperation({ summary: 'Update timezone, theme, week start, focus default, or language' })
   updatePreferences(
     @CurrentUser() user: AuthContext,
     @Body(new ZodValidationPipe(updatePreferencesSchema)) body: UpdatePreferencesInput,

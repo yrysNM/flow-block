@@ -53,3 +53,7 @@ Goals reuse `goals.target_date` as the deadline and `milestones`, plus `position
 ## ADR-13. Analytics is computed on read
 
 Phase 5b does not add a table. `GET /api/analytics` loads the signed-in user’s tasks, focus sessions, website usage, and habit entries, then `buildAnalytics` in `@focusflow/shared-utils` produces the totals and the per-day series. A client total or `userId` cannot change the result. Focus seconds reuse the pause rules: closed pauses are spread across the session wall, and an open pause is clipped to each local day. A missing day is a zero point so the chart does not drop it. Apache ECharts draws that series on `/analytics` only. The other boards stay on native drag and drop.
+
+## ADR-14. Account preferences stay on the existing row
+
+Theme, week start, and time zone were already columns on `user_preferences`. Phase 5c adds `focus_default_seconds` and `language` there instead of a second table. `language` accepts only `en` because the UI is not a translation system. Theme is applied by setting `data-theme` on the document, so the stored value changes the shell. Password change hashes with the same argon2id helper and does not delete sessions. Email stays immutable. Notifications stay tables without an inbox.

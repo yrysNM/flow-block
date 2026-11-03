@@ -10,6 +10,10 @@ export type EisenhowerQuadrant = (typeof EISENHOWER_QUADRANTS)[number]
 export const THEME_PREFERENCES = ['light', 'dark', 'system'] as const
 export type ThemePreference = (typeof THEME_PREFERENCES)[number]
 
+/** The only language the API accepts. The web UI stays English. */
+export const ACCOUNT_LANGUAGE = 'en' as const
+export type AccountLanguage = typeof ACCOUNT_LANGUAGE
+
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   TODO: 'To do',
   IN_PROGRESS: 'In progress',
@@ -134,6 +138,10 @@ export interface PublicPreferences {
   timezone: string
   theme: ThemePreference
   weekStartsOn: number
+  /** Initial focus duration in seconds. 1500 is 25 minutes. */
+  focusDefaultSeconds: number
+  /** Stored only. The interface is English. */
+  language: AccountLanguage
 }
 
 export interface SessionResponse {

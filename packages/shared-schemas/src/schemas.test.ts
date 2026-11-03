@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   analyticsQuerySchema,
+  changePasswordSchema,
   createCategorySchema,
   createGoalSchema,
   createHabitSchema,
@@ -10,6 +11,8 @@ import {
   createWebsiteRuleSchema,
   recordWebsiteUsageSchema,
   startFocusSessionSchema,
+  updatePreferencesSchema,
+  updateProfileSchema,
   updateTaskQuadrantSchema,
   updateTaskScheduleSchema,
 } from './index'
@@ -111,5 +114,34 @@ describe('shared schemas', () => {
       focusSeconds: 10,
     })).toEqual({ range: '30' })
     expect(analyticsQuerySchema.parse({})).toEqual({ range: '7' })
+  })
+
+  it('drops email and userId from a profile update', () => {
+    expect(updateProfileSchema.parse({
+      name: ' Ada ',
+      email: 'other@example.com',
+      userId: 'someone-else',
+    })).toEqual({ name: 'Ada' })
+  })
+
+  it('requires the current password and strips userId from a password change', () => {
+    expect(changePasswordSchema.parse({
+      currentPassword: 'old-password',
+      newPassword: 'new-password',
+      userId: 'someone-else',
+    })).toEqual({ currentPassword: 'old-password', newPassword: 'new-password' })
+    expect(changePasswordSchema.safeParse({ currentPassword: 'old-password', newPassword: 'short' }).success).toBe(false)
+    expect(changePasswordSchema.safeParse({ currentPassword: '', newPassword: 'new-password' }).success).toBe(false)
+  })
+
+  it('accepts light or dark theme and only English', () => {
+    expect(updatePreferencesSchema.parse({ theme: 'dark', userId: 'someone-else' })).toEqual({ theme: 'dark' })
+    expect(updatePreferencesSchema.parse({ theme: 'light', focusDefaultSeconds: 40 * 60, language: 'en' })).toEqual({
+      theme: 'light',
+      focusDefaultSeconds: 40 * 60,
+      language: 'en',
+    })
+    expect(updatePreferencesSchema.safeParse({ language: 'fr' }).success).toBe(false)
+    expect(updatePreferencesSchema.safeParse({ focusDefaultSeconds: 30 }).success).toBe(false)
   })
 })
