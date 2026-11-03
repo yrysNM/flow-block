@@ -21,7 +21,7 @@ describe.skipIf(!enabled)('task API integration', () => {
   })
 
   it('registers, creates a task, and lists only that user’s tasks', async () => {
-    const { createApp } = await import('../src/main')
+    const { createApp } = await import('../src/nest-on-express')
     const request = (await import('supertest')).default
     const app = await createApp()
     await app.init()

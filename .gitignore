@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .vite
+.vercel
 
 # Expo / mobile
 mobile/android
@@ -37,6 +38,7 @@ apps/web/.nuxt
 apps/web/.output
 apps/web/.data
 apps/api/dist
+apps/api/native
 apps/extension/dist
 packages/*/dist
 

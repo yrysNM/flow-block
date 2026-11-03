@@ -8,6 +8,7 @@
 - Task CRUD, summary, and web dashboard, list, and settings
 - Unit tests for transitions, quadrant, ownership, and password hashing
 - Docs listed in the milestone
+- Vercel Services config for a production build of the Nuxt app and Nest API
 
 ## Next milestone — Phase 2
 
@@ -19,4 +20,4 @@
 
 ## Not this milestone
 
-Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment.
+Focus timer, website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis.

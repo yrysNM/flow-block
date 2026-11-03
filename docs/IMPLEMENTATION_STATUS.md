@@ -57,6 +57,27 @@ Commands were run from `/workspace` on Node v22.23.4. Results below are from tha
 - `npm run build -w @focusflow/api` — passed (`nest build`, `apps/api/dist/main.js`)
 - `npm run build -w @focusflow/extension` — passed (`dist/background.js`, `dist/popup.js`)
 
+### Vercel project config
+
+`vercel.json` is a Services project: Nuxt at `apps/web`, Nest at `apps/api` with Express entry `src/server.ts`, `/api` rewritten to Nest. The API `postinstall` compiles shared packages, runs `prisma generate` with the `rhel-openssl-3.0.x` engine, copies Linux native binaries, and writes the ESM Nest bundle.
+
+Checked on this branch, Node v22.23.4, from the repo root:
+
+- `npm run postinstall -w @focusflow/api` — passed (Prisma client generated, shared `dist` files written, `apps/api/native/vercel-bundle.mjs` emitted)
+- Importing that bundle and the Express entry locally: `GET /api/health` returned `{"status":"ok"}`, `GET /api/tasks` without a cookie returned 401
+- `npm test -w @focusflow/api` — 9 passed, 1 skipped
+
+Production deployment `dpl_9gWkmmeuuwV5LyW9AyB9oEaYZQKG` (commit `559a4fb`, alias https://flow-block-black.vercel.app) returned:
+
+- `GET /` — 200, `x-powered-by: Nuxt`, FocusFlow HTML
+- `GET /login` — 200
+- `GET /api/health` — 200 `{"status":"ok"}`
+- `GET /api/tasks` and `GET /api/auth/me` without a cookie — 401 `Authentication required.`
+- `POST /api/auth/register` with a valid body — 503 `Database is unavailable.`
+- `GET /api/docs` — 200 Swagger UI
+
+There is no `DATABASE_URL` on the project, so register and task writes cannot succeed yet. Startup failures are logged and the response message is fixed.
+
 ### Existing extension (preserved)
 
 - `npm test` — 4 files, 29 tests passed
