@@ -67,16 +67,16 @@ Checked on this branch, Node v22.23.4, from the repo root:
 - Importing that bundle and the Express entry locally: `GET /api/health` returned `{"status":"ok"}`, `GET /api/tasks` without a cookie returned 401
 - `npm test -w @focusflow/api` — 9 passed, 1 skipped
 
-Production deployment `dpl_9gWkmmeuuwV5LyW9AyB9oEaYZQKG` (commit `559a4fb`, alias https://flow-block-black.vercel.app) returned:
+Neon set `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) on the Vercel project. `prisma migrate deploy` applied `20261102100000_init` using the direct URL.
 
-- `GET /` — 200, `x-powered-by: Nuxt`, FocusFlow HTML
-- `GET /login` — 200
+Production deployment `dpl_4ViKZmxnEBjeSyEmkFwnNqLR7V24` (commit `d09a84b`, alias https://flow-block-black.vercel.app) then returned:
+
 - `GET /api/health` — 200 `{"status":"ok"}`
-- `GET /api/tasks` and `GET /api/auth/me` without a cookie — 401 `Authentication required.`
-- `POST /api/auth/register` with a valid body — 503 `Database is unavailable.`
-- `GET /api/docs` — 200 Swagger UI
+- `POST /api/auth/register` with a valid body — 201, with a session cookie
+- `GET /api/tasks` with that cookie — 200 and an empty list
+- The probe account used for that check was deleted afterward
 
-There is no `DATABASE_URL` on the project, so register and task writes cannot succeed yet. Startup failures are logged and the response message is fixed.
+Startup failures are logged and the response message is fixed.
 
 ### Existing extension (preserved)
 

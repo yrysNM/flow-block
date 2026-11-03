@@ -14,7 +14,7 @@ Phase 0 and the first vertical slice are in the tree: auth, tasks, dashboard, se
 
 ## In progress
 
-Vercel production is live at https://flow-block-black.vercel.app. Nuxt and `GET /api/health` return 200. Register returns 503 until the project has `DATABASE_URL` and `prisma migrate deploy` has run. Production currently deploys from `cursor/vercel-production-build-5ba7`, not `main`.
+Vercel production is live at https://flow-block-black.vercel.app. Nuxt, health, register, and task list work against the Neon database connected to the project. `prisma migrate deploy` applied `20261102100000_init`.
 
 ## Pending
 
@@ -34,7 +34,7 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The important one for the next session: 
 
 ## Database status
 
-Schema and `20261102100000_init` migration are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
+Schema and `20261102100000_init` are written. `prisma migrate deploy` applied that migration to the production Neon database. Local Compose was not started.
 
 ## API status
 
@@ -42,4 +42,4 @@ Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/prefe
 
 ## Next recommended tasks
 
-Set `DATABASE_URL` on the Vercel project and run `prisma migrate deploy`. Keep production on this branch until the Vercel config is on `main`. Then Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.
+Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.

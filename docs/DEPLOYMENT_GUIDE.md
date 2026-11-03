@@ -16,7 +16,7 @@ API install writes `apps/api/native/vercel-bundle.mjs` (gitignored with the Linu
 - Framework preset `services` (taken from `vercel.json`)
 - Node.js 22.x, matching the version used to verify this repo
 - Production branch `main`, once this configuration is on `main`. Until then, production is the deployment of `cursor/vercel-production-build-5ba7` at https://flow-block-black.vercel.app
-- `DATABASE_URL` for Postgres. Neon is the Vercel Marketplace database that fits Prisma. Use a pooled URL at runtime. Run `prisma migrate deploy` from `apps/api` with a direct (non-pooled) URL before relying on register or tasks
+- `DATABASE_URL` for Postgres. The Neon integration sets the pooled URL in `DATABASE_URL` and the direct URL in `DATABASE_URL_UNPOOLED`. Runtime uses the pooled URL. `prisma migrate deploy` from `apps/api` uses the direct URL. `20261102100000_init` is already applied on production
 - `WEB_ORIGIN` when the site uses a custom domain. On `*.vercel.app`, the API also allows the deployment host from `VERCEL_URL` and `VERCEL_PROJECT_PRODUCTION_URL`
 
 `Secure` cookies turn on when `NODE_ENV=production`. Vercel serves HTTPS.
