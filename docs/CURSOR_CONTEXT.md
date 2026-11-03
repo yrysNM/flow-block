@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 4b is in the tree on top of the focus timer: website rules and Chrome extension enforcement. The app is still not connected to a running Postgres. Schedule, focus-pause, and website-rule migrations are written and were not applied.
+Phase 5a is in the tree on top of website rules: habits and goals. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, and habits-goals migrations are written and were not applied.
 
 ## Completed modules
 
@@ -14,6 +14,8 @@ Phase 4b is in the tree on top of the focus timer: website rules and Chrome exte
 - Daily planner with one time block stored on the Task
 - Focus timer: one active session, presets and a custom duration, pause and resume, optional task, history
 - Website rules and usage events, plus FocusFlow extension enforcement from a cached copy
+- Habits with a target count, check-ins that update one entry per date, a computed streak, and a month calendar
+- Goals with a deadline, milestones, links to existing tasks, and progress derived on read
 - Derived Eisenhower quadrant and status rules
 - Preservation of `src/` and `mobile/`
 
@@ -23,7 +25,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-Habits, goals, and analytics. Those are unimplemented. Website rules and extension sync are in this branch.
+The analytics dashboard. Habits and goals are in this branch. Website rules and extension sync are in the parent branch.
 
 ## Architecture
 
@@ -39,12 +41,12 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The important one for the next session: 
 
 ## Database status
 
-Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_focus_pause`, and `20261102140000_website_rules` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
+Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, and `20261102150000_habits_goals` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, and `/api/websites` (rules, usage totals, usage events). Swagger at `/api/docs`. Habits, goals, and notifications still have tables only.
+Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), and `/api/goals` (milestones, reorder, and task links). Swagger at `/api/docs` is version 0.6.0. Notifications still have tables only.
 
 ## Next recommended tasks
 
-Habits, goals, and analytics. Website rules and the FocusFlow extension are in this branch. The legacy blocker in `src/` is still separate. Headless Chrome hanging on `/focus` is still unfixed.
+The analytics dashboard. Website rules and the FocusFlow extension are in the parent branch. Habits and goals are in this branch. The legacy blocker in `src/` is still separate. Headless Chrome hanging on `/focus` is still unfixed.

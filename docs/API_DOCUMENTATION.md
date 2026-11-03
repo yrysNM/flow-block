@@ -70,4 +70,24 @@ Task JSON includes `categoryId`, `category` (`{ id, name, color }` or null), `ta
 
 Focus session JSON includes `plannedSeconds`, `status` (`RUNNING`, `PAUSED`, `COMPLETED`, `STOPPED`), `startedAt`, `endedAt`, `pausedAt`, `pausedSeconds`, computed `elapsedSeconds` and `remainingSeconds`, `completed`, `serverNow`, and `task` (`{ id, title, status }` or null). `elapsedSeconds` in the response is calculated. The database column of that name is not the source of truth.
 
-A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Routes for habits, goals, and notifications are not implemented.
+| GET | `/api/habits` | Habits for the signed-in user, with `streak`, `targetCount`, and today’s count |
+| POST | `/api/habits` | 201. `{ name, frequency?, targetCount? }`. Frequency is `DAILY` or `WEEKLY`. A client `userId` is stripped |
+| GET | `/api/habits/:id` | One habit plus `entries` for `month=YYYY-MM` (default: the current month) |
+| PATCH | `/api/habits/:id` | Name, frequency, or target. 404 if not owned |
+| DELETE | `/api/habits/:id` | 204 |
+| POST | `/api/habits/:id/check-ins` | 200. `{ date?, count? }`. Updates the entry for that habit and date. Does not insert a duplicate |
+| GET | `/api/goals` | Goals with milestones, linked tasks, and derived `progress` |
+| POST | `/api/goals` | 201. `{ title, description?, status?, deadline? }`. `deadline` is `YYYY-MM-DD` or null. A client `userId` and any progress field are stripped |
+| GET | `/api/goals/:id` | One goal. 404 if not owned |
+| PATCH | `/api/goals/:id` | Title, description, status, or deadline. Does not write a percentage |
+| DELETE | `/api/goals/:id` | 204 |
+| POST | `/api/goals/:id/milestones` | 201. `{ title }` |
+| POST | `/api/goals/:id/milestones/reorder` | `{ ids }` must list each milestone on the goal once |
+| PATCH | `/api/goals/:id/milestones/:milestoneId` | `{ title?, completed? }`. Progress on the response changes with `completed` |
+| DELETE | `/api/goals/:id/milestones/:milestoneId` | 204 |
+| POST | `/api/goals/:id/tasks` | `{ taskId }` links an existing task owned by the same user. A second link returns the goal |
+| DELETE | `/api/goals/:id/tasks/:taskId` | Removes the link. The task stays |
+
+Habit JSON includes `frequency`, `targetCount`, `streak`, `todayCount`, and `todayMet`. A detail adds `month` and `entries` (`date`, `count`, `met`). Goal JSON includes `deadline`, `status`, `milestones`, `tasks`, and `progress: { completed, total }`. There is no progress percentage column.
+
+A bearer token in `Authorization` is accepted anywhere a session cookie is. The extension uses that. Notification routes are not implemented.

@@ -5,7 +5,7 @@ alwaysApply: true
 
 FocusFlow is one account and one Task across web, API, and the future extension. Canonical flow: Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 4b is shipped: website rules and Chrome extension enforcement. An active focus session turns block rules on. Otherwise each rule follows its schedule. Do not add charts, habits, goals, or analytics unless the task says so. Keep the legacy blocker in `src/` intact.
+Phase 5a is shipped: habits and goals. Habit streaks and goal progress are computed on read. Do not add an analytics chart unless the task says so. Keep the legacy blocker in `src/` intact. An active focus session still turns block rules on. Otherwise each rule follows its schedule.
 
 Import task status and priority from `@focusflow/shared-types`. Derive Eisenhower quadrant from `isUrgent` and `isImportant`. Do not store quadrant.
 

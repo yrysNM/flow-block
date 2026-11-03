@@ -4,6 +4,8 @@
 // Focus elapsed time is computed from started_at, paused_at, paused_seconds, and ended_at.
 // elapsed_seconds is not the source of truth. One active session per user is a partial unique index in SQL.
 // Website rules are BLOCK, LIMIT, or ALLOW. Schedule minutes are local minutes from midnight. Both null means all day.
+// Habit streak is computed from entries against target_count. The entry completed flag is not the streak.
+// Goal progress is derived from completed milestones and completed linked tasks. It is not a column.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -73,6 +75,7 @@ model User {
   habitEntries  HabitEntry[]
   goals         Goal[]
   milestones    Milestone[]
+  goalTasks     GoalTask[]
   websiteRules       WebsiteRule[]
   websiteUsages      WebsiteUsage[]
   websiteUsageEvents WebsiteUsageEvent[]
@@ -146,6 +149,7 @@ model Task {
   tags          TaskTag[]
   timeLogs      TaskTimeLog[]
   focusSessions FocusSession[]
+  goalTasks     GoalTask[]
 
   @@index([userId, status])
   @@index([userId, deadline])
@@ -245,14 +249,15 @@ model FocusSession {
 }
 
 model Habit {
-  id        String         @id @default(uuid()) @db.Uuid
-  userId    String         @map("user_id") @db.Uuid
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  frequency HabitFrequency @default(DAILY)
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
-  entries   HabitEntry[]
+  id          String         @id @default(uuid()) @db.Uuid
+  userId      String         @map("user_id") @db.Uuid
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  frequency   HabitFrequency @default(DAILY)
+  targetCount Int            @default(1) @map("target_count")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  entries     HabitEntry[]
 
   @@index([userId])
   @@map("habits")
@@ -265,6 +270,8 @@ model HabitEntry {
   habitId   String   @map("habit_id") @db.Uuid
   habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
   entryDate DateTime @map("entry_date") @db.Date
+  count     Int      @default(1)
+  /// Convenience only. Streak and "met" use count against the habit target.
   completed Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -280,10 +287,12 @@ model Goal {
   title       String
   description String?
   status      GoalStatus  @default(ACTIVE)
+  /// Deadline. The API calls this deadline. There is no second date column and no progress column.
   targetDate  DateTime?   @map("target_date")
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
   milestones  Milestone[]
+  goalTasks   GoalTask[]
 
   @@index([userId])
   @@map("goals")
@@ -297,6 +306,7 @@ model Milestone {
   goal      Goal      @relation(fields: [goalId], references: [id], onDelete: Cascade)
   title     String
   completed Boolean   @default(false)
+  position  Int       @default(0)
   dueDate   DateTime? @map("due_date")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -304,6 +314,21 @@ model Milestone {
   @@index([userId])
   @@index([goalId])
   @@map("milestones")
+}
+
+model GoalTask {
+  goalId    String   @map("goal_id") @db.Uuid
+  taskId    String   @map("task_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([goalId, taskId])
+  @@index([userId])
+  @@index([taskId])
+  @@map("goal_tasks")
 }
 
 model WebsiteRule {

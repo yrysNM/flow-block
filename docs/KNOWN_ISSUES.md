@@ -5,10 +5,10 @@
 - Auth rate limiting is per process and resets on restart
 - Login timing can differ between an unknown email and a wrong password. The message does not
 - The UI stores `theme` but always renders the light design system
-- `weekStartsOn` is stored and editable. No calendar uses it yet
+- `weekStartsOn` is stored and editable. Weekly habit streaks and the habits calendar use it. The planner still does not
 - The board, matrix, and planner each show at most 100 tasks in a column or list. The count is still the full total
 - Planner drag snaps a block to the start of an hour. The length is kept when the block already has one. A block cannot cross local midnight
-- `20261102120000_task_schedule`, `20261102130000_focus_pause`, and `20261102140000_website_rules` are written and were not applied. `prisma migrate deploy` still needs Postgres
+- `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, and `20261102150000_habits_goals` are written and were not applied. `prisma migrate deploy` still needs Postgres
 - The one-active-session rule is a partial unique index in SQL. Prisma cannot model it. A later `prisma migrate dev` diff may propose dropping `focus_sessions_one_active_per_user`. Do not drop it
 - `elapsed_seconds` remains on `focus_sessions` and is not written. Elapsed time is computed on read
 - The focus page clock is a display. It is resynced from the API. The signed-in timer was not clicked through, because Postgres is still unavailable
@@ -17,5 +17,6 @@
 - The legacy Website Blocker in `src/` and the Expo app still do not use FocusFlow accounts
 - There is no password reset, email verification, or CSRF token beyond `SameSite=Lax`
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
-- Unfinished product modules (habits, goals, analytics) are not implemented
+- The analytics dashboard is not implemented. Habits and goals are. Notifications still have no UI
+- The habits and goals pages were not clicked through. Creating those rows needs Postgres
 - Matrix, planner, Kanban, categories, tags, and subtasks were not clicked through in a browser. Postgres is still unavailable, so register cannot create the rows those screens need

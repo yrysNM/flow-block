@@ -20,12 +20,15 @@ A person can:
 - Change urgent or important without that change rewriting status
 - Change status without that change rewriting urgent or important
 - Set their name, IANA time zone, and the day the week starts on
+- Run a focus timer and block sites with the FocusFlow extension
+- Create habits, check in for a date, and see a streak and a month of check-ins
+- Create goals with a deadline, milestones, and links to existing tasks, and see progress derived from those rows
 
 A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-Recurring tasks, reminders, Pomodoro, website blocking in the new extension, habits, goals, analytics charts, AI planning, and sync with the existing blocker.
+Recurring tasks, reminders, analytics charts, AI planning, and sync with the existing blocker.
 
 ## Task rules
 

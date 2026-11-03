@@ -335,6 +335,75 @@ export interface WebsiteUsageEventResult {
   usedSeconds: number
 }
 
+export const HABIT_FREQUENCIES = ['DAILY', 'WEEKLY'] as const
+export type HabitFrequency = (typeof HABIT_FREQUENCIES)[number]
+
+export const GOAL_STATUSES = ['ACTIVE', 'COMPLETED', 'ARCHIVED'] as const
+export type GoalStatus = (typeof GOAL_STATUSES)[number]
+
+export interface HabitEntryView {
+  id: string
+  habitId: string
+  date: string
+  count: number
+  met: boolean
+}
+
+export interface HabitView {
+  id: string
+  name: string
+  frequency: HabitFrequency
+  targetCount: number
+  streak: number
+  todayCount: number
+  todayMet: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface HabitDetailView extends HabitView {
+  month: string
+  entries: HabitEntryView[]
+}
+
+export interface HabitCheckInResult {
+  entry: HabitEntryView
+  habit: HabitView
+}
+
+export interface MilestoneView {
+  id: string
+  goalId: string
+  title: string
+  completed: boolean
+  position: number
+  dueDate: string | null
+}
+
+export interface GoalTaskRef {
+  id: string
+  title: string
+  status: TaskStatus
+}
+
+export interface GoalProgressView {
+  completed: number
+  total: number
+}
+
+export interface GoalView {
+  id: string
+  title: string
+  description: string | null
+  status: GoalStatus
+  deadline: string | null
+  milestones: MilestoneView[]
+  tasks: GoalTaskRef[]
+  progress: GoalProgressView
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ApiErrorBody {
   statusCode: number
   error: string

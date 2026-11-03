@@ -1,6 +1,6 @@
 # Synchronization
 
-Website rules and focus-session state sync between the API and `apps/extension`. Tasks, habits, and the phone app do not.
+Website rules and focus-session state sync between the API and `apps/extension`. Tasks, habits, goals, and the phone app do not.
 
 ## What syncs
 

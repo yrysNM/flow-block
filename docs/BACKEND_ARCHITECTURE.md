@@ -10,6 +10,8 @@ NestJS 12 application in `apps/api`. Global prefix `api`. Global `AuthGuard` wit
 | `categories`, `tags` | Owner-scoped catalogs and assignment |
 | `focus` | One active focus session, pause, resume, and history. Elapsed time is computed |
 | `websites` | Owner-scoped rules, usage totals, and idempotent visit events |
+| `habits` | Owner-scoped habits, check-ins, and streaks computed on read |
+| `goals` | Owner-scoped goals, milestones, task links, and derived progress |
 | `prisma` | Global `PrismaClient` |
 | `health` | Liveness without a database query |
 

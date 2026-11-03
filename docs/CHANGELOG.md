@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.0 — Habits and goals
+
+- Added owner-scoped habit CRUD. Frequency is daily or weekly, with a target count
+- A check-in for a local date updates the existing entry instead of inserting a second row
+- The current streak is computed from entry counts. A missed daily day breaks it. Today still open keeps yesterday’s streak
+- Added a month calendar of check-ins. Weekly streaks and that calendar use `weekStartsOn`
+- Added owner-scoped goals with a deadline, milestones (add, complete, reorder, delete), and links to existing tasks
+- Goal progress is `{ completed, total }` from completed milestones and completed linked tasks. No percentage is stored
+- The dashboard lists today’s habit check-ins and active goals. There is still no analytics chart
+
 ## 0.5.0 — Website rules and extension enforcement
 
 - Added owner-scoped website rules: blocklist, allowlist, optional daily limit, and optional schedule window

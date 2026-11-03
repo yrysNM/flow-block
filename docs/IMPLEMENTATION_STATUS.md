@@ -1,6 +1,6 @@
 # Implementation status
 
-Phase 4b adds website rules and Chrome extension enforcement on the Phase 4a branch. Habits, goals, and analytics are still schema or docs only. The legacy blocker in `src/` is unchanged.
+Phase 5a adds habits and goals on the Phase 4b branch. The analytics dashboard is still not built. The legacy blocker in `src/` is unchanged.
 
 ## Reused
 
@@ -13,8 +13,8 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, focus, blocking, categories, settings, login, register
-- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, focus sessions, website rules, Swagger
+- `apps/web` Nuxt 4 dashboard, tasks, board, matrix, planner, focus, blocking, categories, habits, goals, settings, login, register
+- `apps/api` NestJS auth, users, tasks, categories, tags, subtasks, matrix, planner, focus sessions, website rules, habits, goals, Swagger
 - `apps/extension` sign-in, cached rules, alarms, and blocking
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
@@ -23,7 +23,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-Habits, goals, analytics, and merging the legacy blocker. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable. The focus clock in the browser is a display. The API computes elapsed time. The extension enforces from its cache when sync fails.
+The analytics dashboard and merging the legacy blocker. Redis was not added. Kanban, the matrix, and the planner use native drag and drop, not VueDraggable. The focus clock in the browser is a display. The API computes elapsed time. Habit streaks and goal progress are computed on read. The extension enforces from its cache when sync fails.
 
 ## Database blocker
 
@@ -38,9 +38,9 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 `npm run test:focusflow`
 
 - `@focusflow/shared-types`: 7 passed
-- `@focusflow/shared-schemas`: 6 passed
-- `@focusflow/shared-utils`: 13 passed
-- `@focusflow/api`: 34 passed, 1 skipped (`test/tasks.integration.test.ts`)
+- `@focusflow/shared-schemas`: 7 passed
+- `@focusflow/shared-utils`: 18 passed
+- `@focusflow/api`: 40 passed, 1 skipped (`test/tasks.integration.test.ts`)
 
 `npm run test -w @focusflow/extension` — 4 passed.
 
@@ -50,6 +50,8 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 - `npm run typecheck -w @focusflow/web` (`nuxt typecheck`) — passed
 - `npm run typecheck -w @focusflow/extension` — passed
 
+Shared packages were built first (`npm run build -w @focusflow/shared-types`, `shared-schemas`, and `shared-utils`) so the API typecheck and Nest build read the new streak and progress helpers.
+
 ### Lint
 
 `npx eslint apps packages` — passed (exit 0).
@@ -57,7 +59,7 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 ### Production builds
 
 - `npm run build -w @focusflow/api` — passed (`nest build`)
-- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 4.53s)
+- `npm run build -w @focusflow/web` — passed (`nuxt build`, Nitro node-server, about 3.68s)
 - `npm run build -w @focusflow/extension` — passed (`node build.mjs`, esbuild bundle)
 
 ### Existing extension (preserved)
@@ -66,4 +68,4 @@ Commands were run from `/workspace` on Node v22.23.4 and npm 10.9.9. `docker` an
 
 ### Not exercised
 
-The signed-in blocking page and the unpacked extension were not clicked through. Creating rules needs Postgres. Headless Chrome hung on `/focus` in the previous milestone; that hang was not investigated here. Service tests cover rule ownership, a duplicate usage event id, and the focus-versus-schedule decision.
+The signed-in habits and goals pages were not clicked through. Creating those rows needs Postgres. Headless Chrome hung on `/focus` in Phase 4a; that hang is still unfixed and this milestone did not rewrite the timer. Service tests cover a duplicate check-in, a broken daily streak, and goal progress without a stored percentage.

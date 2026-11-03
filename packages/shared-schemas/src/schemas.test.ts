@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   createCategorySchema,
+  createGoalSchema,
+  createHabitSchema,
   createTaskSchema,
   listTasksQuerySchema,
   registerSchema,
@@ -83,5 +85,20 @@ describe('shared schemas', () => {
       seconds: 5,
       userId: 'someone-else',
     })).toEqual({ clientEventId: 'evt-1', domain: 'example.com', seconds: 5 })
+  })
+
+  it('drops a client userId on habits and goals and does not accept a progress field', () => {
+    expect(createHabitSchema.parse({
+      name: ' Read ',
+      userId: 'someone-else',
+      frequency: 'DAILY',
+      targetCount: 2,
+    })).toEqual({ name: 'Read', frequency: 'DAILY', targetCount: 2 })
+    expect(createGoalSchema.parse({
+      title: ' Ship ',
+      userId: 'someone-else',
+      deadline: '2026-12-01',
+      progress: 40,
+    })).toEqual({ title: 'Ship', deadline: '2026-12-01' })
   })
 })
