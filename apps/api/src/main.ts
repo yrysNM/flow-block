@@ -1,10 +1,12 @@
 import './vercel-native'
 import 'reflect-metadata'
-import { createServer } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { NestFactory } from '@nestjs/core'
+import { ExpressAdapter } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import type { INestApplication } from '@nestjs/common'
+import express from 'express'
 import { AllExceptionsFilter } from './common/http-exception.filter'
 
 function allowedOrigins(): string[] {
@@ -60,39 +62,47 @@ export async function createApp(): Promise<INestApplication> {
   return app
 }
 
-function listenPort(): number {
-  return Number(process.env.PORT ?? 3001)
+const vercelServer = express()
+let vercelReady: Promise<void> | undefined
+
+function prepareVercelServer(): Promise<void> {
+  vercelReady ??= (async () => {
+    const { AppModule } = await import('./app.module')
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(vercelServer))
+    configureApp(app)
+    await app.init()
+  })()
+  return vercelReady
 }
 
-async function reportStartupFailure(error: unknown): Promise<void> {
-  const message = error instanceof Error ? (error.stack ?? error.message) : String(error)
-  console.error(message)
-  const body = JSON.stringify({ statusCode: 500, error: 'Startup failed', message })
-  await new Promise<void>((resolve, reject) => {
-    const server = createServer((_request, response) => {
-      response.statusCode = 500
-      response.setHeader('content-type', 'application/json; charset=utf-8')
-      response.end(body)
-    })
-    server.once('error', reject)
-    server.listen(listenPort(), '0.0.0.0', () => resolve())
-  })
+function startupMessage(error: unknown): string {
+  return error instanceof Error ? (error.stack ?? error.message) : String(error)
 }
 
-async function bootstrap(): Promise<void> {
+export default async function vercelHandler(
+  request: IncomingMessage,
+  response: ServerResponse,
+): Promise<void> {
   try {
-    const app = await createApp()
-    await app.listen(listenPort(), '0.0.0.0')
+    await prepareVercelServer()
+    vercelServer(request, response)
   } catch (error) {
-    await reportStartupFailure(error)
+    console.error(error)
+    if (response.headersSent) return
+    response.statusCode = 500
+    response.setHeader('content-type', 'application/json; charset=utf-8')
+    response.end(
+      JSON.stringify({ statusCode: 500, error: 'Startup failed', message: startupMessage(error) }),
+    )
   }
 }
 
-const shouldListen = require.main === module || process.env.VERCEL === '1'
-
-if (shouldListen) {
-  bootstrap().catch((error: unknown) => {
-    console.error(error)
-    process.exit(1)
-  })
+if (require.main === module && process.env.VERCEL !== '1') {
+  const port = Number(process.env.PORT ?? 3001)
+  createApp()
+    .then((app) => app.listen(port, '0.0.0.0'))
+    .catch((error: unknown) => {
+      console.error(error)
+      process.exit(1)
+    })
 }
