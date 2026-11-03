@@ -69,4 +69,13 @@
 4. Pause and resume. The displayed clock follows the server’s elapsed time
 5. Complete, or end without completing. The task status does not change. The session moves to history
 
-Unfinished flows (blocking, habits, goals, review) are not in the product yet.
+## Blocking
+
+1. Open Blocking and add a domain as Block or Allow
+2. Optionally set a daily minute cap and a time window
+3. Sign the FocusFlow extension in to the same account
+4. While a focus session is active, matching block rules block. Allow rules stay open
+5. With no focus session, a block rule applies only inside its window, and only after its daily limit when one is set
+6. Today’s totals on the Blocking page come from usage the extension reported
+
+Unfinished flows (habits, goals, review) are not in the product yet.

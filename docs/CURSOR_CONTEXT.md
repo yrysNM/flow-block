@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 4a is in the tree on top of the matrix and planner: a focus timer and session history. The app is still not connected to a running Postgres. `20261102120000_task_schedule` and `20261102130000_focus_pause` are written and were not applied.
+Phase 4b is in the tree on top of the focus timer: website rules and Chrome extension enforcement. The app is still not connected to a running Postgres. Schedule, focus-pause, and website-rule migrations are written and were not applied.
 
 ## Completed modules
 
@@ -13,8 +13,8 @@ Phase 4a is in the tree on top of the matrix and planner: a focus timer and sess
 - Eisenhower matrix that writes urgent and important only
 - Daily planner with one time block stored on the Task
 - Focus timer: one active session, presets and a custom duration, pause and resume, optional task, history
+- Website rules and usage events, plus FocusFlow extension enforcement from a cached copy
 - Derived Eisenhower quadrant and status rules
-- Chrome MV3 shell with no feature logic
 - Preservation of `src/` and `mobile/`
 
 ## In progress
@@ -23,7 +23,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-Shared website blocking, habits, goals, analytics, and extension sync. Those are unimplemented. Focus sessions are in this branch.
+Habits, goals, and analytics. Those are unimplemented. Website rules and extension sync are in this branch.
 
 ## Architecture
 
@@ -39,12 +39,12 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). The important one for the next session: 
 
 ## Database status
 
-Schema, `20261102100000_init`, `20261102120000_task_schedule`, and `20261102130000_focus_pause` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
+Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_focus_pause`, and `20261102140000_website_rules` are written. `prisma generate` succeeded. `prisma migrate deploy` did not run. No database was created here.
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, and `/api/focus-sessions` (active, history, start, pause, resume, complete, stop). Swagger at `/api/docs`. Habits, goals, website rules, and notifications still have tables only.
+Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, and `/api/websites` (rules, usage totals, usage events). Swagger at `/api/docs`. Habits, goals, and notifications still have tables only.
 
 ## Next recommended tasks
 
-Website-rule sync with the existing blocker. The focus timer is in this branch. Elapsed time is computed from timestamps. A second start returns the active session.
+Habits, goals, and analytics. Website rules and the FocusFlow extension are in this branch. The legacy blocker in `src/` is still separate. Headless Chrome hanging on `/focus` is still unfixed.

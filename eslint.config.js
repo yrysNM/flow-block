@@ -35,6 +35,14 @@ export default tseslint.config(
     },
   },
   {
+    files: ['apps/extension/**/*.ts'],
+    languageOptions: {
+      globals: {
+        chrome: 'readonly',
+      },
+    },
+  },
+  {
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'vue/multi-word-component-names': 'off',

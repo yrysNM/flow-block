@@ -4,6 +4,7 @@ import {
   TASK_PRIORITIES,
   TASK_STATUSES,
   THEME_PREFERENCES,
+  WEBSITE_RULE_MODES,
 } from '@focusflow/shared-types'
 import { z } from 'zod'
 
@@ -192,6 +193,58 @@ export const focusSessionIdParamSchema = z.object({
   id: z.uuid(),
 })
 
+const scheduleMinuteSchema = z.number().int().min(0).max(1439)
+
+function schedulePairValid(start: number | null | undefined, end: number | null | undefined): boolean {
+  if (start === undefined && end === undefined) return true
+  if (start === undefined || end === undefined) return false
+  if ((start === null) !== (end === null)) return false
+  return true
+}
+
+export const createWebsiteRuleSchema = z
+  .object({
+    domain: z.string().trim().min(1).max(253),
+    mode: z.enum(WEBSITE_RULE_MODES).optional(),
+    enabled: z.boolean().optional(),
+    dailyLimitMinutes: z.number().int().min(1).max(24 * 60).nullable().optional(),
+    scheduleStartMinute: scheduleMinuteSchema.nullable().optional(),
+    scheduleEndMinute: scheduleMinuteSchema.nullable().optional(),
+  })
+  .refine((value) => schedulePairValid(value.scheduleStartMinute, value.scheduleEndMinute), {
+    message: 'Set both schedule start and end, or clear both',
+  })
+
+export const updateWebsiteRuleSchema = z
+  .object({
+    domain: z.string().trim().min(1).max(253).optional(),
+    mode: z.enum(WEBSITE_RULE_MODES).optional(),
+    enabled: z.boolean().optional(),
+    dailyLimitMinutes: z.number().int().min(1).max(24 * 60).nullable().optional(),
+    scheduleStartMinute: scheduleMinuteSchema.nullable().optional(),
+    scheduleEndMinute: scheduleMinuteSchema.nullable().optional(),
+  })
+  .refine((value) => Object.values(value).some((item) => item !== undefined), {
+    message: 'At least one field is required',
+  })
+  .refine((value) => schedulePairValid(value.scheduleStartMinute, value.scheduleEndMinute), {
+    message: 'Set both schedule start and end, or clear both',
+  })
+
+export const recordWebsiteUsageSchema = z.object({
+  clientEventId: z.string().trim().min(1).max(80),
+  domain: z.string().trim().min(1).max(253),
+  seconds: z.number().int().min(0).max(24 * 60 * 60),
+  occurredAt: isoDateTime.optional(),
+})
+
+export const websiteUsageQuerySchema = z.object({
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected YYYY-MM-DD')
+    .optional(),
+})
+
 export const taskIdParamSchema = z.object({
   id: z.uuid(),
 })
@@ -228,3 +281,7 @@ export type ReorderSubtasksInput = z.infer<typeof reorderSubtasksSchema>
 export type TaskSummaryQuery = z.infer<typeof taskSummaryQuerySchema>
 export type StartFocusSessionInput = z.infer<typeof startFocusSessionSchema>
 export type ListFocusSessionsQuery = z.infer<typeof listFocusSessionsQuerySchema>
+export type CreateWebsiteRuleInput = z.infer<typeof createWebsiteRuleSchema>
+export type UpdateWebsiteRuleInput = z.infer<typeof updateWebsiteRuleSchema>
+export type RecordWebsiteUsageInput = z.infer<typeof recordWebsiteUsageSchema>
+export type WebsiteUsageQuery = z.infer<typeof websiteUsageQuerySchema>

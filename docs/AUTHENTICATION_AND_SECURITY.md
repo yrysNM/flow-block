@@ -7,7 +7,8 @@
 - The API never accepts `userId` from the body. Zod strips unknown keys
 - Login and register failures for a wrong password or an unknown email share the message “Invalid email or password.” A duplicate email on register is a 409
 - Auth routes are limited to 10 requests per minute per IP and path in a single process. This resets on restart and is not shared across instances
-- CORS allows `WEB_ORIGIN` with credentials. The supported browser setup is the same-origin proxy, so the cookie does not need `SameSite=None`
+- CORS allows `WEB_ORIGIN` and `chrome-extension://` origins. The supported browser setup is the same-origin proxy, so the cookie does not need `SameSite=None`
+- `POST /api/auth/extension/login` returns the raw session token once for the extension. The web login response does not. The extension stores it in `chrome.storage.local`. Requests may send `Authorization: Bearer` instead of the cookie. Logout accepts either
 - Errors do not include stack traces or database URLs
 - Health does not check the database, so a process can be up while Postgres is down. Task and auth routes then return 503
 

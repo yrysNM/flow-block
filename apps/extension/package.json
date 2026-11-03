@@ -1,14 +1,21 @@
 {
   "name": "@focusflow/extension",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "FocusFlow Chrome MV3 shell. No blocking or sync logic in this milestone.",
+  "description": "FocusFlow Chrome MV3 client. Signs in to the API, caches website rules, and blocks from that cache.",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "build": "node build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@focusflow/shared-types": "0.1.0",
+    "@focusflow/shared-utils": "0.1.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.12",
-    "typescript": "~5.9.2"
+    "esbuild": "0.28.2",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   }
 }

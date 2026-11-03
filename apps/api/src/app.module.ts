@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { TagsModule } from './tags/tags.module'
 import { TasksModule } from './tasks/tasks.module'
 import { UsersModule } from './users/users.module'
+import { WebsitesModule } from './websites/websites.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module'
     TagsModule,
     TasksModule,
     FocusModule,
+    WebsitesModule,
   ],
   controllers: [HealthController],
 })

@@ -4,6 +4,8 @@ import {
   createTaskSchema,
   listTasksQuerySchema,
   registerSchema,
+  createWebsiteRuleSchema,
+  recordWebsiteUsageSchema,
   startFocusSessionSchema,
   updateTaskQuadrantSchema,
   updateTaskScheduleSchema,
@@ -63,5 +65,23 @@ describe('shared schemas', () => {
     })).toEqual({ plannedSeconds: 25 * 60, taskId: null })
     expect(startFocusSessionSchema.safeParse({ plannedSeconds: 30 }).success).toBe(false)
     expect(startFocusSessionSchema.safeParse({ plannedSeconds: 4 * 60 * 60 }).success).toBe(false)
+  })
+
+  it('drops a client userId on a website rule and requires a whole schedule window', () => {
+    expect(createWebsiteRuleSchema.parse({
+      domain: ' Example.com ',
+      mode: 'BLOCK',
+      userId: 'someone-else',
+    })).toEqual({ domain: 'Example.com', mode: 'BLOCK' })
+    expect(createWebsiteRuleSchema.safeParse({
+      domain: 'example.com',
+      scheduleStartMinute: 60,
+    }).success).toBe(false)
+    expect(recordWebsiteUsageSchema.parse({
+      clientEventId: 'evt-1',
+      domain: 'example.com',
+      seconds: 5,
+      userId: 'someone-else',
+    })).toEqual({ clientEventId: 'evt-1', domain: 'example.com', seconds: 5 })
   })
 })

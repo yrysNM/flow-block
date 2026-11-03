@@ -16,6 +16,7 @@
 | Eisenhower matrix with counts, create, edit, and drag | API and Matrix page |
 | Daily planner timeline and unscheduled list | API and Planner page |
 | Focus timer, pause and resume, and session history | API and Focus page |
+| Website rules, usage totals, and extension blocking | API, Blocking page, and `apps/extension` |
 | Dashboard counts and tasks due today | API and Dashboard |
 | Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories |
 | Derived Eisenhower quadrant | API response and task UI |
@@ -23,7 +24,7 @@
 
 ## Declared in the database, no product UI
 
-Time log, habit, habit entry, goal, milestone, website rule, website usage, notification. The quadrant is still derived. The time log is not the planner and is not the focus timer.
+Time log, habit, habit entry, goal, milestone, notification. The quadrant is still derived. The time log is not the planner and is not the focus timer. Website rules and website usage are used by the API.
 
 ## Already shipped outside this slice
 
@@ -31,4 +32,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-Shared website blocking, analytics, AI planning.
+Analytics, AI planning, and connecting the legacy `src/` blocker to these rules.

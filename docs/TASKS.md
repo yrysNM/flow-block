@@ -14,9 +14,10 @@
 - Eisenhower matrix. Drag and the quadrant menu write `isUrgent` and `isImportant` only
 - Daily planner with one block per task. Scheduling updates that task. Unscheduled tasks stay off the timeline
 - Focus timer with one active session, presets, custom duration, pause and resume, optional task, and history. Elapsed time comes from timestamps. Completing a session does not change task status
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, and password hashing
+- Website rules and usage events. The FocusFlow extension caches rules, enforces them, and retries usage with the same client event id
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- Website-rule sync with the existing blocker, habits, goals, analytics, extension feature logic, Redis, deployment
+- Habits, goals, analytics, merging the legacy blocker, Redis, deployment

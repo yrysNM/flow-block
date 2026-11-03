@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blocked by FocusFlow</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Outfit, "Segoe UI", sans-serif;
+        color: #172033;
+        background: #f5f7fa;
+      }
+      main {
+        width: min(32rem, calc(100% - 2rem));
+        background: #fff;
+        border: 1px solid #e5eaf1;
+        border-radius: 1rem;
+        padding: 2rem;
+      }
+      h1 { margin: 0; font-size: 1.6rem; }
+      p { color: #64748b; line-height: 1.5; }
+      strong { color: #172033; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Blocked</h1>
+      <p><strong id="host">This site</strong> is blocked by a FocusFlow rule on this account.</p>
+      <p>End the focus session, or change the rule in the FocusFlow web app, to continue.</p>
+    </main>
+    <script type="module" src="./dist/blocked.js"></script>
+  </body>
+</html>

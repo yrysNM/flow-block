@@ -7,31 +7,54 @@
     <style>
       body {
         margin: 0;
-        width: 280px;
-        font-family: "Segoe UI", sans-serif;
+        width: 320px;
+        font-family: Outfit, "Segoe UI", sans-serif;
         color: #172033;
         background: #f5f7fa;
       }
-      main {
-        padding: 16px;
+      main { padding: 16px; }
+      h1 { margin: 0; font-size: 18px; }
+      p { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #64748b; }
+      form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+      label { font-size: 13px; font-weight: 600; }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 4px;
+        border: 1px solid #e5eaf1;
+        border-radius: 0.65rem;
+        padding: 0.5rem 0.7rem;
+        background: #fff;
       }
-      h1 {
-        margin: 0;
-        font-size: 18px;
+      button {
+        border: 0;
+        border-radius: 0.65rem;
+        padding: 0.55rem 0.8rem;
+        background: #0055fa;
+        color: #fff;
+        font-weight: 600;
       }
-      p {
-        margin: 8px 0 0;
-        font-size: 13px;
-        line-height: 1.45;
-        color: #64748b;
+      button.secondary {
+        margin-top: 12px;
+        background: #fff;
+        color: #172033;
+        border: 1px solid #e5eaf1;
       }
+      .error { color: #dc2626; }
     </style>
   </head>
   <body>
     <main>
       <h1>FocusFlow</h1>
-      <p>Extension shell only. Sign in on the web app to manage tasks. Blocking and focus sessions are not in this build.</p>
-      <p id="version"></p>
+      <p id="status">Checking this browser.</p>
+      <p id="error" class="error"></p>
+      <form id="sign-in">
+        <label>API<input id="api-base" type="url" required value="http://127.0.0.1:3001" /></label>
+        <label>Email<input id="email" type="email" autocomplete="username" required /></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" required /></label>
+        <button type="submit">Sign in</button>
+      </form>
+      <button id="sign-out" class="secondary" type="button" hidden>Sign out</button>
     </main>
     <script type="module" src="./dist/popup.js"></script>
   </body>

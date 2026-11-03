@@ -2,13 +2,13 @@
 
 FocusFlow is an all-in-one productivity product: “Focus on what matters.” Web, Chrome extension, and API share one account and one Task. The canonical workflow is Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 0 through Phase 4a are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, and a focus timer with session history. Do not start habits, goals, analytics, or extension blocking unless the task says so.
+Phase 0 through Phase 4b are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, a focus timer, website rules, and Chrome extension enforcement. Do not start habits, goals, or analytics unless the task says so.
 
 ## Stack
 
 - Web: Nuxt 4, Vue 3 `<script setup>`, TypeScript strict, Tailwind, Pinia. No Vue Query, VueDraggable, or ECharts. Kanban drag uses native HTML5.
 - API: NestJS REST, Prisma, PostgreSQL. Zod from `@focusflow/shared-schemas`. No Redis.
-- Extension shell: `apps/extension`, Manifest V3, TypeScript, no feature logic yet.
+- Extension: `apps/extension`, Manifest V3. It signs in, caches website rules, and blocks from that cache. The legacy blocker stays in `src/`.
 - Shared task status and priority unions live in `@focusflow/shared-types`. Do not copy them.
 - The pre-existing Website Blocker (`src/`) and Expo app (`mobile/`) stay as they are until a later sync phase.
 
@@ -38,8 +38,9 @@ Extension-only commands remain `npm test`, `npm run typecheck`, `npm run lint`, 
 - Every task query filters by the authenticated user.
 - Task status changes only through an explicit status field. `isUrgent` and `isImportant` do not change status. Quadrant is derived and is not a column.
 - Completed tasks reopen to To do. They do not jump to In progress.
-- Categories, tags, subtasks, and focus sessions are user-owned and shipped. Habit, goal, notification, and website-rule tables exist for later work. Do not add UI for those yet.
+- Categories, tags, subtasks, focus sessions, and website rules are user-owned and shipped. Habit, goal, and notification tables exist for later work. Do not add UI for those yet.
 - One active focus session per user. A second start returns that session and does not insert another. Elapsed time comes from `startedAt`, pause intervals, and `endedAt`. Completing a session does not change task status.
+- An active focus session turns block rules on. With no active session, each rule follows its schedule. Allowlist matches are not blocked. The decision lives in `@focusflow/shared-utils`.
 - Kanban drag and the status control change `status` only. They must not change `isUrgent` or `isImportant`.
 - Matrix drag writes `isUrgent` and `isImportant` only. It must not change status. Quadrant is still derived.
 - A task has at most one time block (`scheduledStart` and `scheduledEnd`). Moving that block must not change status or the two flags. Both null means unscheduled, and those tasks stay off the planner timeline.

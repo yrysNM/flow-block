@@ -9,7 +9,7 @@ import { ZodValidationPipe } from '../common/zod-validation.pipe'
 import { AuthRateLimitGuard } from './auth-rate-limit.guard'
 import { AuthService } from './auth.service'
 import type { AuthContext } from './auth.types'
-import { SESSION_COOKIE } from './session-cookie'
+import { readSessionToken } from './session-cookie'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -72,12 +72,26 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(AuthRateLimitGuard)
+  @Post('extension/login')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Log in from the extension and return the session token once' })
+  async extensionLogin(
+    @Body(new ZodValidationPipe(loginSchema)) body: LoginInput,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = await this.auth.login(body, request.header('user-agent'))
+    this.auth.attachCookie(response, result.token, this.secure())
+    return { token: result.token, user: result.user, preferences: result.preferences }
+  }
+
+  @Public()
   @Post('logout')
   @HttpCode(204)
   @ApiOperation({ summary: 'End the current session' })
   async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
-    const token = request.cookies?.[SESSION_COOKIE]
-    await this.auth.logout(typeof token === 'string' ? token : undefined, response, this.secure())
+    await this.auth.logout(readSessionToken(request), response, this.secure())
   }
 
   @Get('me')

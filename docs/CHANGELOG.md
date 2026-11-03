@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 — Website rules and extension enforcement
+
+- Added owner-scoped website rules: blocklist, allowlist, optional daily limit, and optional schedule window
+- Added usage events. A repeated client event id is stored once and does not add time again
+- While a focus session is active, block rules are on. Otherwise each rule follows its schedule
+- The FocusFlow extension signs in without embedded secrets, caches rules, enforces offline, queues usage, and resyncs with `chrome.alarms`
+- Added a Blocking page for rules and today’s totals
+- Left habits, goals, analytics, and the legacy `src/` blocker unmerged
+
 ## 0.4.0 — Focus timer and session history
 
 - Added one active focus session per user. A second start returns that session and does not insert another
