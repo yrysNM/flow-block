@@ -2,7 +2,7 @@
   <form class="rounded-card border border-line bg-surface p-5 shadow-card" @submit.prevent="submit">
     <div class="flex items-start justify-between gap-3">
       <div>
-        <h2 class="text-base font-semibold text-ink">{{ mode === 'create' ? 'New task' : 'Edit task' }}</h2>
+        <h2 id="task-form-title" class="text-base font-semibold text-ink">{{ mode === 'create' ? 'New task' : 'Edit task' }}</h2>
         <p class="mt-1 text-sm text-secondary">Urgency and importance set the quadrant. They do not change status.</p>
       </div>
       <button type="button" class="text-sm text-secondary hover:text-ink" @click="emit('cancel')">Close</button>

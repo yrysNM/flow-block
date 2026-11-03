@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — Tasks matrix
+
+- The Tasks page is an Eisenhower matrix: four colored quadrants, round task bubbles, a status filter, search, and five summary counts
+- Dragging a bubble, or choosing a quadrant in its details, writes `isUrgent` and `isImportant` only
+- Due this week uses the saved week start. Overdue is a past deadline on a task that is not completed
+- There is still no Kanban view, category CRUD, or connector lines
+
 ## Unreleased — Vercel production build
 
 - Added a Vercel Services project config so production builds Nuxt and Nest together and keeps `/api` on the site origin

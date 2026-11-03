@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDateInTimeZone, isValidTimeZone, localDayBounds } from './index'
+import { civilWeek, formatDateInTimeZone, isValidTimeZone, localDayBounds, shiftCivilDate } from './index'
 
 describe('local day bounds', () => {
   it('uses UTC midnight for a UTC time zone', () => {
@@ -18,5 +18,20 @@ describe('local day bounds', () => {
   it('rejects an unknown time zone', () => {
     expect(isValidTimeZone('Not/AZone')).toBe(false)
     expect(() => localDayBounds('2026-11-02', 'Not/AZone')).toThrow()
+  })
+})
+
+describe('civil week', () => {
+  it('starts on Monday for the saved default', () => {
+    expect(civilWeek('2026-11-03', 1)).toEqual({ start: '2026-11-02', end: '2026-11-08' })
+  })
+
+  it('starts on Sunday when weekStartsOn is 0', () => {
+    expect(civilWeek('2026-11-03', 0)).toEqual({ start: '2026-11-01', end: '2026-11-07' })
+  })
+
+  it('keeps a week start that is already the first day', () => {
+    expect(shiftCivilDate('2026-11-02', 6)).toBe('2026-11-08')
+    expect(civilWeek('2026-11-02', 1)).toEqual({ start: '2026-11-02', end: '2026-11-08' })
   })
 })

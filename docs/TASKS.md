@@ -5,7 +5,7 @@
 - Monorepo layout, tooling, Compose file, shared types and Zod schemas
 - Prisma schema and initial migration SQL
 - Session auth and user preferences
-- Task CRUD, summary, and web dashboard, list, and settings
+- Task CRUD, summary, and web dashboard, settings, and the Tasks matrix
 - Unit tests for transitions, quadrant, ownership, and password hashing
 - Docs listed in the milestone
 - Vercel Services config for a production build of the Nuxt app and Nest API
@@ -16,7 +16,6 @@
 - Tag CRUD and task-tag links
 - Subtasks on a task, ordered, still owned by the user
 - Kanban board with drag and drop that calls the existing status transition rules
-- Eisenhower board that writes `isUrgent` and `isImportant` only
 
 ## Not this milestone
 

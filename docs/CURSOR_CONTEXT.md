@@ -9,6 +9,7 @@ Phase 0 and the first vertical slice are in the tree: auth, tasks, dashboard, se
 - Monorepo tooling and design tokens
 - User, session, preferences, task API and UI
 - Derived Eisenhower quadrant and status rules
+- Tasks matrix: quadrant drag writes `isUrgent` and `isImportant` only
 - Chrome MV3 shell with no feature logic
 - Preservation of `src/` and `mobile/`
 
@@ -42,4 +43,4 @@ Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/prefe
 
 ## Next recommended tasks
 
-Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.
+Phase 2, in order: category CRUD, tags, subtasks, and Kanban that reuses status transitions. The Tasks page already moves a task between quadrants by writing `isUrgent` and `isImportant` only.

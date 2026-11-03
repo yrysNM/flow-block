@@ -75,6 +75,30 @@ export function localDayBounds(date: string, timeZone: string): { start: Date; e
   return { start, end }
 }
 
+/** Move a YYYY-MM-DD civil date by a number of days, ignoring time zones. */
+export function shiftCivilDate(isoDate: string, days: number): string {
+  const match = DATE_RE.exec(isoDate)
+  if (!match) throw new Error('Invalid date')
+  const shifted = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + days))
+  const month = String(shifted.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(shifted.getUTCDate()).padStart(2, '0')
+  return `${shifted.getUTCFullYear()}-${month}-${day}`
+}
+
+/**
+ * Inclusive civil week that contains `today`.
+ * `weekStartsOn` is 0 for Sunday through 6 for Saturday.
+ */
+export function civilWeek(today: string, weekStartsOn: number): { start: string; end: string } {
+  const match = DATE_RE.exec(today)
+  if (!match) throw new Error('Invalid date')
+  const startDow = ((weekStartsOn % 7) + 7) % 7
+  const weekday = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))).getUTCDay()
+  const offset = (weekday - startDow + 7) % 7
+  const start = shiftCivilDate(today, -offset)
+  return { start, end: shiftCivilDate(start, 6) }
+}
+
 /** Calendar date as YYYY-MM-DD in the given IANA time zone. */
 export function formatDateInTimeZone(instant: Date, timeZone: string): string {
   if (!isValidTimeZone(timeZone)) throw new Error('Invalid time zone')

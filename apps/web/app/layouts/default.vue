@@ -10,7 +10,11 @@
       <AppSidebar :open="navOpen" @close="navOpen = false" />
       <div class="min-w-0">
         <AppTopbar @open-nav="navOpen = true" />
-        <main id="main" class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <main
+          id="main"
+          class="mx-auto w-full px-4 sm:px-6 lg:px-8"
+          :class="wide ? 'max-w-[1240px] py-4' : 'max-w-6xl py-6'"
+        >
           <slot />
         </main>
       </div>
@@ -20,4 +24,6 @@
 
 <script setup lang="ts">
 const navOpen = ref(false)
+const route = useRoute()
+const wide = computed(() => route.path.startsWith('/tasks'))
 </script>

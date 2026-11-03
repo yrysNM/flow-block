@@ -16,10 +16,9 @@ That phase should:
 - Add subtasks on the canonical Task
 - Add a Kanban board for TODO, IN_PROGRESS, and COMPLETED
 - Drag between columns only through the existing status transitions
-- Drag between Eisenhower quadrants by writing `isUrgent` and `isImportant`, not a stored quadrant, and without changing status as a side effect
 - Keep using `@focusflow/shared-types` for the status union
 
-VueDraggable was intentionally not added yet.
+The Tasks page already drags between Eisenhower quadrants by writing `isUrgent` and `isImportant`, not a stored quadrant, and without changing status as a side effect. VueDraggable was not added.
 
 ## Later, not scheduled in this change
 
