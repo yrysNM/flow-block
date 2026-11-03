@@ -4,7 +4,7 @@
 
 - Added a Vercel Services project config so production builds Nuxt and Nest together and keeps `/api` on the site origin
 - API install now generates the Prisma client (including the Vercel Linux engine) and compiles the shared CommonJS packages
-- The API listens on Vercel and allows the deployment host in CORS
+- The API allows the deployment host in CORS
 - API install copies the Linux argon2 and Prisma query-engine binaries so the Vercel function can load them
 - The Vercel API entry is an Express app that loads an ESM bundle of Nest. Vercel's Node runtime cannot `require()` Nest's ESM package. Install emits that bundle with decorator metadata so guards still inject
 

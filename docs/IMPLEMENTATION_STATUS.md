@@ -67,7 +67,16 @@ Checked on this branch, Node v22.23.4, from the repo root:
 - Importing that bundle and the Express entry locally: `GET /api/health` returned `{"status":"ok"}`, `GET /api/tasks` without a cookie returned 401
 - `npm test -w @focusflow/api` — 9 passed, 1 skipped
 
-The Vercel production deployment result is recorded after that deploy finishes.
+Production deployment `dpl_EF1sCecn5wVTwyBcYxvW5LWiUSzQ` (commit `642c7ed`, alias https://flow-block-black.vercel.app) returned:
+
+- `GET /` — 200, `x-powered-by: Nuxt`, FocusFlow HTML
+- `GET /login` — 200
+- `GET /api/health` — 200 `{"status":"ok"}`
+- `GET /api/tasks` and `GET /api/auth/me` without a cookie — 401 `Authentication required.`
+- `POST /api/auth/register` with a valid body — 503 `Database is unavailable.`
+- `GET /api/docs` — 200 Swagger UI
+
+There is no `DATABASE_URL` on the project, so register and task writes cannot succeed yet. A later commit stops the startup handler from returning a stack trace. Health behavior is unchanged.
 
 ### Existing extension (preserved)
 

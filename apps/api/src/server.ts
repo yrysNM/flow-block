@@ -41,7 +41,11 @@ server.use((_request: Request, response: Response, next: NextFunction) => {
       const message = error instanceof Error ? (error.stack ?? error.message) : String(error)
       console.error(message)
       if (response.headersSent) return
-      response.status(500).json({ statusCode: 500, error: 'Startup failed', message })
+      response.status(500).json({
+        statusCode: 500,
+        error: 'Startup failed',
+        message: 'The API failed to start.',
+      })
     })
 })
 
