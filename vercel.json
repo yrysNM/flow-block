@@ -16,9 +16,9 @@
     "api": {
       "root": "apps/api",
       "framework": "express",
-      "entrypoint": "src/server.mjs",
+      "entrypoint": "src/server.ts",
       "functions": {
-        "src/server.mjs": {
+        "src/server.ts": {
           "includeFiles": "native/**"
         }
       }

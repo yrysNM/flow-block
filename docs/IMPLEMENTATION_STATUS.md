@@ -59,7 +59,7 @@ Commands were run from `/workspace` on Node v22.23.4. Results below are from tha
 
 ### Vercel project config
 
-`vercel.json` is a Services project: Nuxt at `apps/web`, Nest at `apps/api` with Express entry `src/server.mjs`, `/api` rewritten to Nest. The API `postinstall` compiles shared packages, runs `prisma generate` with the `rhel-openssl-3.0.x` engine, copies Linux native binaries, and writes the ESM Nest bundle.
+`vercel.json` is a Services project: Nuxt at `apps/web`, Nest at `apps/api` with Express entry `src/server.ts`, `/api` rewritten to Nest. The API `postinstall` compiles shared packages, runs `prisma generate` with the `rhel-openssl-3.0.x` engine, copies Linux native binaries, and writes the ESM Nest bundle.
 
 Checked on this branch, Node v22.23.4, from the repo root:
 
