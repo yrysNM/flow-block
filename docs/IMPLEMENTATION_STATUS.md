@@ -13,7 +13,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Built
 
-- `apps/web` Nuxt 4 dashboard, tasks, settings, login, register
+- `apps/web` Nuxt 4 dashboard, tasks matrix, settings, login, register
 - `apps/api` NestJS auth, users, tasks, Swagger
 - `packages/shared-types`, `shared-schemas`, `shared-utils`
 - `infrastructure/docker-compose.yml` for Postgres only
@@ -22,7 +22,7 @@ There was no backend, auth, or database to reuse. `apps/extension` is a new shel
 
 ## Not built
 
-Kanban, drag and drop, category and tag UI, subtasks UI, focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added.
+Kanban, category and tag management, subtasks UI, focus timer, extension blocking, habits, goals, analytics, sync. Redis was not added. VueDraggable was not added. The Tasks page uses native drag and drop between quadrants.
 
 ## Database blocker
 
@@ -95,3 +95,14 @@ With the built API and the Nitro server running, and Postgres down:
 - Headless Chrome rendered `http://127.0.0.1:3000/login` (FocusFlow wordmark, email, password, link to register)
 
 Task create and list were not exercised in a browser.
+
+### Tasks matrix
+
+Checked on this branch after the matrix change, Node v22.23.4, from the repo root:
+
+- `npm run typecheck -w @focusflow/web` — passed (`nuxt typecheck`)
+- `npx vue-tsc --noEmit -p apps/web/.nuxt/tsconfig.json` — passed
+- `npm test` — 4 files, 29 tests passed
+- `npm run test:focusflow` — shared-types 6 passed, shared-schemas 2 passed, shared-utils 6 passed, API 9 passed and 1 skipped
+
+Headless Chrome opened the local Nuxt Tasks page with temporary fixture tasks that were removed before commit. Search reduced the board to one bubble, a click opened the detail dialog, and a synthetic drop moved a bubble into another quadrant. That pass did not use Postgres. A signed-in create, list, or drag against the API was not run.

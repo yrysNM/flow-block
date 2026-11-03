@@ -17,15 +17,16 @@
 ## First task
 
 1. From an empty dashboard, choose Create a task
-2. On Tasks, enter a title and optional description, deadline, priority, urgent, and important
-3. Save. Status stays on the value in the status field. The quadrant chip follows the two checkboxes only
+2. On Tasks, use the round add button. Enter a title and optional description, deadline, priority, urgent, and important
+3. Save. Status stays on the value in the status field. The bubble lands in the quadrant for those two flags
 4. The dashboard shows the new counts. The task appears under Due today only when its deadline falls on that local date
 
 ## Update work
 
-1. Change status from the row. Illegal moves are rejected
-2. Edit fields. Changing urgent or important does not change status unless the status control changed too
-3. Delete asks for confirmation on the row, then removes the task
+1. Open a bubble and change status. Illegal moves are rejected
+2. Drag a bubble to another quadrant, or choose Move to in the details. That writes urgent and important only
+3. Edit fields. Changing urgent or important does not change status unless the status control changed too
+4. Delete asks for confirmation, then removes the task
 
 ## Settings
 
@@ -33,4 +34,4 @@
 2. Change name, time zone, or week start
 3. Save. The next dashboard “today” uses the saved time zone
 
-Unfinished flows (focus session, blocking, matrix drag, habits, goals, review) are not in the product yet.
+Unfinished flows (focus session, blocking, Kanban, habits, goals, review) are not in the product yet.

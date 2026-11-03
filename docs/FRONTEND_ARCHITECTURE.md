@@ -6,7 +6,7 @@ Nuxt 4 app in `apps/web`. Source lives under `app/` because that is Nuxt 4’s d
 | --- | --- |
 | `app/pages/login.vue`, `register.vue` | Public auth forms |
 | `app/pages/index.vue` | Dashboard |
-| `app/pages/tasks/index.vue` | Task list and editor |
+| `app/pages/tasks/index.vue` | Eisenhower matrix, task details, and editor |
 | `app/pages/settings.vue` | Name, time zone, week start |
 | `app/layouts/default.vue` | Sidebar, top bar, content |
 | `app/layouts/auth.vue` | Centered auth card |
