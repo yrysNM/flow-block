@@ -2,7 +2,7 @@
 
 ## Current status
 
-Phase 5a is in the tree on top of website rules: habits and goals. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, and habits-goals migrations are written and were not applied.
+Phase 5b is in the tree on top of habits and goals: analytics computed on read. The app is still not connected to a running Postgres. Schedule, focus-pause, website-rule, and habits-goals migrations are written and were not applied. Analytics did not add a migration.
 
 ## Completed modules
 
@@ -16,6 +16,7 @@ Phase 5a is in the tree on top of website rules: habits and goals. The app is st
 - Website rules and usage events, plus FocusFlow extension enforcement from a cached copy
 - Habits with a target count, check-ins that update one entry per date, a computed streak, and a month calendar
 - Goals with a deadline, milestones, links to existing tasks, and progress derived on read
+- Analytics for the last 7 or 30 local days, with a per-day series and an ECharts page
 - Derived Eisenhower quadrant and status rules
 - Preservation of `src/` and `mobile/`
 
@@ -25,7 +26,7 @@ Nothing. This milestone’s code is ready for review. Applying the migration nee
 
 ## Pending
 
-The analytics dashboard. Habits and goals are in this branch. Website rules and extension sync are in the parent branch.
+The AI assistant, notifications, and deployment. Analytics is in this branch.
 
 ## Architecture
 
@@ -45,8 +46,8 @@ Schema, `20261102100000_init`, `20261102120000_task_schedule`, `20261102130000_f
 
 ## API status
 
-Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), and `/api/goals` (milestones, reorder, and task links). Swagger at `/api/docs` is version 0.6.0. Notifications still have tables only.
+Implemented: `/api/health`, `/api/auth/*` including `POST /api/auth/extension/login`, `/api/users/me`, `/api/users/me/preferences`, `/api/tasks` including summary, board, matrix, planner, status, quadrant, schedule, tags, and subtasks, `/api/categories`, `/api/tags`, `/api/focus-sessions`, `/api/websites` (rules, usage totals, usage events), `/api/habits` (including check-ins), `/api/goals` (milestones, reorder, and task links), and `GET /api/analytics`. Swagger at `/api/docs` is version 0.7.0. Notifications still have tables only.
 
 ## Next recommended tasks
 
-The analytics dashboard. Website rules and the FocusFlow extension are in the parent branch. Habits and goals are in this branch. The legacy blocker in `src/` is still separate. Headless Chrome hanging on `/focus` is still unfixed.
+The AI assistant, notifications, and deployment. The legacy blocker in `src/` is still separate. Headless Chrome hanging on `/focus` is still unfixed.

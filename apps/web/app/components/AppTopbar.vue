@@ -34,6 +34,7 @@ const title = computed(() => {
   if (route.path.startsWith('/categories')) return 'Categories'
   if (route.path.startsWith('/habits')) return 'Habits'
   if (route.path.startsWith('/goals')) return 'Goals'
+  if (route.path.startsWith('/analytics')) return 'Analytics'
   if (route.path.startsWith('/settings')) return 'Settings'
   return 'Dashboard'
 })

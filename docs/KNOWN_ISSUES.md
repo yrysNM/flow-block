@@ -17,6 +17,6 @@
 - The legacy Website Blocker in `src/` and the Expo app still do not use FocusFlow accounts
 - There is no password reset, email verification, or CSRF token beyond `SameSite=Lax`
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
-- The analytics dashboard is not implemented. Habits and goals are. Notifications still have no UI
-- The habits and goals pages were not clicked through. Creating those rows needs Postgres
+- Notifications still have no product UI. The AI assistant and deployment are not in this tree
+- The habits, goals, and analytics pages were not clicked through. Creating those rows needs Postgres
 - Matrix, planner, Kanban, categories, tags, and subtasks were not clicked through in a browser. Postgres is still unavailable, so register cannot create the rows those screens need

@@ -323,6 +323,10 @@ export const goalTaskParamsSchema = z.object({
   taskId: z.uuid(),
 })
 
+export const analyticsQuerySchema = z.object({
+  range: z.enum(['7', '30']).default('7'),
+})
+
 export const taskIdParamSchema = z.object({
   id: z.uuid(),
 })
@@ -373,3 +377,4 @@ export type CreateMilestoneInput = z.infer<typeof createMilestoneSchema>
 export type UpdateMilestoneInput = z.infer<typeof updateMilestoneSchema>
 export type ReorderMilestonesInput = z.infer<typeof reorderMilestonesSchema>
 export type LinkGoalTaskInput = z.infer<typeof linkGoalTaskSchema>
+export type AnalyticsQuery = z.infer<typeof analyticsQuerySchema>

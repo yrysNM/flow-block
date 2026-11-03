@@ -49,3 +49,7 @@ The schema already had `website_rules` and daily `website_usage`. Phase 4b adds 
 Habits stay a separate entity from tasks. The existing `habits` and `habit_entries` tables gained `target_count` and `count`. One entry per habit and civil date was already unique, so a second check-in updates that row. The streak is `currentHabitStreak` on read. It uses the current target and the entry counts, not the stored `completed` flag. Weekly streaks use `weekStartsOn`. The planner still ignores that preference.
 
 Goals reuse `goals.target_date` as the deadline and `milestones`, plus `position` and a `goal_tasks` join. Progress is `deriveGoalProgress`: completed milestones plus linked tasks whose status is `COMPLETED`, over the count of those rows. No percentage column exists, so it cannot drift. Linking a task does not copy it. Migration `20261102150000_habits_goals` was not applied here.
+
+## ADR-13. Analytics is computed on read
+
+Phase 5b does not add a table. `GET /api/analytics` loads the signed-in user’s tasks, focus sessions, website usage, and habit entries, then `buildAnalytics` in `@focusflow/shared-utils` produces the totals and the per-day series. A client total or `userId` cannot change the result. Focus seconds reuse the pause rules: closed pauses are spread across the session wall, and an open pause is clipped to each local day. A missing day is a zero point so the chart does not drop it. Apache ECharts draws that series on `/analytics` only. The other boards stay on native drag and drop.

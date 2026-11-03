@@ -404,6 +404,35 @@ export interface GoalView {
   updatedAt: string
 }
 
+export const ANALYTICS_RANGES = [7, 30] as const
+export type AnalyticsRange = (typeof ANALYTICS_RANGES)[number]
+
+export interface AnalyticsDayPoint {
+  date: string
+  tasksCompleted: number
+  focusSeconds: number
+  websiteUsedSeconds: number
+  habitCheckIns: number
+  habitExpected: number
+}
+
+export interface AnalyticsHabitConsistency {
+  checkIns: number
+  expected: number
+}
+
+export interface AnalyticsResponse {
+  range: AnalyticsRange
+  timezone: string
+  startDate: string
+  endDate: string
+  tasksCompleted: number
+  focusSeconds: number
+  websiteUsedSeconds: number
+  habitConsistency: AnalyticsHabitConsistency
+  series: AnalyticsDayPoint[]
+}
+
 export interface ApiErrorBody {
   statusCode: number
   error: string

@@ -1,3 +1,5 @@
+import { bindAnalyticsTime } from './analytics'
+
 export {
   hostMatchesDomain,
   isWithinSchedule,
@@ -17,6 +19,17 @@ export {
   type HabitEntryCount,
 } from './habits'
 export { deriveGoalProgress, type GoalProgress } from './goals'
+export {
+  analyticsHasActivity,
+  buildAnalytics,
+  focusSecondsInWindow,
+  type AnalyticsDayPoint,
+  type AnalyticsFocusRow,
+  type AnalyticsHabitRow,
+  type AnalyticsSnapshot,
+  type AnalyticsTaskRow,
+  type AnalyticsUsageRow,
+} from './analytics'
 
 const DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/
 
@@ -135,3 +148,5 @@ export function formatDateInTimeZone(instant: Date, timeZone: string): string {
   const day = String(parts.day).padStart(2, '0')
   return `${parts.year}-${month}-${day}`
 }
+
+bindAnalyticsTime(formatDateInTimeZone, localDayBounds)

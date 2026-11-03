@@ -92,4 +92,10 @@
 3. Link a task that already exists. Unlinking leaves the task in the task list
 4. The “n of m” line counts completed milestones and completed linked tasks
 
-The review and analytics flows are not in the product yet.
+## Analytics
+
+1. Open Analytics and choose the last 7 days or the last 30 days
+2. The totals and the chart come from `GET /api/analytics` for the signed-in user
+3. A range with no tasks, focus time, website usage, or habit check-ins shows an empty state instead of a sample chart
+
+The AI assistant is not in the product yet.

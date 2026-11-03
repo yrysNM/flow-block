@@ -33,8 +33,8 @@ export function configureApp(app: INestApplication): void {
 
   const config = new DocumentBuilder()
     .setTitle('FocusFlow API')
-    .setDescription('FocusFlow API. Quadrant is derived. Focus elapsed time is computed from timestamps. Website blocking follows focus mode, then each rule schedule. Habit streaks and goal progress are computed on read.')
-    .setVersion('0.6.0')
+    .setDescription('FocusFlow API. Quadrant is derived. Focus elapsed time is computed from timestamps. Website blocking follows focus mode, then each rule schedule. Habit streaks, goal progress, and analytics are computed on read.')
+    .setVersion('0.7.0')
     .addCookieAuth('ff_session', { type: 'apiKey', in: 'cookie', name: 'ff_session' }, 'session')
     .build()
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, config))

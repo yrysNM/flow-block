@@ -17,9 +17,10 @@
 - Website rules and usage events. The FocusFlow extension caches rules, enforces them, and retries usage with the same client event id
 - Habit CRUD, check-in that updates the same date, computed streaks, and a month calendar
 - Goal CRUD, milestones, links to existing tasks, and progress derived on read
-- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, and password hashing
+- Analytics for 7 and 30 local days: tasks completed, focus time, website usage, habit consistency, and a per-day series
+- Unit tests for transitions, quadrant moves, scheduling, ownership, tag attach, subtask toggle, kanban status moves, a second focus start, pause and resume, timestamp elapsed time, website-rule ownership, duplicate usage events, focus-versus-schedule blocking, a duplicate habit check-in, a broken daily streak, goal progress without a stored percentage, analytics ownership, paused focus time, a zero day in the series, and password hashing
 - Docs listed in the milestone
 
 ## Next, not started
 
-- Analytics dashboard, merging the legacy blocker, Redis, deployment
+- AI assistant, notifications, merging the legacy blocker, Redis, deployment

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { AnalyticsModule } from './analytics/analytics.module'
 import { AuthModule } from './auth/auth.module'
 import { CategoriesModule } from './categories/categories.module'
 import { FocusModule } from './focus/focus.module'
@@ -25,6 +26,7 @@ import { WebsitesModule } from './websites/websites.module'
     WebsitesModule,
     HabitsModule,
     GoalsModule,
+    AnalyticsModule,
   ],
   controllers: [HealthController],
 })

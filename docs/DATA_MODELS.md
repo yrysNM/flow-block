@@ -70,6 +70,10 @@ A usage event result is `{ stored, clientEventId, ruleId, domain, usedSeconds }`
 
 `{ id, title, description, status, deadline, milestones, tasks, progress, createdAt, updatedAt }`. `status` is `ACTIVE | COMPLETED | ARCHIVED`. `deadline` is `YYYY-MM-DD` or null. Milestones are `{ id, goalId, title, completed, position, dueDate }`. Linked tasks are `{ id, title, status }`. `progress` is `{ completed, total }` and is not stored. See [GOALS.md](GOALS.md).
 
+## Analytics
+
+`{ range, timezone, startDate, endDate, tasksCompleted, focusSeconds, websiteUsedSeconds, habitConsistency: { checkIns, expected }, series }`. `range` is `7` or `30`. Each series point is `{ date, tasksCompleted, focusSeconds, websiteUsedSeconds, habitCheckIns, habitExpected }`. See [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md).
+
 ## Summary
 
 `{ date, timezone, counts: { TODO, IN_PROGRESS, COMPLETED, total }, today: TaskView[] }`

@@ -59,6 +59,10 @@ A habit is not a task. Check-in updates the row for that habit and civil date. T
 
 Goal progress counts completed milestones and linked tasks with status `COMPLETED`. The service does not write a percentage. See [GOALS.md](GOALS.md).
 
+## Analytics
+
+`GET /api/analytics` reads tasks, focus sessions, website usage, and habit entries for the session user and returns totals plus one point per local day. Definitions, the time zone, and the exclusions are in [ANALYTICS_METRICS.md](ANALYTICS_METRICS.md). A query `userId` is not accepted.
+
 ## Today
 
 `localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.
