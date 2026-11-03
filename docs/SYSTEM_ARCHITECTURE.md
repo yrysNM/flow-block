@@ -20,4 +20,4 @@ Shared packages:
 
 `src/` and `mobile/` are the existing blocker. They keep their own storage. They are not clients of this API yet.
 
-Redis is not part of the system. Sessions are rows in Postgres. Auth rate limiting is memory inside the API process.
+Redis is not part of the system. Sessions are rows in Postgres. Auth rate limiting is memory inside the API process. Dev Compose starts Postgres only. Production-style Compose starts Postgres, the API image, and the web image. The web image still proxies `/api` with `NUXT_API_PROXY_TARGET`.

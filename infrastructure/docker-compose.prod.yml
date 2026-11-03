@@ -1,0 +1,79 @@
+# Local production-style stack: Postgres, the API image, and the web image.
+# Dev Postgres only stays in docker-compose.yml. There is no Redis.
+# SESSION_SECRET is required and is not given a default. The database password
+# below is the local example. Replace it outside this machine.
+# COOKIE_SECURE defaults to 0 so HTTP on localhost can store the session cookie.
+# Set COOKIE_SECURE=1 when TLS is in front of the web app.
+
+name: focusflow-prod
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-focusflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-focusflow}
+      POSTGRES_DB: ${POSTGRES_DB:-focusflow}
+    ports:
+      - "5433:5432"
+    volumes:
+      - focusflow_prod_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-focusflow}:${POSTGRES_PASSWORD:-focusflow}@postgres:5432/${POSTGRES_DB:-focusflow}?schema=public
+      PORT: "3001"
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET to at least 32 characters that are not a placeholder}
+      COOKIE_SECURE: ${COOKIE_SECURE:-0}
+      RUN_MIGRATIONS: "1"
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3001/api/health').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      NITRO_HOST: 0.0.0.0
+      NITRO_PORT: "3000"
+      NUXT_PUBLIC_API_BASE: /api
+      NUXT_API_PROXY_TARGET: http://api:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  focusflow_prod_pg:

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from './auth.service'
 import { hashPassword } from './password'
+import { hashSessionToken } from './session-token'
 
 function createPrisma() {
   return {
@@ -51,8 +52,9 @@ describe('AuthService', () => {
     expect(created.preferences).toEqual({ create: {} })
 
     const session = prisma.session.create.mock.calls[0]?.[0].data as { tokenHash: string; userId: string }
-    const expectedHash = createHash('sha256').update(result.token).digest('hex')
-    expect(session.tokenHash).toBe(expectedHash)
+    const unsalted = createHash('sha256').update(result.token).digest('hex')
+    expect(session.tokenHash).toBe(hashSessionToken(result.token))
+    expect(session.tokenHash).not.toBe(unsalted)
     expect(session.tokenHash).not.toBe(result.token)
     expect(session.userId).toBe('user-1')
     expect(result.user.email).toBe('ada@example.com')

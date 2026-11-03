@@ -14,6 +14,17 @@ export function readSessionToken(request: {
   return typeof cookie === 'string' && cookie.length > 0 ? cookie : undefined
 }
 
+/**
+ * Secure cookies follow NODE_ENV=production unless COOKIE_SECURE is set.
+ * Local HTTP packaging sets COOKIE_SECURE=0. TLS deployments set COOKIE_SECURE=1.
+ */
+export function cookieSecure(env: NodeJS.ProcessEnv = process.env): boolean {
+  const flag = env.COOKIE_SECURE?.trim().toLowerCase()
+  if (flag === '1' || flag === 'true') return true
+  if (flag === '0' || flag === 'false') return false
+  return env.NODE_ENV === 'production'
+}
+
 export function sessionCookieOptions(secure: boolean) {
   return {
     httpOnly: true,
