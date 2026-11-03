@@ -31,3 +31,11 @@ Prisma `@default(uuid())` assigns ids in the application. The migration does not
 ## ADR-8. Shared packages compile to CommonJS
 
 Nest’s build consumes `require`. The Nuxt app aliases the TypeScript source so the browser does not depend on that build.
+
+## ADR-9. One Vercel project for web and API
+
+Production is a single Vercel project using Services (beta). `vercel.json` builds Nuxt from `apps/web` and Nest from `apps/api`, then sends `/api/*` to Nest and every other path to Nuxt. The browser still calls `/api` on the site origin, so the `ff_session` cookie stays first-party. `NUXT_API_PROXY_TARGET` remains the local Nitro proxy target. On Vercel it is also injected from the API service binding.
+
+The repository root `build` script stays the Website Blocker. It is not the FocusFlow production build.
+
+The API `postinstall` runs `prisma generate` and compiles the shared packages. Nest resolves their CommonJS `dist`, and those folders are gitignored. The Prisma generator includes `rhel-openssl-3.0.x` for Vercel Functions on Amazon Linux. `src/main.ts` listens when it is the process entry or when `VERCEL=1`. CORS allows `WEB_ORIGIN` plus the deployment host Vercel provides.

@@ -1,6 +1,7 @@
 # Known issues
 
-- Docker and PostgreSQL are not available in the environment that produced this slice. `infrastructure/docker-compose.yml` is the supported database. `prisma migrate deploy` was not executed. The integration test is skipped unless `FOCUSFLOW_INTEGRATION=1`
+- Docker and PostgreSQL are not available in the environment that produced this slice. `infrastructure/docker-compose.yml` is the supported local database. `prisma migrate deploy` was not executed here. The integration test is skipped unless `FOCUSFLOW_INTEGRATION=1`
+- The Vercel production build does not provision Postgres by itself. Without `DATABASE_URL`, register and task routes return 503. Health stays 200
 - Register and task routes return 503 when Postgres is down. Health stays 200 on purpose
 - Auth rate limiting is per process and resets on restart
 - Login timing can differ between an unknown email and a wrong password. The message does not

@@ -19,6 +19,14 @@ postgresql://focusflow:focusflow@localhost:5432/focusflow?schema=public
 
 That password is only for local Docker. There is no `SESSION_SECRET`. Session tokens are random and only their hash is stored.
 
+## Vercel
+
+The production project reads the API variables above. Vercel sets `VERCEL`, `VERCEL_URL`, and `VERCEL_PROJECT_PRODUCTION_URL`. The API treats those hosts as allowed CORS origins in addition to `WEB_ORIGIN`.
+
+`NUXT_API_PROXY_TARGET` is injected from the API service binding. Public `/api` traffic is rewritten to Nest before it reaches Nitro.
+
+Prisma on Vercel needs `DATABASE_URL`. A Neon pooled string belongs in `DATABASE_URL` for runtime. `prisma migrate deploy` needs the direct Neon string for that one command. Do not commit either value.
+
 ## Web
 
 | Name | Purpose |

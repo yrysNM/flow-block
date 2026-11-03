@@ -14,7 +14,7 @@ Phase 0 and the first vertical slice are in the tree: auth, tasks, dashboard, se
 
 ## In progress
 
-Nothing. This milestone’s code is ready for review. Applying the migration needs Postgres.
+Vercel production build. `vercel.json` defines Nuxt and Nest services. A Postgres `DATABASE_URL` and `prisma migrate deploy` are still required before register and tasks work in production.
 
 ## Pending
 
@@ -42,4 +42,4 @@ Implemented: `/api/health`, `/api/auth/*`, `/api/users/me`, `/api/users/me/prefe
 
 ## Next recommended tasks
 
-Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.
+Set `DATABASE_URL` on the Vercel project and run `prisma migrate deploy` if that has not happened yet. Then Phase 2, in order: category CRUD, tags, subtasks, Kanban that reuses status transitions, quadrant drag that writes only `isUrgent` and `isImportant`.

@@ -57,6 +57,18 @@ Commands were run from `/workspace` on Node v22.23.4. Results below are from tha
 - `npm run build -w @focusflow/api` — passed (`nest build`, `apps/api/dist/main.js`)
 - `npm run build -w @focusflow/extension` — passed (`dist/background.js`, `dist/popup.js`)
 
+### Vercel project config
+
+`vercel.json` is a Services project: Nuxt at `apps/web`, Nest at `apps/api`, `/api` rewritten to Nest. The API `postinstall` compiles shared packages and runs `prisma generate` with the `rhel-openssl-3.0.x` engine.
+
+Checked on this branch, Node v22.23.4, from the repo root:
+
+- `npm run postinstall -w @focusflow/api` — passed (Prisma client generated, shared `dist` files written)
+- `npm run typecheck -w @focusflow/api` — passed
+- `npm test -w @focusflow/api` — 9 passed, 1 skipped
+
+The Vercel production deployment result is recorded after that deploy finishes.
+
 ### Existing extension (preserved)
 
 - `npm test` — 4 files, 29 tests passed

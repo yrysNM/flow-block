@@ -12,7 +12,7 @@
     "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && ../../node_modules/.bin/tsc -p ../../packages/shared-types/tsconfig.json && ../../node_modules/.bin/tsc -p ../../packages/shared-schemas/tsconfig.json && ../../node_modules/.bin/tsc -p ../../packages/shared-utils/tsconfig.json"
   },
   "dependencies": {
     "@focusflow/shared-schemas": "0.1.0",

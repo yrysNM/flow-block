@@ -6,13 +6,34 @@ import type { INestApplication } from '@nestjs/common'
 import { AppModule } from './app.module'
 import { AllExceptionsFilter } from './common/http-exception.filter'
 
+function allowedOrigins(): string[] {
+  const configured = (process.env.WEB_ORIGIN ?? 'http://localhost:3000')
+    .split(',')
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0)
+  const vercelHosts = [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_URL]
+    .filter((host): host is string => typeof host === 'string' && host.length > 0)
+    .map((host) =>
+      host.startsWith('http://') || host.startsWith('https://') ? host : `https://${host}`,
+    )
+  return [...new Set([...configured, ...vercelHosts])]
+}
+
 export function configureApp(app: INestApplication): void {
   app.setGlobalPrefix('api')
   app.use(cookieParser())
   app.useGlobalFilters(new AllExceptionsFilter())
-  const origin = process.env.WEB_ORIGIN ?? 'http://localhost:3000'
   app.enableCors({
-    origin: origin.split(',').map((value) => value.trim()),
+    origin(
+      origin: string | undefined,
+      callback: (error: Error | null, allow?: boolean) => void,
+    ) {
+      if (!origin || allowedOrigins().includes(origin)) {
+        callback(null, true)
+        return
+      }
+      callback(null, false)
+    },
     credentials: true,
   })
   const http = app.getHttpAdapter().getInstance() as {
@@ -43,7 +64,9 @@ async function bootstrap(): Promise<void> {
   await app.listen(port, '0.0.0.0')
 }
 
-if (require.main === module) {
+const shouldListen = require.main === module || process.env.VERCEL === '1'
+
+if (shouldListen) {
   bootstrap().catch((error: unknown) => {
     console.error(error)
     process.exit(1)
