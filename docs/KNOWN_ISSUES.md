@@ -8,7 +8,7 @@
 - `weekStartsOn` is stored and editable. Weekly habit streaks and the habits calendar use it. The planner still does not
 - The board, matrix, and planner each show at most 100 tasks in a column or list. The count is still the full total
 - Planner drag snaps a block to the start of an hour. The length is kept when the block already has one. A block cannot cross local midnight
-- `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, `20261102150000_habits_goals`, `20261102160000_account_preferences`, and `20261102170000_task_recurrence` are written and were not applied. `prisma migrate deploy` still needs Postgres
+- `20261102120000_task_schedule`, `20261102130000_focus_pause`, `20261102140000_website_rules`, `20261102150000_habits_goals`, `20261102160000_account_preferences`, `20261102170000_task_recurrence`, and `20261102180000_notification_link` are written and were not applied. `prisma migrate deploy` still needs Postgres
 - The one-active-session rule is a partial unique index in SQL. Prisma cannot model it. A later `prisma migrate dev` diff may propose dropping `focus_sessions_one_active_per_user`. Do not drop it
 - `elapsed_seconds` remains on `focus_sessions` and is not written. Elapsed time is computed on read
 - The focus page clock is a display. It is resynced from the API. The signed-in timer was not clicked through, because Postgres is still unavailable
@@ -17,7 +17,7 @@
 - The legacy Website Blocker in `src/` and the Expo app still do not use FocusFlow accounts
 - Password change while signed in is implemented and keeps the session. There is still no password reset, email change, email verification, or CSRF token beyond `SameSite=Lax`
 - `language` is stored as `en` and is not a translation system. The interface stays English
-- There is no notification inbox and no delivery. Settings does not add a toggle for one. Completing a recurring task does not notify anyone. It inserts one next task
+- Notifications are in-app rows for a completed focus session and a recurrence successor. There is no email, push, or scheduler. Settings does not add a delivery toggle
 - Headless Chrome rendered the login page. The task screens were not clicked through, because creating an account needs Postgres
 - The assistant provider is unconfigured. `POST /api/assistant` validates the prompt and returns not-configured. It does not call a model and does not create a task. `ASSISTANT_PROVIDER` is optional
 - Notifications still have no product UI. Production images are defined and were not built in this environment

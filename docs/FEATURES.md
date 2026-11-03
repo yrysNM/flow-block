@@ -22,13 +22,14 @@
 | Goal CRUD, milestones, task links, and derived progress | API and Goals page |
 | Analytics totals and a daily trend | API and Analytics page |
 | Assistant prompt that returns not-configured | API and Assistant page |
-| Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories, Habits, Goals |
+| Empty states | Dashboard, Tasks, Board, Matrix, Planner, Categories, Habits, Goals, Notifications |
+| In-app notifications for a completed focus session and a recurrence successor | API and the shell |
 | Derived Eisenhower quadrant | API response and task UI |
 | OpenAPI | `/api/docs` |
 
 ## Declared in the database, no product UI
 
-Time log and notification. The quadrant is still derived. The time log is not the planner and is not the focus timer. Habits, goals, milestones, and website rules are used by the API.
+Time log. The quadrant is still derived. The time log is not the planner and is not the focus timer. Habits, goals, milestones, website rules, and in-app notifications are used by the API.
 
 ## Already shipped outside this slice
 
@@ -36,4 +37,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-A configured assistant model, a notification inbox, and connecting the legacy `src/` blocker to these rules. The assistant page does not call a model and does not create tasks. Recurrence inserts one next task on completion and does not send a notification. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.
+A configured assistant model, email, push, a notification scheduler, and connecting the legacy `src/` blocker to these rules. The assistant page does not call a model and does not create tasks. In-app notifications are rows only. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.

@@ -17,6 +17,23 @@ export const TASK_RECURRENCE_LABELS: Record<TaskRecurrence, string> = {
 /** Characters accepted by POST /api/assistant after trim. */
 export const ASSISTANT_PROMPT_MAX_LENGTH = 2000
 
+export const NOTIFICATION_TYPES = ['TASK_DUE', 'FOCUS', 'HABIT', 'SYSTEM'] as const
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
+
+export interface NotificationView {
+  id: string
+  type: NotificationType
+  title: string
+  linkPath: string
+  readAt: string | null
+  createdAt: string
+}
+
+export interface NotificationListResponse {
+  unreadCount: number
+  data: NotificationView[]
+}
+
 export interface AssistantSuggestion {
   title: string
   notes: string

@@ -32,7 +32,7 @@ The page applies the saved value once, when preferences are available, and does 
 
 ## Notifications
 
-There is no notification inbox and no delivery. The `notifications` table is still unused. Settings does not add a notifications toggle, because none existed to keep.
+Settings does not add an email or push toggle. In-app notifications are listed from the shell, not from this form. See [NOTIFICATIONS.md](NOTIFICATIONS.md).
 
 ## Migration
 

@@ -14,4 +14,4 @@ The interface is a calm productivity tool: light surfaces, one blue action color
 - Desktop keeps a fixed sidebar. Smaller widths use a Menu button and an overlay drawer
 - Do not invent sample tasks. An empty account looks empty
 
-Light, dark, and system themes are applied on the shell from the saved preference. System follows the device. Language is stored as English and is not a translation system. There is no notification inbox.
+Light, dark, and system themes are applied on the shell from the saved preference. System follows the device. Language is stored as English and is not a translation system. The shell shows an unread count for in-app notifications. There is no email or push.

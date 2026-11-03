@@ -28,12 +28,13 @@ A person can:
 - See tasks completed, focus time, website usage, habit consistency, and a daily trend for the last 7 or 30 local days
 - Submit a prompt to the assistant and see that it is not configured. No task is created from that prompt
 - Set a task to repeat daily, weekly, or not at all. Completing a repeating task leaves it completed and adds one next open task
+- See an in-app notification when a focus session completes or that next task is added, and mark it read
 
 A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-A connected assistant model, reminders, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
+A connected assistant model, email or push reminders, a notification scheduler, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
 
 ## Task rules
 

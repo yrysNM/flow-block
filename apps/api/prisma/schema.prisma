@@ -7,6 +7,7 @@
 // Habit streak is computed from entries against target_count. The entry completed flag is not the streak.
 // Goal progress is derived from completed milestones and completed linked tasks. It is not a column.
 // Task recurrence is NONE, DAILY, or WEEKLY. Completing a recurring task inserts one successor. Reads do not invent future rows.
+// Notifications are in-app rows only. They are written in the same transaction as a completed focus session or a recurrence successor. There is no email, push, or scheduler.
 // Session is included so auth can use an HTTP-only server-side session.
 
 generator client {
@@ -400,6 +401,8 @@ model WebsiteUsageEvent {
   @@map("website_usage_events")
 }
 
+// title, type, body, and read_at already existed. link_path is the in-app path.
+// Rows are not seeded. Nothing here sends email or push.
 model Notification {
   id        String           @id @default(uuid()) @db.Uuid
   userId    String           @map("user_id") @db.Uuid
@@ -407,6 +410,7 @@ model Notification {
   type      NotificationType
   title     String
   body      String?
+  linkPath  String?          @map("link_path")
   readAt    DateTime?        @map("read_at")
   createdAt DateTime         @default(now()) @map("created_at")
 

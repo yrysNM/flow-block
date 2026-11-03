@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 — In-app notifications
+
+- Completing a focus session inserts one notification for that user, linked to `/focus`. Completing the same session again does not insert another
+- Inserting a recurring task’s successor inserts one notification linked to `/tasks`, in the same transaction as the new task
+- `GET /api/notifications` lists the signed-in user’s rows, newest first, with the unread count. Mark one read and mark all read are owner-scoped. A second read keeps the first read time
+- The shell shows the unread count and `/notifications` lists the rows. No rows are seeded
+- No email, push, or background scheduler
+
 ## 0.11.0 — Recurring tasks
 
 - A task stores `NONE`, `DAILY`, or `WEEKLY`. The default is `NONE`
