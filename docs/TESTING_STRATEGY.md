@@ -7,7 +7,7 @@ Vitest 3.
 | `packages/shared-types` | Status transitions and “quadrant does not change status” |
 | `packages/shared-schemas` | Unknown `userId` is stripped. Email is normalized |
 | `packages/shared-utils` | UTC and America/New_York day bounds |
-| `apps/api/src/tasks/tasks.service.test.ts` | Owner id on writes, status unchanged when only flags change, illegal transition does not write, 404 for a missing row, `completedAt` on complete |
+| `apps/api/src/tasks/tasks.service.test.ts` | Owner id on writes, status unchanged when only flags change, illegal transition does not write, 404 for a missing row, `completedAt` on complete, a daily completion inserts one next-day TODO, a second completion does not, a non-recurring completion inserts nothing |
 | `apps/api/src/auth/auth.service.test.ts` | Password hash, preferences row, session token stored as an HMAC rather than the raw token, duplicate email, bad password |
 | `apps/api/src/auth/session-secret.test.ts` | Production refuses an empty or placeholder `SESSION_SECRET` |
 | `apps/api/src/users/users.service.test.ts` | Wrong current password does not write a hash. A correct one does, and sessions are not deleted. Theme round-trips |

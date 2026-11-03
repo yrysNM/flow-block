@@ -24,6 +24,8 @@ Phase 5d: production packaging. Multi-stage Dockerfiles for the API and web app,
 
 Phase 5e: assistant foundation. `POST /api/assistant` and `/assistant` use an unconfigured provider. A prompt is validated. The result is not-configured. No model is called, no API key is stored, and no task is created. `ASSISTANT_PROVIDER` can name a future provider and is not required at startup.
 
+Phase 5f: recurring tasks. The rule is stored on the task. Completing a daily or weekly task inserts one next open task. The completed row stays completed. Reads do not generate future occurrences. There is no notification inbox.
+
 ## Later, not scheduled in this change
 
-Merging the legacy blocker, a configured assistant provider, recurring tasks, a notification inbox, and password reset. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.
+Merging the legacy blocker, a configured assistant provider, a notification inbox, and password reset. The concept note grouped Kanban earlier. This repo follows the milestone order above: Kanban is Phase 2.

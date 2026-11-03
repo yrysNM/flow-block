@@ -181,13 +181,13 @@ export class TasksController {
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Change task status. Does not change urgent or important.' })
+  @ApiOperation({ summary: 'Change task status. Does not change urgent or important. Completing a recurring task creates one next open task.' })
   updateStatus(
     @CurrentUser() user: AuthContext,
     @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
     @Body(new ZodValidationPipe(updateTaskStatusSchema)) body: UpdateTaskStatusInput,
   ) {
-    return this.tasks.updateStatus(user.id, params.id, body.status)
+    return this.tasks.updateStatus(user.id, params.id, body.status, user.preferences.timezone)
   }
 
   @Patch(':id/quadrant')
@@ -217,7 +217,7 @@ export class TasksController {
     @Param(new ZodValidationPipe(taskIdParamSchema)) params: { id: string },
     @Body(new ZodValidationPipe(updateTaskSchema)) body: UpdateTaskInput,
   ) {
-    return this.tasks.update(user.id, params.id, body)
+    return this.tasks.update(user.id, params.id, body, user.preferences.timezone)
   }
 
   @Delete(':id')

@@ -2,7 +2,7 @@
 
 FocusFlow is an all-in-one productivity product: “Focus on what matters.” Web, Chrome extension, and API share one account and one Task. The canonical workflow is Create Task, Prioritize, Schedule, Focus, Block Distractions, Complete Task, Analyze Results.
 
-Phase 0 through Phase 5e are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, a focus timer, website rules, Chrome extension enforcement, habits, goals, analytics, account settings, production packaging, and an unconfigured assistant seam. Settings cover the display name, a password change that keeps the session, a theme applied on the shell, a default focus duration, and a stored English language. Packaging is the API and web Dockerfiles plus a production-style Compose file. The assistant validates a prompt and returns not-configured. Do not call an external model, add an API key, or build recurring tasks or a notification inbox unless the task says so.
+Phase 0 through Phase 5f are in the tree: auth, one Task, categories, tags, subtasks, Kanban, the Eisenhower matrix, a daily planner, a focus timer, website rules, Chrome extension enforcement, habits, goals, analytics, account settings, production packaging, an unconfigured assistant seam, and recurring tasks. Settings cover the display name, a password change that keeps the session, a theme applied on the shell, a default focus duration, and a stored English language. Packaging is the API and web Dockerfiles plus a production-style Compose file. The assistant validates a prompt and returns not-configured. A daily or weekly task inserts one next open task when it is completed. Do not call an external model, add an API key, or build a notification inbox unless the task says so.
 
 ## Stack
 
@@ -46,6 +46,7 @@ Extension-only commands remain `npm test`, `npm run typecheck`, `npm run lint`, 
 - Kanban drag and the status control change `status` only. They must not change `isUrgent` or `isImportant`.
 - Matrix drag writes `isUrgent` and `isImportant` only. It must not change status. Quadrant is still derived.
 - A task has at most one time block (`scheduledStart` and `scheduledEnd`). Moving that block must not change status or the two flags. Both null means unscheduled, and those tasks stay off the planner timeline.
+- Recurrence is `NONE`, `DAILY`, or `WEEKLY` on the task. Completing a recurring task inserts one successor and leaves the completed row completed. Do not generate later occurrences while reading.
 - No production mock data and no committed secrets. Local Compose credentials belong only in examples.
 
 ## Session workflow

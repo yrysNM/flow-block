@@ -27,12 +27,13 @@ A person can:
 - Create goals with a deadline, milestones, and links to existing tasks, and see progress derived from those rows
 - See tasks completed, focus time, website usage, habit consistency, and a daily trend for the last 7 or 30 local days
 - Submit a prompt to the assistant and see that it is not configured. No task is created from that prompt
+- Set a task to repeat daily, weekly, or not at all. Completing a repeating task leaves it completed and adds one next open task
 
 A person cannot read or change another person’s rows.
 
 ## Explicitly not shipped
 
-A connected assistant model, recurring tasks, reminders, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
+A connected assistant model, reminders, a notification inbox, email change, password reset, and sync with the existing blocker. Language is stored and is not translated. Production images are defined. They were not built where Docker was missing.
 
 ## Task rules
 

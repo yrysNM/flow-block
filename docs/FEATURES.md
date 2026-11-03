@@ -6,7 +6,7 @@
 | --- | --- |
 | Register, login, logout, current user | API and web |
 | Display name, email shown read-only, password change, theme, time zone, week start, focus default, stored English | API and Settings |
-| Task create, read, update, delete | API and Tasks page |
+| Task create, read, update, delete, including daily or weekly recurrence | API and Tasks, Matrix, and Planner forms |
 | Status change with transition rules | API and Tasks page |
 | Filter by search, status, priority, and category, plus sort and pagination | API and Tasks page |
 | Category create, rename, recolor, delete | API and Categories page |
@@ -36,4 +36,4 @@ The Website Blocker extension in `src/` blocks domains and enforces daily limits
 
 ## Not started
 
-A configured assistant model, recurring tasks, a notification inbox, and connecting the legacy `src/` blocker to these rules. The assistant page does not call a model and does not create tasks. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.
+A configured assistant model, a notification inbox, and connecting the legacy `src/` blocker to these rules. The assistant page does not call a model and does not create tasks. Recurrence inserts one next task on completion and does not send a notification. Email change and password reset are not implemented. Language is stored and is not translated. Production images are defined and were not built in this environment.

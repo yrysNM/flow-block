@@ -65,3 +65,7 @@ Theme, week start, and time zone were already columns on `user_preferences`. Pha
 ## ADR-16. The assistant is a provider seam
 
 `POST /api/assistant` calls `AssistantProvider.complete` with the session user id and the prompt. The default class validates the prompt and returns `{ status: 'not-configured' }`. It does not fetch, and it does not create a task. `ASSISTANT_PROVIDER` names a future class inside `selectAssistantProvider`. An unset or unknown name stays on the default and is not required for the process to start. No API key is part of this seam. See [ASSISTANT.md](ASSISTANT.md).
+
+## ADR-17. Recurrence inserts one successor
+
+A task stores `recurrence` as `NONE`, `DAILY`, or `WEEKLY`. The default is `NONE`. When a daily or weekly task becomes `COMPLETED`, the service inserts one new `TODO` task whose `recurred_from_id` is the completed task. That column is unique, so a second completion cannot insert another successor. The completed row stays `COMPLETED`, which keeps it in history and in the analytics completed-task count. The successor copies title, description, priority, the two flags, category, tags, and the recurrence rule. Subtasks are copied with `completed` false. Deadline and the time block, when set, move by one local day or seven local days in the user time zone. List, Kanban, matrix, planner, and dashboard already query `tasks`, so they show the successor without a second generator. Reads do not insert future rows. Goal links and focus sessions stay on the completed task.

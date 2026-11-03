@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 — Recurring tasks
+
+- A task stores `NONE`, `DAILY`, or `WEEKLY`. The default is `NONE`
+- Completing a daily or weekly task inserts one `TODO` copy one local interval later. Title, description, priority, urgent, important, category, tags, and the recurrence rule are copied. Subtasks are copied open. The deadline and time block move with the interval when they are set
+- The completed row stays `COMPLETED`. A second completion does not insert another row. `recurred_from_id` is unique
+- List, Kanban, matrix, planner, and dashboard show that next task through the existing queries. Reads do not create future occurrences
+- Create and edit on Tasks, Matrix, and Planner set the rule
+- A notification inbox was not added
+
 ## 0.10.0 — Assistant foundation
 
 - Added a server-side `AssistantProvider` with one method. The session user id is the only user id it receives

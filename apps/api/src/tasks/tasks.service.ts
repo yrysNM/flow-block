@@ -20,10 +20,11 @@ import {
   type TaskBoardResponse,
   type TaskMatrixResponse,
   type TaskPlannerResponse,
+  type TaskRecurrence,
   type TaskStatus,
   type TaskSummary,
 } from '@focusflow/shared-types'
-import { formatDateInTimeZone, localDayBounds } from '@focusflow/shared-utils'
+import { addZonedInterval, formatDateInTimeZone, localDayBounds } from '@focusflow/shared-utils'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import {
@@ -61,6 +62,7 @@ export class TasksService {
         isImportant: input.isImportant ?? false,
         deadline: this.parseDeadline(input.deadline),
         categoryId: input.categoryId ?? null,
+        recurrence: input.recurrence ?? 'NONE',
         completedAt: status === 'COMPLETED' ? new Date() : null,
       },
       include: taskInclude,
@@ -194,10 +196,11 @@ export class TasksService {
     return toTaskView(await this.requireTask(userId, id))
   }
 
-  async update(userId: string, id: string, input: UpdateTaskInput) {
+  async update(userId: string, id: string, input: UpdateTaskInput, timeZone = 'UTC') {
     const current = await this.requireTask(userId, id)
     await this.assertCategory(userId, input.categoryId)
     const next = this.applyPatch(current, input)
+    const recurrence = input.recurrence ?? current.recurrence ?? 'NONE'
     const data = {
       title: input.title ?? current.title,
       description: input.description === undefined ? current.description : this.normalizeDescription(input.description),
@@ -207,17 +210,21 @@ export class TasksService {
       isImportant: next.isImportant,
       deadline: input.deadline === undefined ? current.deadline : this.parseDeadline(input.deadline),
       categoryId: input.categoryId === undefined ? current.categoryId : input.categoryId,
+      recurrence,
       completedAt: completionTimestamp(current.status, next.status, current.completedAt),
     }
     const result = await this.prisma.task.updateMany({ where: { id, userId }, data })
     if (result.count !== 1) {
       throw this.missingTask()
     }
+    if (next.status === 'COMPLETED' && isRecurring(recurrence)) {
+      await this.ensureSuccessor(userId, current, data, timeZone)
+    }
     return toTaskView(await this.requireTask(userId, id))
   }
 
-  async updateStatus(userId: string, id: string, status: TaskStatus) {
-    return this.update(userId, id, { status })
+  async updateStatus(userId: string, id: string, status: TaskStatus, timeZone = 'UTC') {
+    return this.update(userId, id, { status }, timeZone)
   }
 
   async updateQuadrant(userId: string, id: string, input: UpdateTaskQuadrantInput) {
@@ -376,6 +383,71 @@ export class TasksService {
     }
   }
 
+  /**
+   * Inserts one TODO successor when this completed task does not already have one.
+   * The link is `recurredFromId`, which is unique. A second completion does not insert again.
+   */
+  private async ensureSuccessor(
+    userId: string,
+    current: TaskRecord,
+    saved: {
+      title: string
+      description: string | null
+      priority: TaskRecord['priority']
+      isUrgent: boolean
+      isImportant: boolean
+      deadline: Date | null
+      categoryId: string | null
+      recurrence: TaskRecurrence
+    },
+    timeZone: string,
+  ): Promise<void> {
+    const existing = await this.prisma.task.findFirst({
+      where: { userId, recurredFromId: current.id },
+      select: { id: true },
+    })
+    if (existing) return
+    const days = saved.recurrence === 'WEEKLY' ? 7 : 1
+    const shift = (value: Date | null) => (value ? addZonedInterval(value, days, timeZone) : null)
+    try {
+      await this.prisma.task.create({
+        data: {
+          userId,
+          recurredFromId: current.id,
+          title: saved.title,
+          description: saved.description,
+          status: 'TODO',
+          priority: saved.priority,
+          isUrgent: saved.isUrgent,
+          isImportant: saved.isImportant,
+          deadline: shift(saved.deadline),
+          scheduledStart: shift(current.scheduledStart),
+          scheduledEnd: shift(current.scheduledEnd),
+          categoryId: saved.categoryId,
+          recurrence: saved.recurrence,
+          completedAt: null,
+          tags: {
+            create: (current.tags ?? []).map((link) => ({
+              userId,
+              tagId: link.tag.id,
+            })),
+          },
+          subtasks: {
+            create: (current.subtasks ?? []).map((subtask) => ({
+              userId,
+              title: subtask.title,
+              completed: false,
+              position: subtask.position,
+            })),
+          },
+        },
+      })
+    } catch (error) {
+      if (isUniqueConflict(error)) return
+      throw error
+    }
+  }
+
   private applyPatch(current: TaskRecord, input: UpdateTaskInput) {
     try {
       return applyTaskFieldPatch(current, {
@@ -497,6 +569,14 @@ export class TasksService {
     }
     return { scheduledStart, scheduledEnd }
   }
+}
+
+function isRecurring(value: TaskRecurrence): boolean {
+  return value === 'DAILY' || value === 'WEEKLY'
+}
+
+function isUniqueConflict(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'code' in error && (error as { code?: unknown }).code === 'P2002'
 }
 
 function sameIdSet(current: string[], next: string[]): boolean {

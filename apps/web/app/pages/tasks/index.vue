@@ -217,6 +217,7 @@ function blankDraft(): TaskDraft {
     isImportant: false,
     deadline: '',
     categoryId: '',
+    recurrence: 'NONE',
   }
 }
 
@@ -230,6 +231,7 @@ function draftFromTask(task: TaskView): TaskDraft {
     isImportant: task.isImportant,
     deadline: toDateTimeLocal(task.deadline),
     categoryId: task.categoryId ?? '',
+    recurrence: task.recurrence,
   }
 }
 
@@ -296,6 +298,7 @@ function payloadFromDraft() {
     isImportant: draft.value.isImportant,
     deadline: fromDateTimeLocal(draft.value.deadline),
     categoryId: draft.value.categoryId || null,
+    recurrence: draft.value.recurrence,
   }
 }
 

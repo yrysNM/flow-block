@@ -1,6 +1,6 @@
 # FocusFlow docs
 
-These files describe the product and what this repository actually contains after Phase 5e: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, production packaging, and an unconfigured assistant.
+These files describe the product and what this repository actually contains after Phase 5f: auth, tasks, categories, tags, subtasks, Kanban, the Eisenhower matrix, the daily planner, the focus timer, website rules, the FocusFlow extension, habits, goals, analytics, account settings, production packaging, an unconfigured assistant, and recurring tasks.
 
 Start here:
 
@@ -17,4 +17,4 @@ Start here:
 - [SETTINGS.md](SETTINGS.md) — profile, password change, theme, focus default, and stored language
 - [ASSISTANT.md](ASSISTANT.md) — the unconfigured assistant provider
 
-Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The assistant validates a prompt and returns not-configured. It does not call a model. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. Recurring tasks and notification delivery are not built. Image builds were not run here.
+Website rules and the FocusFlow extension are shipped. Habits, goals, analytics, account settings, and production packaging are shipped. The assistant validates a prompt and returns not-configured. It does not call a model. A daily or weekly task inserts one next open task when completed. The legacy blocker in `src/` is still separate. The focus timer and the matrix are shipped. The quadrant on a task is still calculated from urgent and important. Recurring tasks and notification delivery are not built. Image builds were not run here.

@@ -66,3 +66,7 @@ Goal progress counts completed milestones and linked tasks with status `COMPLETE
 ## Today
 
 `localDayBounds` converts the civil date in the user’s IANA zone to a UTC start inclusive and end exclusive. The summary uses that window on `deadline`. The planner uses the same window on `scheduledStart`. A deadline is not a time block.
+
+## Recurrence
+
+`recurrence` is `NONE`, `DAILY`, or `WEEKLY`. Creating a task without the field stores `NONE`. Completing a non-recurring task does not insert a row. Completing a daily or weekly task inserts exactly one `TODO` task when none exists with `recurred_from_id` equal to the completed id. That column is unique. A second completion finds the existing successor and does not insert another. The completed task stays `COMPLETED`, so analytics still count it. The successor copies title, description, priority, urgent, important, category, tags, and the recurrence rule. Each copied subtask starts with `completed` false. Deadline and the time block move by one local day, or seven local days, in the user’s time zone, keeping the local clock time. A null deadline stays null. A null time block stays null. Goal links and focus sessions are not copied. List, board, matrix, planner, and dashboard read the new row with their existing queries. Those reads do not insert future occurrences. Creating a task already set to `COMPLETED` does not insert a successor; the insert happens when status changes to `COMPLETED` or when a completed recurring task is saved and still has no successor.

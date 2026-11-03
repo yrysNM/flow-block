@@ -23,6 +23,9 @@ function taskRecord(overrides: Partial<{
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  recurrence: 'NONE' | 'DAILY' | 'WEEKLY'
+  tags: { tag: { id: string; name: string } }[]
+  subtasks: { id: string; taskId: string; title: string; completed: boolean; position: number }[]
 }> = {}) {
   return {
     id: '11111111-1111-4111-8111-111111111111',
@@ -105,6 +108,7 @@ describe('TasksService', () => {
         status: 'TODO',
         isUrgent: true,
         isImportant: true,
+        recurrence: 'NONE',
       }),
     }))
     expect(created.quadrant).toBe('DO')
@@ -386,5 +390,122 @@ describe('TasksService', () => {
     expect(page.unscheduled.map((task) => task.id)).toEqual([loose.id])
     expect(page.timeline.some((task) => task.scheduledStart === null)).toBe(false)
     expect(page.counts).toEqual({ timeline: 1, unscheduled: 2 })
+  })
+
+  it('creates one next-day TODO when a daily task is completed and leaves the original completed', async () => {
+    const categoryId = '44444444-4444-4444-8444-444444444444'
+    const tagId = '55555555-5555-4555-8555-555555555555'
+    const current = taskRecord({
+      description: 'Chapter notes',
+      priority: 'HIGH',
+      isUrgent: true,
+      isImportant: true,
+      deadline: new Date('2026-11-02T15:00:00.000Z'),
+      scheduledStart: new Date('2026-11-02T15:00:00.000Z'),
+      scheduledEnd: new Date('2026-11-02T16:00:00.000Z'),
+      categoryId,
+      recurrence: 'DAILY',
+      tags: [{ tag: { id: tagId, name: 'Writing' } }],
+      subtasks: [{
+        id: '66666666-6666-4666-8666-666666666666',
+        taskId: '11111111-1111-4111-8111-111111111111',
+        title: 'Outline',
+        completed: true,
+        position: 0,
+      }],
+    })
+    const completed = { ...current, status: 'COMPLETED' as const, completedAt: new Date('2026-11-02T18:00:00.000Z') }
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(completed)
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+    prisma.task.create.mockResolvedValue({ id: '77777777-7777-4777-8777-777777777777' })
+
+    const updated = await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
+
+    expect(updated.id).toBe(current.id)
+    expect(updated.status).toBe('COMPLETED')
+    expect(prisma.task.updateMany.mock.calls[0]?.[0].data.status).toBe('COMPLETED')
+    expect(prisma.task.create).toHaveBeenCalledTimes(1)
+    expect(prisma.task.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userId,
+        recurredFromId: current.id,
+        title: 'Write spec',
+        description: 'Chapter notes',
+        status: 'TODO',
+        priority: 'HIGH',
+        isUrgent: true,
+        isImportant: true,
+        categoryId,
+        recurrence: 'DAILY',
+        deadline: new Date('2026-11-03T15:00:00.000Z'),
+        scheduledStart: new Date('2026-11-03T15:00:00.000Z'),
+        scheduledEnd: new Date('2026-11-03T16:00:00.000Z'),
+        completedAt: null,
+        tags: { create: [{ userId, tagId }] },
+        subtasks: { create: [{ userId, title: 'Outline', completed: false, position: 0 }] },
+      }),
+    })
+  })
+
+  it('does not create a second successor when the same task is completed again', async () => {
+    const current = taskRecord({
+      recurrence: 'DAILY',
+      deadline: new Date('2026-11-02T15:00:00.000Z'),
+    })
+    const completed = { ...current, status: 'COMPLETED' as const, completedAt: new Date('2026-11-02T18:00:00.000Z') }
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(completed)
+      .mockResolvedValueOnce(completed)
+      .mockResolvedValueOnce({ id: '77777777-7777-4777-8777-777777777777' })
+      .mockResolvedValueOnce(completed)
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+    prisma.task.create.mockResolvedValue({ id: '77777777-7777-4777-8777-777777777777' })
+
+    await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
+    await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
+
+    expect(prisma.task.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not create a task when a non-recurring task is completed', async () => {
+    const current = taskRecord({ recurrence: 'NONE', deadline: new Date('2026-11-02T15:00:00.000Z') })
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce({ ...current, status: 'COMPLETED', completedAt: new Date('2026-11-02T18:00:00.000Z') })
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+
+    const updated = await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
+
+    expect(updated.status).toBe('COMPLETED')
+    expect(prisma.task.create).not.toHaveBeenCalled()
+  })
+
+  it('schedules a weekly successor seven days ahead', async () => {
+    const current = taskRecord({
+      recurrence: 'WEEKLY',
+      deadline: new Date('2026-11-02T15:00:00.000Z'),
+    })
+    prisma.task.findFirst
+      .mockResolvedValueOnce(current)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ ...current, status: 'COMPLETED', completedAt: new Date('2026-11-02T18:00:00.000Z') })
+    prisma.task.updateMany.mockResolvedValue({ count: 1 })
+    prisma.task.create.mockResolvedValue({ id: '77777777-7777-4777-8777-777777777777' })
+
+    await service.updateStatus(userId, current.id, 'COMPLETED', 'UTC')
+
+    expect(prisma.task.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        status: 'TODO',
+        recurrence: 'WEEKLY',
+        deadline: new Date('2026-11-09T15:00:00.000Z'),
+        recurredFromId: current.id,
+      }),
+    })
   })
 })

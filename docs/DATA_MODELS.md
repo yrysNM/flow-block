@@ -12,6 +12,7 @@ Returned by the API. `quadrant` is computed.
 - `isUrgent`, `isImportant`
 - `quadrant`: `DO | SCHEDULE | DELEGATE | ELIMINATE`
 - `deadline`, `scheduledStart`, `scheduledEnd`, `categoryId`, `completedAt`, `createdAt`, `updatedAt` as ISO strings or null
+- `recurrence`: `NONE | DAILY | WEEKLY`. Completing `DAILY` or `WEEKLY` inserts one next `TODO` task. The response for the completed task does not include that new row’s id. The new row is a normal task
 - `category`: `{ id, name, color }` or null
 - `tags`: `{ id, name }[]`
 - `subtasks`: `{ id, taskId, title, completed, position }[]`
