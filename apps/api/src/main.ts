@@ -1,10 +1,10 @@
 import './vercel-native'
 import 'reflect-metadata'
+import { createServer } from 'node:http'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import type { INestApplication } from '@nestjs/common'
-import { AppModule } from './app.module'
 import { AllExceptionsFilter } from './common/http-exception.filter'
 
 function allowedOrigins(): string[] {
@@ -54,15 +54,38 @@ export function configureApp(app: INestApplication): void {
 }
 
 export async function createApp(): Promise<INestApplication> {
+  const { AppModule } = await import('./app.module')
   const app = await NestFactory.create(AppModule)
   configureApp(app)
   return app
 }
 
+function listenPort(): number {
+  return Number(process.env.PORT ?? 3001)
+}
+
+async function reportStartupFailure(error: unknown): Promise<void> {
+  const message = error instanceof Error ? (error.stack ?? error.message) : String(error)
+  console.error(message)
+  const body = JSON.stringify({ statusCode: 500, error: 'Startup failed', message })
+  await new Promise<void>((resolve, reject) => {
+    const server = createServer((_request, response) => {
+      response.statusCode = 500
+      response.setHeader('content-type', 'application/json; charset=utf-8')
+      response.end(body)
+    })
+    server.once('error', reject)
+    server.listen(listenPort(), '0.0.0.0', () => resolve())
+  })
+}
+
 async function bootstrap(): Promise<void> {
-  const app = await createApp()
-  const port = Number(process.env.PORT ?? 3001)
-  await app.listen(port, '0.0.0.0')
+  try {
+    const app = await createApp()
+    await app.listen(listenPort(), '0.0.0.0')
+  } catch (error) {
+    await reportStartupFailure(error)
+  }
 }
 
 const shouldListen = require.main === module || process.env.VERCEL === '1'
