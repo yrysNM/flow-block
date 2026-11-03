@@ -14,6 +14,7 @@
 - The API allows the deployment host in CORS
 - API install copies the Linux argon2 and Prisma query-engine binaries so the Vercel function can load them
 - The Vercel API entry is an Express app that loads an ESM bundle of Nest. Vercel's Node runtime cannot `require()` Nest's ESM package. Install emits that bundle with decorator metadata so guards still inject
+- Applied `20261102100000_init` to the production Neon database so register and tasks no longer fail with 503
 
 ## 0.1.0 — Phase 0 and task slice
 
